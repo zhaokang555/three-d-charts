@@ -11,14 +11,18 @@ import {
 const scene = new THREE.Scene();
 addAxesToScene(scene);
 addLightToScene(scene);
-addCubesToScene(scene, [8, 9, 10]);
+addCubesToScene(scene, [3, 4, 5, 6, 7]);
 
 const camera = getCamera();
+window.camera = camera;
 const renderer = getRenderer();
-addControlsToCamera(camera, renderer);
+const controls = addControlsToCamera(camera, renderer);
 
 const animate = function () {
     requestAnimationFrame( animate );
+
+    // required if controls.enableDamping or controls.autoRotate are set to true
+    controls.update();
 
     renderer.render( scene, camera );
 };

@@ -5,18 +5,16 @@ import {getPositionOfNthBar} from "./bar-chart-algorithm";
 
 export const addLightToScene = (scene) => {
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.castShadow = true;
-    light.position.set(1, 1, 1);
+    light.position.set(50, 100, 100);
 
-    var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 10, 10),
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 10, 10),
         new THREE.MeshLambertMaterial({color: 0xcccccc}));
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = PLANE_OFFSET_Z;
-    plane.receiveShadow = true;
     scene.add(plane);
 
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffff00, 0.2));
+    scene.add(new THREE.AmbientLight(0xffff00, 0.3));
 };
 
 /**
@@ -25,7 +23,8 @@ export const addLightToScene = (scene) => {
  * @param cubeWidth: number
  */
 export const addCubesToScene = (scene, values, cubeWidth = CUBE_WIDTH) => {
-    values.forEach((value, index) => {
+    for (let i = 0; i < values.length; ++i) {
+        const value = values[i];
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
             new THREE.MeshPhongMaterial({
@@ -34,25 +33,25 @@ export const addCubesToScene = (scene, values, cubeWidth = CUBE_WIDTH) => {
                 shininess: 100
             }),
         );
-        cube.position.set(...getPositionOfNthBar(index, value));
-        cube.castShadow = true;
+        cube.position.set(...getPositionOfNthBar(i, value));
         scene.add(cube);
-    });
+    }
 };
 
 export const getRenderer = () => {
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMapEnabled = true;
     document.body.appendChild(renderer.domElement);
     return renderer;
 };
 
 export const getCamera = () => {
+    // const ratio = window.innerWidth / window.innerHeight;
+    // const camera = new THREE.OrthographicCamera(-20 * ratio, 20 * ratio, 20, -20, -100, 100);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = 10;
-    camera.position.y = 10;
-    camera.position.z = 10;
+    camera.position.x = 15;
+    camera.position.y = 15;
+    camera.position.z = 15;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
 };
@@ -65,17 +64,19 @@ export const addControlsToCamera = (camera, renderer) => {
     // 使动画循环使用时阻尼或自转 意思是否有惯性
     controls.enableDamping = true;
     //动态阻尼系数 就是鼠标拖拽旋转灵敏度
-    //controls.dampingFactor = 0.25;
+    // controls.dampingFactor = 0.25;
     //是否可以缩放
     controls.enableZoom = true;
     //是否自动旋转
-    controls.autoRotate = false;
-    //设置相机距离原点的最远距离
+    controls.autoRotate = true;
+    //设置相机距离原点的最近距离
     controls.minDistance = 5;
     //设置相机距离原点的最远距离
     controls.maxDistance = 200;
     //是否开启右键拖拽
     controls.enablePan = true;
+
+    return controls;
 };
 
 export const addAxesToScene = (scene) => {
