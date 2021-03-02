@@ -1,0 +1,19 @@
+{
+  "name": "3d-charts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.32.8"
+  },
+  "dependencies": {
+    "three": "^0.126.0"
+  }
+}
