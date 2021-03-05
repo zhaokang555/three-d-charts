@@ -10,12 +10,13 @@ import {
 import {getCubeWidthByValues} from "./src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
+const keys = ['AAA', 'BBBB', 'CCCCC', 'DDDDDD', 'EEEEEEE'];
 const values = [3, 4, 5, 6, 7];
 const cubeWidth = getCubeWidthByValues(values);
 
 console.log(cubeWidth);
 addCubesToScene(scene, values, cubeWidth);
-addAxesToScene(scene);
+addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
 const camera = getCamera(cubeWidth);

@@ -8,3 +8,12 @@ export const getPositionOfNthBar = (n, value, cubeWidth) => {
         0 - (cubeWidth / 2 + cubeGap)
     ]
 };
+
+export const getPositionOfNthKey = (n, cubeWidth, fontDepth) => {
+    const cubeGap = cubeWidth / 5;
+    return [
+        (2 * n + 1) * cubeGap + cubeWidth * n,
+        0,
+        0 - fontDepth
+    ];
+};

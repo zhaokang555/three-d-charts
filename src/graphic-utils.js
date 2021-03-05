@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {getPositionOfNthBar} from "./bar-chart-algorithm";
+import {getPositionOfNthBar, getPositionOfNthKey} from "./bar-chart-algorithm";
 
 export const addLightToScene = (scene, cubeWidth) => {
     const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -28,7 +28,7 @@ export const addCubesToScene = (scene, values, cubeWidth) => {
             new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
             new THREE.MeshPhongMaterial({
                 color: 0xff0000,
-                specular: 0xffff00,
+                specular: 0xffffff,
                 shininess: 100
             }),
         );
@@ -75,10 +75,35 @@ export const addControlsToCamera = (camera, renderer) => {
     //是否开启右键拖拽
     controls.enablePan = true;
 
+    controls.autoRotateSpeed = 0.5;
+
     return controls;
 };
 
-export const addAxesToScene = (scene) => {
+export const addAxesToScene = (scene, keys, cubeWidth) => {
     const axesHelper = new THREE.AxesHelper( 1 );
     scene.add( axesHelper );
+
+    const loader = new THREE.FontLoader();
+    loader.load( '/fonts/helvetiker_regular.typeface.json', (font) => {
+        for (let i = 0; i < keys.length; ++i) {
+            const key = keys[i];
+            const fontSize = cubeWidth / key.length;
+            const fontDepth = fontSize / 8;
+            const geometry = new THREE.TextGeometry( key, {
+                font: font,
+                size: fontSize,
+                height: fontDepth,
+                // curveSegments: 12,
+                // bevelEnabled: true,
+                // bevelThickness: 20,
+                // bevelSize: 8,
+                // bevelSegments: 3
+            });
+            const material = new THREE.MeshPhongMaterial({color: 0x156289,});
+            const text = new THREE.Mesh( geometry, material );
+            text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth));
+            scene.add(text);
+        }
+    } );
 };
