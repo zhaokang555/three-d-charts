@@ -7,19 +7,24 @@ import {
     getCamera,
     getRenderer
 } from "./src/graphic-utils";
+import {getCubeWidthByValues} from "./src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
-addAxesToScene(scene);
-addLightToScene(scene);
-addCubesToScene(scene, [3, 4, 5, 6, 7]);
+const values = [3, 4, 5, 6, 7];
+const cubeWidth = getCubeWidthByValues(values);
 
-const camera = getCamera();
+console.log(cubeWidth);
+addCubesToScene(scene, values, cubeWidth);
+addAxesToScene(scene);
+addLightToScene(scene, cubeWidth);
+
+const camera = getCamera(cubeWidth);
 window.camera = camera;
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 
 const animate = function () {
-    requestAnimationFrame( animate );
+    requestAnimationFrame( animate ); // fallback: setTimeout 16.7
 
     // required if controls.enableDamping or controls.autoRotate are set to true
     controls.update();

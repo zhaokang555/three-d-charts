@@ -1,20 +1,19 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {CUBE_WIDTH, PLANE_OFFSET_Z} from "./constant";
 import {getPositionOfNthBar} from "./bar-chart-algorithm";
 
-export const addLightToScene = (scene) => {
+export const addLightToScene = (scene, cubeWidth) => {
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(50, 100, 100);
+    light.position.set(1, 1, 2);
 
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100, 10, 10),
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),
         new THREE.MeshLambertMaterial({color: 0xcccccc}));
     plane.rotation.x = -Math.PI / 2;
-    plane.position.y = PLANE_OFFSET_Z;
+    plane.position.y = 0 - cubeWidth / 10;
     scene.add(plane);
 
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffff00, 0.3));
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 };
 
 /**
@@ -22,7 +21,7 @@ export const addLightToScene = (scene) => {
  * @param values: Array<number>
  * @param cubeWidth: number
  */
-export const addCubesToScene = (scene, values, cubeWidth = CUBE_WIDTH) => {
+export const addCubesToScene = (scene, values, cubeWidth) => {
     for (let i = 0; i < values.length; ++i) {
         const value = values[i];
         const cube = new THREE.Mesh(
@@ -33,7 +32,7 @@ export const addCubesToScene = (scene, values, cubeWidth = CUBE_WIDTH) => {
                 shininess: 100
             }),
         );
-        cube.position.set(...getPositionOfNthBar(i, value));
+        cube.position.set(...getPositionOfNthBar(i, value, cubeWidth));
         scene.add(cube);
     }
 };
@@ -45,13 +44,13 @@ export const getRenderer = () => {
     return renderer;
 };
 
-export const getCamera = () => {
+export const getCamera = (cubeWidth) => {
     // const ratio = window.innerWidth / window.innerHeight;
     // const camera = new THREE.OrthographicCamera(-20 * ratio, 20 * ratio, 20, -20, -100, 100);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = 15;
-    camera.position.y = 15;
-    camera.position.z = 15;
+    camera.position.x = 15 * cubeWidth;
+    camera.position.y = 15 * cubeWidth;
+    camera.position.z = 15 * cubeWidth;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
 };

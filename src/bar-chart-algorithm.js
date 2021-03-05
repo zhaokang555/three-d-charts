@@ -1,9 +1,10 @@
-import {CUBE_GAP, CUBE_WIDTH} from "./constant";
+export const getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
-export const getPositionOfNthBar = (n, value) => {
+export const getPositionOfNthBar = (n, value, cubeWidth) => {
+    const cubeGap = cubeWidth / 5;
     return [
-        (2 * n + 1) * CUBE_GAP + CUBE_WIDTH * (2 * n + 1) / 2,
+        (2 * n + 1) * cubeGap + cubeWidth * (2 * n + 1) / 2,
         value / 2,
-        0 - (CUBE_WIDTH / 2 + CUBE_GAP)
+        0 - (cubeWidth / 2 + cubeGap)
     ]
 };
