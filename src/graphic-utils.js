@@ -9,12 +9,15 @@ export const addLightToScene = (scene, cubeWidth) => {
     light.position.set(1, 1, 2);
 
     // create plane
+    let planeWidth = 100;
     const cubePositions = scene.children
         .filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry')
         .map(cube => cube.position);
-    const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
-    const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
-    const planeWidth = Math.max(maxX, maxZ) * 2 + cubeWidth;
+    if (cubePositions.length > 0) {
+        const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
+        const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+        planeWidth = Math.max(maxX, maxZ) * 2 + cubeWidth;
+    }
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeWidth, planeWidth),
         new THREE.MeshLambertMaterial({color: 0xcccccc}));
     plane.rotation.x = -Math.PI / 2;
@@ -56,8 +59,11 @@ export const getRenderer = () => {
 export const getOrthographicCamera = (scene) => {
     const ratio = window.innerWidth / window.innerHeight;
 
+    let x = 100;
     const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
-    const x = plane.geometry.parameters.width;
+    if (plane) {
+        x = plane.geometry.parameters.width;
+    }
     const y = x / ratio;
     const camera = new THREE.OrthographicCamera(-x, x, y, -y, -x, x);
 
