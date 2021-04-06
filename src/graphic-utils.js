@@ -122,6 +122,7 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
         const material = new THREE.MeshPhongMaterial({color: 0x156289,});
         const text = new THREE.Mesh( geometry, material );
         text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth));
+        console.log(text);
         scene.add(text);
     }
 };
