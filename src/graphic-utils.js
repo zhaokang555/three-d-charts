@@ -53,11 +53,14 @@ export const getRenderer = () => {
     return renderer;
 };
 
-export const getOrthographicCamera = (cubeWidth, values) => {
+export const getOrthographicCamera = (scene) => {
     const ratio = window.innerWidth / window.innerHeight;
-    const lastIndex = values.length - 1;
-    const width = getPositionOfNthBar(lastIndex, values[lastIndex], cubeWidth)[0] + cubeWidth;
-    const camera = new THREE.OrthographicCamera(-width * ratio, width * ratio, width, -width, -width * ratio, width * ratio);
+
+    const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
+    const x = plane.geometry.parameters.width;
+    const y = x / ratio;
+    const camera = new THREE.OrthographicCamera(-x, x, y, -y, -x, x);
+
     camera.position.set(-0.35, 0.45, 0.81);
     return camera;
 };
@@ -122,7 +125,6 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
         const material = new THREE.MeshPhongMaterial({color: 0x156289,});
         const text = new THREE.Mesh( geometry, material );
         text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth));
-        console.log(text);
         scene.add(text);
     }
 };

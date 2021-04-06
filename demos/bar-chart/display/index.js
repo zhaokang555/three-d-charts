@@ -21,7 +21,7 @@ addCubesToScene(scene, values, cubeWidth);
 addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
-const camera = getOrthographicCamera(cubeWidth, values);
+const camera = getOrthographicCamera(scene);
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 
