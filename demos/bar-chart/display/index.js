@@ -10,6 +10,9 @@ import {
 import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
+
+window.THREE = THREE;
+window.scene = scene;
 const keys = JSON.parse(localStorage.getItem('keys'));
 const values = JSON.parse(localStorage.getItem('values'));
 const cubeWidth = getCubeWidthByValues(values);
@@ -19,8 +22,6 @@ addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
 const camera = getOrthographicCamera(cubeWidth, values);
-window.camera = camera;
-console.log(camera.position);
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 

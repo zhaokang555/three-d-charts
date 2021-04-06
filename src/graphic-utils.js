@@ -4,13 +4,21 @@ import {getPositionOfNthBar, getPositionOfNthKey} from "./bar-chart-algorithm";
 import helvetiker_regular from "./helvetiker_regular.typeface.json";
 
 export const addLightToScene = (scene, cubeWidth) => {
+    // create light
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(1, 1, 2);
 
-    const plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),
+    // create plane
+    const cubePositions = scene.children
+        .filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry')
+        .map(cube => cube.position);
+    const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
+    const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+    const planeWidth = Math.max(maxX, maxZ) * 2 + cubeWidth;
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeWidth, planeWidth),
         new THREE.MeshLambertMaterial({color: 0xcccccc}));
     plane.rotation.x = -Math.PI / 2;
-    plane.position.y = 0 - cubeWidth / 10;
+    plane.position.y = 0;
     scene.add(plane);
 
     scene.add(light);
