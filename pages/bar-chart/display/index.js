@@ -6,8 +6,8 @@ import {
     addLightToScene,
     getOrthographicCamera,
     getRenderer
-} from "./src/graphic-utils";
-import {getCubeWidthByValues} from "./src/bar-chart-algorithm";
+} from "/src/graphic-utils";
+import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
 const keys = ['AAA', 'BBBB', 'CCCCC', 'DDDDDD', 'EEEEEEE'];

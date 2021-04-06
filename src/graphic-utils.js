@@ -89,9 +89,11 @@ export const addControlsToCamera = (camera, renderer) => {
 };
 
 export const addAxesToScene = (scene, keys, cubeWidth) => {
+    // add axes
     const axesHelper = new THREE.AxesHelper( 1 );
     scene.add( axesHelper );
 
+    // add text of keys to axes
     const loader = new THREE.FontLoader();
     loader.load( '/fonts/helvetiker_regular.typeface.json', (font) => {
         for (let i = 0; i < keys.length; ++i) {
