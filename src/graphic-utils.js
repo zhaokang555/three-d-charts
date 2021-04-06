@@ -44,13 +44,21 @@ export const getRenderer = () => {
     return renderer;
 };
 
-export const getCamera = (cubeWidth) => {
-    // const ratio = window.innerWidth / window.innerHeight;
-    // const camera = new THREE.OrthographicCamera(-20 * ratio, 20 * ratio, 20, -20, -100, 100);
+export const getOrthographicCamera = (cubeWidth, values) => {
+    const ratio = window.innerWidth / window.innerHeight;
+    const lastIndex = values.length - 1;
+    const width = getPositionOfNthBar(lastIndex, values[lastIndex], cubeWidth)[0] + cubeWidth;
+    const camera = new THREE.OrthographicCamera(-width * ratio, width * ratio, width, -width, -width * ratio, width * ratio);
+    camera.position.set(-0.35, 0.45, 0.81);
+    return camera;
+};
+
+export const getPerspectiveCamera = (cubeWidth) => {
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.x = 15 * cubeWidth;
     camera.position.y = 15 * cubeWidth;
     camera.position.z = 15 * cubeWidth;
+
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
 };
@@ -69,9 +77,9 @@ export const addControlsToCamera = (camera, renderer) => {
     //是否自动旋转
     controls.autoRotate = true;
     //设置相机距离原点的最近距离
-    controls.minDistance = 5;
+    controls.minDistance = 1;
     //设置相机距离原点的最远距离
-    controls.maxDistance = 200;
+    controls.maxDistance = 1000;
     //是否开启右键拖拽
     controls.enablePan = true;
 

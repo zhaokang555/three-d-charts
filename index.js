@@ -4,7 +4,7 @@ import {
     addControlsToCamera,
     addCubesToScene,
     addLightToScene,
-    getCamera,
+    getOrthographicCamera,
     getRenderer
 } from "./src/graphic-utils";
 import {getCubeWidthByValues} from "./src/bar-chart-algorithm";
@@ -14,13 +14,13 @@ const keys = ['AAA', 'BBBB', 'CCCCC', 'DDDDDD', 'EEEEEEE'];
 const values = [3, 4, 5, 6, 7];
 const cubeWidth = getCubeWidthByValues(values);
 
-console.log(cubeWidth);
 addCubesToScene(scene, values, cubeWidth);
 addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
-const camera = getCamera(cubeWidth);
+const camera = getOrthographicCamera(cubeWidth, values);
 window.camera = camera;
+console.log(camera.position);
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 
