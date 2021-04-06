@@ -10,8 +10,8 @@ import {
 import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
-const keys = ['AAA', 'BBBB', 'CCCCC', 'DDDDDD', 'EEEEEEE'];
-const values = [3, 4, 5, 6, 7];
+const keys = JSON.parse(localStorage.getItem('keys'));
+const values = JSON.parse(localStorage.getItem('values'));
 const cubeWidth = getCubeWidthByValues(values);
 
 addCubesToScene(scene, values, cubeWidth);
