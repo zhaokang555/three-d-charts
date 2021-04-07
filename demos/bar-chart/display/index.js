@@ -4,10 +4,11 @@ import {
     addControlsToCamera,
     addCubesToScene,
     addLightToScene,
-    getOrthographicCamera,
+    getPerspectiveCamera,
     getRenderer
 } from "/src/graphic-utils";
 import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
+import {highlightClickedCubeInFullWindowWithPerspectiveCamera} from "/src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
 
@@ -21,7 +22,8 @@ addCubesToScene(scene, values, cubeWidth);
 addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
-const camera = getOrthographicCamera(scene);
+const camera = getPerspectiveCamera(cubeWidth);
+window.addEventListener('click', event => highlightClickedCubeInFullWindowWithPerspectiveCamera(event, scene, camera));
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 

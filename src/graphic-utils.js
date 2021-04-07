@@ -72,10 +72,16 @@ export const getOrthographicCamera = (scene) => {
 };
 
 export const getPerspectiveCamera = (cubeWidth) => {
+    let x = 100;
+    const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
+    if (plane) {
+        x = plane.geometry.parameters.width / 2 * 1.732;
+    }
+
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.x = 15 * cubeWidth;
-    camera.position.y = 15 * cubeWidth;
-    camera.position.z = 15 * cubeWidth;
+    camera.position.x = x;
+    camera.position.y = x;
+    camera.position.z = x;
 
     camera.lookAt(new THREE.Vector3(0, 0, 0));
     return camera;
