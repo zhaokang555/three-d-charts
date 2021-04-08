@@ -35,3 +35,19 @@ export const highlightClickedCubeInFullWindowWithPerspectiveCamera = (event, sce
         }
     }
 };
+
+export const highlightHoveredCubeInFullWindowWithPerspectiveCamera = (scene, camera, defaultColor = 0xff0000) => {
+    if (window.pointer) {
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera( window.pointer, camera );
+
+        const cubes = scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+        if (cubes.length > 0) {
+            cubes.forEach(cube => cube.material.color.set(defaultColor));
+            const intersects = raycaster.intersectObjects(cubes);
+            if (intersects.length > 0) {
+                intersects[0].object.material.color.set(0xffffff);
+            }
+        }
+    }
+};

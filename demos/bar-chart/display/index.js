@@ -5,10 +5,14 @@ import {
     addCubesToScene,
     addLightToScene,
     getPerspectiveCamera,
+    getOrthographicCamera,
     getRenderer
 } from "/src/graphic-utils";
 import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
-import {highlightClickedCubeInFullWindowWithPerspectiveCamera} from "/src/bar-chart-algorithm";
+import {
+    highlightClickedCubeInFullWindowWithPerspectiveCamera,
+    highlightHoveredCubeInFullWindowWithPerspectiveCamera,
+} from "/src/bar-chart-algorithm";
 
 const scene = new THREE.Scene();
 
@@ -23,12 +27,20 @@ addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
 const camera = getPerspectiveCamera(cubeWidth);
-window.addEventListener('click', event => highlightClickedCubeInFullWindowWithPerspectiveCamera(event, scene, camera));
+// const camera = getOrthographicCamera(scene);
+document.addEventListener( 'pointermove', event => {
+    window.pointer = {
+        x: ( event.clientX / window.innerWidth ) * 2 - 1,
+        y: - ( event.clientY / window.innerHeight ) * 2 + 1,
+    }
+});
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
 
 const animate = function () {
-    requestAnimationFrame( animate ); // fallback: setTimeout 16.7
+    requestAnimationFrame(animate); // fallback: setTimeout 16.7
+
+    highlightHoveredCubeInFullWindowWithPerspectiveCamera(scene, camera);
 
     // required if controls.enableDamping or controls.autoRotate are set to true
     controls.update();
