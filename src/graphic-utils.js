@@ -65,9 +65,9 @@ export const getOrthographicCamera = (scene) => {
         x = plane.geometry.parameters.width;
     }
     const y = x / ratio;
-    const camera = new THREE.OrthographicCamera(-x, x, y, -y, -x, x);
+    const camera = new THREE.OrthographicCamera(-x, x, y, -y);
 
-    camera.position.set(-0.35, 0.45, 0.81);
+    camera.position.set(-x, x, x);
     return camera;
 };
 

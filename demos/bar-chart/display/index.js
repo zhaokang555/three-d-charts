@@ -8,40 +8,36 @@ import {
     getOrthographicCamera,
     getRenderer,
     getCubeWidthByValues,
-    highlightClickedCubeInFullWindowWithPerspectiveCamera,
-    highlightHoveredCubeInFullWindowWithPerspectiveCamera,
+    highlightCubeInFullWindowWithPerspectiveCamera,
 } from "../../../src";
 
-const scene = new THREE.Scene();
 
-window.THREE = THREE;
-window.scene = scene;
 const keys = JSON.parse(localStorage.getItem('keys'));
 const values = JSON.parse(localStorage.getItem('values'));
 const cubeWidth = getCubeWidthByValues(values);
 
+const scene = new THREE.Scene();
 addCubesToScene(scene, values, cubeWidth);
 addAxesToScene(scene, keys, cubeWidth);
 addLightToScene(scene, cubeWidth);
 
-const camera = getPerspectiveCamera(cubeWidth);
-// const camera = getOrthographicCamera(scene);
+// const camera = getPerspectiveCamera(cubeWidth);
+const camera = getOrthographicCamera(scene);
+const pointer = new THREE.Vector2(-1, -1);
 document.addEventListener( 'pointermove', event => {
-    window.pointer = {
-        x: ( event.clientX / window.innerWidth ) * 2 - 1,
-        y: - ( event.clientY / window.innerHeight ) * 2 + 1,
-    }
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 });
 const renderer = getRenderer();
 const controls = addControlsToCamera(camera, renderer);
-
+const raycaster = new THREE.Raycaster();
 const animate = function () {
     requestAnimationFrame(animate); // fallback: setTimeout 16.7
 
     // required if controls.enableDamping or controls.autoRotate are set to true
     controls.update();
 
-    highlightHoveredCubeInFullWindowWithPerspectiveCamera(scene, camera);
+    highlightCubeInFullWindowWithPerspectiveCamera(scene, camera, raycaster, pointer);
 
     renderer.render( scene, camera );
 };

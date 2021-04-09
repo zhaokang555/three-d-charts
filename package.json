@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel demos/index.html demos/bar-chart/display/index.html",
-    "build": "parcel build demos/index.html demos/bar-chart/display/index.html"
+    "dev": "parcel ./demos/**/*.html",
+    "build": "parcel build ./demos/**/*.html"
   },
   "author": "",
   "license": "ISC",
