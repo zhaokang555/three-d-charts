@@ -9,10 +9,10 @@ export const getPositionOfNthBar = (n, value, cubeWidth) => {
     ]
 };
 
-export const getPositionOfNthKey = (n, cubeWidth, fontDepth) => {
+export const getPositionOfNthKey = (n, cubeWidth, fontDepth, offset) => {
     const cubeGap = cubeWidth * 0.4;
     return [
-        n * cubeGap + cubeWidth * n,
+        n * cubeGap + cubeWidth * n + offset,
         0,
         fontDepth
     ];

@@ -136,7 +136,10 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
         });
         const material = new THREE.MeshPhongMaterial({color: 0x156289,});
         const text = new THREE.Mesh( geometry, material );
-        text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth));
+        text.geometry.computeBoundingBox();
+        const textWidth = text.geometry.boundingBox.max.x;
+        const offset = (cubeWidth - textWidth) / 2;
+        text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth, offset));
         scene.add(text);
     }
 };
