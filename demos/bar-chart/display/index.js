@@ -6,13 +6,11 @@ import {
     addLightToScene,
     getPerspectiveCamera,
     getOrthographicCamera,
-    getRenderer
-} from "/src/graphic-utils";
-import {getCubeWidthByValues} from "/src/bar-chart-algorithm";
-import {
+    getRenderer,
+    getCubeWidthByValues,
     highlightClickedCubeInFullWindowWithPerspectiveCamera,
     highlightHoveredCubeInFullWindowWithPerspectiveCamera,
-} from "/src/bar-chart-algorithm";
+} from "../../../src";
 
 const scene = new THREE.Scene();
 
@@ -40,10 +38,10 @@ const controls = addControlsToCamera(camera, renderer);
 const animate = function () {
     requestAnimationFrame(animate); // fallback: setTimeout 16.7
 
-    highlightHoveredCubeInFullWindowWithPerspectiveCamera(scene, camera);
-
     // required if controls.enableDamping or controls.autoRotate are set to true
     controls.update();
+
+    highlightHoveredCubeInFullWindowWithPerspectiveCamera(scene, camera);
 
     renderer.render( scene, camera );
 };
