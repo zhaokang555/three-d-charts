@@ -65,7 +65,7 @@ export default class SetBarChart extends HTMLElement {
         localStorage.setItem('keys', JSON.stringify(keys));
         localStorage.setItem('values', JSON.stringify(values));
 
-        location.href = '/demos/bar-chart/display/index.html';
+        location.href = 'bar-chart/display/index.html';
     };
 
     addNewLine = () => {

@@ -4,14 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel index.html demos/bar-chart/display/index.html",
-    "build": "parcel build index.html demos/bar-chart/display/index.html"
+    "dev": "parcel demos/index.html demos/bar-chart/display/index.html",
+    "build": "parcel build demos/index.html demos/bar-chart/display/index.html"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.32.8"
+    "parcel-bundler": "^1.12.4"
   },
   "dependencies": {
     "three": "^0.126.0"
