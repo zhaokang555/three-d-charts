@@ -1,4 +1,4 @@
-export default class BarChartAlgorithm {
+export default class BarChartAlgorithms {
     static getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
     static getPositionOfNthBar = (n, value, cubeWidth) => {

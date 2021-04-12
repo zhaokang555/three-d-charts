@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import BarChartAlgorithm from  "./bar-chart-algorithm";
+import BarChartAlgorithms from  "./bar-chart-algorithms";
 import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 
@@ -35,7 +35,7 @@ export default class BarChartUtils {
      * @param cubeWidth: number
      */
     static addCubesToScene = (scene, values) => {
-        const cubeWidth = BarChartAlgorithm.getCubeWidthByValues(values);
+        const cubeWidth = BarChartAlgorithms.getCubeWidthByValues(values);
 
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
@@ -47,7 +47,7 @@ export default class BarChartUtils {
                     shininess: 100
                 }),
             );
-            cube.position.set(...BarChartAlgorithm.getPositionOfNthBar(i, value, cubeWidth));
+            cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth));
             scene.add(cube);
         }
     };
@@ -131,7 +131,7 @@ export default class BarChartUtils {
             const text = new THREE.Mesh( geometry, material );
             text.geometry.computeBoundingBox();
             const textWidth = text.geometry.boundingBox.max.x;
-            text.position.set(...BarChartAlgorithm.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontDepth));
+            text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontDepth));
             scene.add(text);
         }
     };
@@ -158,7 +158,7 @@ export default class BarChartUtils {
             const text = new THREE.Mesh( geometry, material );
             text.geometry.computeBoundingBox();
             const textWidth = text.geometry.boundingBox.max.x;
-            text.position.set(...BarChartAlgorithm.getPositionOfValueByCube(cube, -textWidth / 2));
+            text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube, -textWidth / 2));
             scene.add(text);
         }
     };
