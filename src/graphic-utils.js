@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {getPositionOfNthBar, getPositionOfKeyByCube} from "./bar-chart-algorithm";
+import {getPositionOfKeyByCube, getPositionOfNthBar, getPositionOfValueByCube} from "./bar-chart-algorithm";
 import helvetiker_regular from "./helvetiker_regular.typeface.json";
 
 export const addLightToScene = (scene, cubeWidth) => {
@@ -110,7 +110,7 @@ export const addControlsToCamera = (camera, renderer) => {
     return controls;
 };
 
-export const addAxesToScene = (scene, keys, cubeWidth) => {
+export const addAxesToScene = (scene, keys) => {
     // add axes
     const axesHelper = new THREE.AxesHelper( 1 );
     scene.add( axesHelper );
@@ -121,23 +121,46 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
     const cubes = getCubes(scene);
     for (let i = 0; i < keys.length; ++i) {
         const key = keys[i];
-        const fontSize = cubeWidth / key.length;
+        const cube = cubes[i];
+        const fontSize = getCubeWidthByCube(cube) / key.length;
         const fontDepth = fontSize / 8;
         const geometry = new THREE.TextGeometry( key, {
             font: font,
             size: fontSize,
             height: fontDepth,
-            // curveSegments: 12,
-            // bevelEnabled: true,
-            // bevelThickness: 20,
-            // bevelSize: 8,
-            // bevelSegments: 3
         });
-        const material = new THREE.MeshPhongMaterial({color: 0x156289,});
+        const material = new THREE.MeshPhongMaterial({color: 0x156289});
         const text = new THREE.Mesh( geometry, material );
         text.geometry.computeBoundingBox();
         const textWidth = text.geometry.boundingBox.max.x;
         text.position.set(...getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontDepth));
+        scene.add(text);
+    }
+};
+
+export const addValuesToScene = (scene, values) => {
+    const valueTextList = values.map(v => v.toString());
+    const loader = new THREE.FontLoader();
+    const font = loader.parse( helvetiker_regular);
+    const cubes = getCubes(scene);
+    const valueTextMaxLength = Math.max(...valueTextList.map(v => v.length));
+    const fontSize = getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
+    const fontDepth = fontSize / 8;
+
+    for (let i = 0; i < values.length; ++i) {
+        const valueText = valueTextList[i];
+        const cube = cubes[i];
+
+        const geometry = new THREE.TextGeometry( valueText, {
+            font: font,
+            size: fontSize,
+            height: fontDepth,
+        });
+        const material = new THREE.MeshPhongMaterial({color: 0x156289});
+        const text = new THREE.Mesh( geometry, material );
+        text.geometry.computeBoundingBox();
+        const textWidth = text.geometry.boundingBox.max.x;
+        text.position.set(...getPositionOfValueByCube(cube, -textWidth / 2));
         scene.add(text);
     }
 };
@@ -161,4 +184,10 @@ export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, ra
             intersects[0].object.material.color.set(0xffffff);
         }
     }
+};
+
+export const getCubeWidthByCube = (cube) => {
+    cube.geometry.computeBoundingBox();
+    const boundingBox = cube.geometry.boundingBox;
+    return boundingBox.max.x - boundingBox.min.x;
 };

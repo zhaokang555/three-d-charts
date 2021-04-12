@@ -33,9 +33,15 @@ export const getPositionOfKeyByCube = (cube, offsetX, offsetZ) => {
     ];
 };
 
-export const getPositionOfValueByCube = (cube) => {
+export const getPositionOfValueByCube = (cube, offsetX) => {
     cube.geometry.computeBoundingBox();
     const boundingBox = cube.geometry.boundingBox;
     const cubeWidth = boundingBox.max.x - boundingBox.min.x;
     const value = boundingBox.max.y - boundingBox.min.y;
+
+    return [
+        cube.position.x + offsetX,
+        value,
+        cube.position.z
+    ]
 };
