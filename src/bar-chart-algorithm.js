@@ -1,3 +1,5 @@
+import {getCubes} from "./graphic-utils";
+
 export const getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
 export const getPositionOfNthBar = (n, value, cubeWidth) => {
@@ -18,15 +20,22 @@ export const getPositionOfNthKey = (n, cubeWidth, fontDepth, offset) => {
     ];
 };
 
-export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = 0xff0000) => {
-    raycaster.setFromCamera( pointer, camera );
+/**
+ * @param cube: THREE.Mesh
+ * @param offsetX: number
+ * @param offsetZ: number
+ */
+export const getPositionOfKeyByCube = (cube, offsetX, offsetZ) => {
+    return [
+        cube.position.x + offsetX,
+        0,
+        offsetZ
+    ];
+};
 
-    const cubes = scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
-    if (cubes.length > 0) {
-        cubes.forEach(cube => cube.material.color.set(defaultColor));
-        const intersects = raycaster.intersectObjects(cubes, true);
-        if (intersects.length > 0) {
-            intersects[0].object.material.color.set(0xffffff);
-        }
-    }
+export const getPositionOfValueByCube = (cube) => {
+    cube.geometry.computeBoundingBox();
+    const boundingBox = cube.geometry.boundingBox;
+    const cubeWidth = boundingBox.max.x - boundingBox.min.x;
+    const value = boundingBox.max.y - boundingBox.min.y;
 };

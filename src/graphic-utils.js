@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {getPositionOfNthBar, getPositionOfNthKey} from "./bar-chart-algorithm";
+import {getPositionOfNthBar, getPositionOfKeyByCube} from "./bar-chart-algorithm";
 import helvetiker_regular from "./helvetiker_regular.typeface.json";
 
 export const addLightToScene = (scene, cubeWidth) => {
@@ -10,9 +10,7 @@ export const addLightToScene = (scene, cubeWidth) => {
 
     // create plane
     let planeWidth = 100;
-    const cubePositions = scene.children
-        .filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry')
-        .map(cube => cube.position);
+    const cubePositions = getCubes(scene).map(cube => cube.position);
     if (cubePositions.length > 0) {
         const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
         const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
@@ -120,6 +118,7 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
     // add text of keys to axes
     const loader = new THREE.FontLoader();
     const font = loader.parse( helvetiker_regular);
+    const cubes = getCubes(scene);
     for (let i = 0; i < keys.length; ++i) {
         const key = keys[i];
         const fontSize = cubeWidth / key.length;
@@ -138,8 +137,28 @@ export const addAxesToScene = (scene, keys, cubeWidth) => {
         const text = new THREE.Mesh( geometry, material );
         text.geometry.computeBoundingBox();
         const textWidth = text.geometry.boundingBox.max.x;
-        const offset = (cubeWidth - textWidth) / 2;
-        text.position.set(...getPositionOfNthKey(i, cubeWidth, fontDepth, offset));
+        text.position.set(...getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontDepth));
         scene.add(text);
+    }
+};
+
+/**
+ * @param scene
+ * @return {Array<THREE.Mesh>}
+ */
+export const getCubes = (scene) => {
+    return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+};
+
+export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = 0xff0000) => {
+    raycaster.setFromCamera( pointer, camera );
+
+    const cubes = getCubes(scene);
+    if (cubes.length > 0) {
+        cubes.forEach(cube => cube.material.color.set(defaultColor));
+        const intersects = raycaster.intersectObjects(cubes, true);
+        if (intersects.length > 0) {
+            intersects[0].object.material.color.set(0xffffff);
+        }
     }
 };
