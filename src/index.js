@@ -1,3 +1,2 @@
-export * from './bar-chart/bar-chart-algorithm';
-export * from './constant';
-export * from './bar-chart/bar-chart-utils';
+export {default as BarChartUtils} from './bar-chart/bar-chart-utils';
+export {default as Utils} from './utils';

@@ -1,5 +1,7 @@
-export const defaultTextColorBlue = 0x156289;
-export const defaultPlaneColorGray = 0xcccccc;
-export const defaultCubeColorRed = 0xff0000;
-export const defaultCubeHighlightColorWhite = 0xffffff;
-export const defaultLightColorWhite = 0xffffff;
+export default class Constant {
+    static defaultTextColorBlue = 0x156289;
+    static defaultPlaneColorGray = 0xcccccc;
+    static defaultCubeColorRed = 0xff0000;
+    static defaultCubeHighlightColorWhite = 0xffffff;
+    static defaultLightColorWhite = 0xffffff;
+}
