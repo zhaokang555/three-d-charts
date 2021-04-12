@@ -1,11 +1,18 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {getPositionOfKeyByCube, getPositionOfNthBar, getPositionOfValueByCube} from "./bar-chart-algorithm";
+import {
+    defaultCubeColorRed,
+    defaultCubeHighlightColorWhite,
+    defaultLightColorWhite,
+    defaultPlaneColorGray,
+    defaultTextColorBlue
+} from './constant'
 import helvetiker_regular from "./helvetiker_regular.typeface.json";
 
 export const addLightToScene = (scene, cubeWidth) => {
     // create light
-    const light = new THREE.DirectionalLight(0xffffff, 1);
+    const light = new THREE.DirectionalLight(defaultLightColorWhite, 1);
     light.position.set(1, 1, 2);
 
     // create plane
@@ -17,13 +24,13 @@ export const addLightToScene = (scene, cubeWidth) => {
         planeWidth = Math.max(maxX, maxZ) * 2 + cubeWidth;
     }
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeWidth, planeWidth),
-        new THREE.MeshLambertMaterial({color: 0xcccccc}));
+        new THREE.MeshLambertMaterial({color: defaultPlaneColorGray}));
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = 0;
     scene.add(plane);
 
     scene.add(light);
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    scene.add(new THREE.AmbientLight(defaultLightColorWhite, 0.4));
 };
 
 /**
@@ -37,7 +44,7 @@ export const addCubesToScene = (scene, values, cubeWidth) => {
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
             new THREE.MeshPhongMaterial({
-                color: 0xff0000,
+                color: defaultCubeColorRed,
                 specular: 0xffffff,
                 shininess: 100
             }),
@@ -129,7 +136,7 @@ export const addAxesToScene = (scene, keys) => {
             size: fontSize,
             height: fontDepth,
         });
-        const material = new THREE.MeshPhongMaterial({color: 0x156289});
+        const material = new THREE.MeshPhongMaterial({color: defaultTextColorBlue});
         const text = new THREE.Mesh( geometry, material );
         text.geometry.computeBoundingBox();
         const textWidth = text.geometry.boundingBox.max.x;
@@ -156,7 +163,7 @@ export const addValuesToScene = (scene, values) => {
             size: fontSize,
             height: fontDepth,
         });
-        const material = new THREE.MeshPhongMaterial({color: 0x156289});
+        const material = new THREE.MeshPhongMaterial({color: defaultTextColorBlue});
         const text = new THREE.Mesh( geometry, material );
         text.geometry.computeBoundingBox();
         const textWidth = text.geometry.boundingBox.max.x;
@@ -173,7 +180,7 @@ export const getCubes = (scene) => {
     return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
 };
 
-export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = 0xff0000) => {
+export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = defaultCubeColorRed) => {
     raycaster.setFromCamera( pointer, camera );
 
     const cubes = getCubes(scene);
@@ -181,7 +188,7 @@ export const highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, ra
         cubes.forEach(cube => cube.material.color.set(defaultColor));
         const intersects = raycaster.intersectObjects(cubes, true);
         if (intersects.length > 0) {
-            intersects[0].object.material.color.set(0xffffff);
+            intersects[0].object.material.color.set(defaultCubeHighlightColorWhite);
         }
     }
 };
