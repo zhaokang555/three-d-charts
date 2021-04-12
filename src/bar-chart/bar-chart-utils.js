@@ -1,6 +1,11 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {getPositionOfKeyByCube, getPositionOfNthBar, getPositionOfValueByCube} from "./bar-chart-algorithm";
+import {
+    getCubeWidthByValues,
+    getPositionOfKeyByCube,
+    getPositionOfNthBar,
+    getPositionOfValueByCube
+} from "./bar-chart-algorithm";
 import {
     defaultCubeColorRed,
     defaultCubeHighlightColorWhite,
@@ -10,18 +15,19 @@ import {
 } from '../constant'
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 
-export const addLightToScene = (scene, cubeWidth) => {
+export const addLightToScene = (scene) => {
     // create light
     const light = new THREE.DirectionalLight(defaultLightColorWhite, 1);
     light.position.set(1, 1, 2);
 
     // create plane
     let planeWidth = 100;
-    const cubePositions = getCubes(scene).map(cube => cube.position);
+    const cubes = getCubes(scene);
+    const cubePositions = cubes.map(cube => cube.position);
     if (cubePositions.length > 0) {
         const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
         const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
-        planeWidth = Math.max(maxX, maxZ) * 2 + cubeWidth;
+        planeWidth = Math.max(maxX, maxZ) * 2 + getCubeWidthByCube(cubes[0]);
     }
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeWidth, planeWidth),
         new THREE.MeshLambertMaterial({color: defaultPlaneColorGray}));
@@ -38,7 +44,9 @@ export const addLightToScene = (scene, cubeWidth) => {
  * @param values: Array<number>
  * @param cubeWidth: number
  */
-export const addCubesToScene = (scene, values, cubeWidth) => {
+export const addCubesToScene = (scene, values) => {
+    const cubeWidth = getCubeWidthByValues(values);
+
     for (let i = 0; i < values.length; ++i) {
         const value = values[i];
         const cube = new THREE.Mesh(

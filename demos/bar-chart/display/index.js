@@ -16,14 +16,13 @@ import {
 
 const keys = JSON.parse(localStorage.getItem('keys'));
 const values = JSON.parse(localStorage.getItem('values'));
-const cubeWidth = getCubeWidthByValues(values);
 
 const scene = new THREE.Scene();
-addCubesToScene(scene, values, cubeWidth);
+addCubesToScene(scene, values);
 addAxesToScene(scene);
 addKeysToScene(scene, keys);
 addValuesToScene(scene, values);
-addLightToScene(scene, cubeWidth);
+addLightToScene(scene);
 
 // const camera = getPerspectiveCamera(cubeWidth);
 const camera = getOrthographicCamera(scene);
