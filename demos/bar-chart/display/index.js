@@ -10,6 +10,7 @@ import {
     getCubeWidthByValues,
     highlightCubeInFullWindowWithPerspectiveCamera,
     addValuesToScene,
+    addKeysToScene,
 } from "../../../src";
 
 
@@ -19,7 +20,8 @@ const cubeWidth = getCubeWidthByValues(values);
 
 const scene = new THREE.Scene();
 addCubesToScene(scene, values, cubeWidth);
-addAxesToScene(scene, keys, cubeWidth);
+addAxesToScene(scene);
+addKeysToScene(scene, keys);
 addValuesToScene(scene, values);
 addLightToScene(scene, cubeWidth);
 

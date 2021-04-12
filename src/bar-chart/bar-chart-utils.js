@@ -117,12 +117,12 @@ export const addControlsToCamera = (camera, renderer) => {
     return controls;
 };
 
-export const addAxesToScene = (scene, keys) => {
-    // add axes
+export const addAxesToScene = (scene) => {
     const axesHelper = new THREE.AxesHelper( 1 );
-    scene.add( axesHelper );
+    scene.add(axesHelper);
+};
 
-    // add text of keys to axes
+export const addKeysToScene = (scene, keys) => {
     const loader = new THREE.FontLoader();
     const font = loader.parse( helvetiker_regular);
     const cubes = getCubes(scene);
