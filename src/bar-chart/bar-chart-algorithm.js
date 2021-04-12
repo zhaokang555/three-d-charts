@@ -1,5 +1,3 @@
-import {getCubes} from "./graphic-utils";
-
 export const getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
 export const getPositionOfNthBar = (n, value, cubeWidth) => {

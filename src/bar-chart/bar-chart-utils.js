@@ -7,8 +7,8 @@ import {
     defaultLightColorWhite,
     defaultPlaneColorGray,
     defaultTextColorBlue
-} from './constant'
-import helvetiker_regular from "./helvetiker_regular.typeface.json";
+} from '../constant'
+import helvetiker_regular from "../helvetiker_regular.typeface.json";
 
 export const addLightToScene = (scene, cubeWidth) => {
     // create light
