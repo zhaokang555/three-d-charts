@@ -5,14 +5,6 @@ import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 
 export default class BarChartUtils {
-    static addLightToScene = (scene) => {
-        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 1);
-        light.position.set(1, 1, 2);
-
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4));
-    };
-
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
         const cubes = BarChartUtils.getCubes(scene);
@@ -67,7 +59,7 @@ export default class BarChartUtils {
         return camera;
     };
 
-    static getPerspectiveCamera = (cubeWidth) => {
+    static getPerspectiveCamera = (scene) => {
         let x = 100;
         const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
         if (plane) {
@@ -75,11 +67,8 @@ export default class BarChartUtils {
         }
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.x = x;
-        camera.position.y = x;
-        camera.position.z = x;
-
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        camera.position.set(x, x, x);
+        camera.lookAt(0, 0, 0);
         return camera;
     };
 

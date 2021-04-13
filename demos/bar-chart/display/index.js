@@ -10,10 +10,10 @@ BarChartUtils.addCubesToScene(scene, values);
 BarChartUtils.addAxesToScene(scene);
 BarChartUtils.addKeysToScene(scene, keys);
 BarChartUtils.addValuesToScene(scene, values);
-BarChartUtils.addLightToScene(scene);
+Utils.addLightToScene(scene);
 BarChartUtils.addPlaneToScene(scene);
 
-// const camera = getPerspectiveCamera(cubeWidth);
+// const camera = getPerspectiveCamera(scene);
 const camera = BarChartUtils.getOrthographicCamera(scene);
 const pointer = new THREE.Vector2(-1, -1);
 document.addEventListener( 'pointermove', event => {
