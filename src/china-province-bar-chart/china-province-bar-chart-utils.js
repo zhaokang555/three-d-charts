@@ -2,6 +2,7 @@ import * as THREE from "three";
 import earth_daymap from './8k_earth_daymap.jpeg';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
+import earth_clouds from './8k_earth_clouds.png';
 
 const earthRadius = 1;
 
@@ -32,6 +33,23 @@ export default class ChinaProvinceBarChartUtils {
         const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);
         const earthMesh = new THREE.Mesh(geometry, material);
         earthMesh.position.set(0, 0, 0);
+
+        ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
+
         scene.add(earthMesh);
     };
+
+    static _addCloudMeshToEarthMesh(earthMesh) {
+        const loader = new THREE.TextureLoader();
+        const geometry = new THREE.SphereGeometry(earthRadius + 0.01, 64, 64);
+        const material  = new THREE.MeshLambertMaterial({
+            map         : loader.load(earth_clouds),
+            side        : THREE.DoubleSide,
+            opacity     : 0.5,
+            transparent : true,
+        });
+        const cloudMesh = new THREE.Mesh(geometry, material);
+        cloudMesh.name = 'cloudMesh';
+        earthMesh.add(cloudMesh);
+    }
 }
