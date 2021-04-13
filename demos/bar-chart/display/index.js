@@ -21,10 +21,10 @@ document.addEventListener( 'pointermove', event => {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 });
 const renderer = Utils.getRenderer();
-const controls = BarChartUtils.addControlsToCamera(camera, renderer);
+const controls = Utils.addControlsToCamera(camera, renderer);
 const raycaster = new THREE.Raycaster();
-const animate = function () {
-    requestAnimationFrame(animate); // fallback: setTimeout 16.7
+const render = () => {
+    requestAnimationFrame(render); // fallback: setTimeout 16.7
 
     // required if controls.enableDamping or controls.autoRotate are set to true
     controls.update();
@@ -34,4 +34,4 @@ const animate = function () {
     renderer.render( scene, camera );
 };
 
-animate();
+render();
