@@ -6,7 +6,7 @@ const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
 ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
 
-Utils.addLightToScene(scene);
+Utils.addLightToScene(scene, 0.6);
 
 const renderer = Utils.getRenderer();
 const controls = Utils.addControlsToCamera(camera, renderer);
