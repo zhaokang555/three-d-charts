@@ -41,12 +41,13 @@ export default class ChinaProvinceBarChartUtils {
 
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
-        const geometry = new THREE.SphereGeometry(earthRadius + 0.01, 64, 64);
+        const geometry = new THREE.SphereGeometry(earthRadius + 0.006, 64, 64);
         const material  = new THREE.MeshLambertMaterial({
-            map         : loader.load(earth_clouds),
-            side        : THREE.DoubleSide,
-            opacity     : 0.5,
-            transparent : true,
+            map: loader.load(earth_clouds),
+            side: THREE.DoubleSide,
+            opacity: 0.5,
+            transparent: true,
+            emissive: 0x444444, // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
