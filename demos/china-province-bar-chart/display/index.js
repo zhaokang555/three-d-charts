@@ -7,7 +7,7 @@ const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
 ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
 
-Utils.addLightToScene(scene, 0.6, 0.7, [-0.5, 0.5, -2]);
+Utils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
 
 const renderer = Utils.getRenderer();
 const controls = Utils.addControlsToCamera(camera, renderer);
@@ -18,6 +18,7 @@ const render = () => {
     controls.update();
 
     const cloudMesh = scene.getObjectByName('cloudMesh');
+    cloudMesh.rotateX(-0.0002);
     cloudMesh.rotateY(0.0004);
 
     renderer.render( scene, camera );
