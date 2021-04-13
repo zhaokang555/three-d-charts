@@ -21,7 +21,7 @@ document.addEventListener( 'pointermove', event => {
     pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 });
 const renderer = Utils.getRenderer();
-const controls = Utils.addControlsToCamera(camera, renderer);
+const controls = Utils.addControlsToCamera(camera, renderer, true);
 const raycaster = new THREE.Raycaster();
 const render = () => {
     requestAnimationFrame(render); // fallback: setTimeout 16.7

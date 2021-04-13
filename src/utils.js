@@ -19,7 +19,7 @@ export default class Utils {
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4));
     };
 
-    static addControlsToCamera = (camera, renderer) => {
+    static addControlsToCamera = (camera, renderer, rotate = false) => {
         const controls = new OrbitControls(camera, renderer.domElement);
 
         // 如果使用animate方法时，将此函数删除
@@ -30,8 +30,6 @@ export default class Utils {
         // controls.dampingFactor = 0.25;
         //是否可以缩放
         controls.enableZoom = true;
-        //是否自动旋转
-        controls.autoRotate = true;
         //设置相机距离原点的最近距离
         controls.minDistance = 1;
         //设置相机距离原点的最远距离
@@ -39,7 +37,12 @@ export default class Utils {
         //是否开启右键拖拽
         controls.enablePan = true;
 
-        controls.autoRotateSpeed = 0.5;
+        if (rotate) {
+            //是否自动旋转
+            controls.autoRotate = true;
+
+            controls.autoRotateSpeed = 0.5;
+        }
 
         return controls;
     };

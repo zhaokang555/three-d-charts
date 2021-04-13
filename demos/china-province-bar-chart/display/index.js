@@ -4,8 +4,7 @@ import {Utils, ChinaProvinceBarChartUtils} from '../../../src';
 const scene = new THREE.Scene();
 const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
-const earthMesh = ChinaProvinceBarChartUtils.getEarthMesh();
-scene.add(earthMesh);
+ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
 
 Utils.addLightToScene(scene);
 
