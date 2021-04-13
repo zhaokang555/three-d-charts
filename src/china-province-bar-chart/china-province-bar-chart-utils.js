@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import earth_daymap from './8k_earth_daymap.jpeg';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
+import earth_specular_map from './8k_earth_specular_map.png';
 
 const earthRadius = 1;
 
@@ -14,29 +15,23 @@ export default class ChinaProvinceBarChartUtils {
     };
     static addEarthMeshToScene = (scene) => {
         const loader = new THREE.TextureLoader();
+        const map = loader.load(earth_daymap);
+        const specularMap = loader.load(earth_specular_map);
 
-        loader.load(
-            // earth_daymap,
-            earth_nightmap,
-            (texture) => {
-                // const material = new THREE.MeshPhongMaterial({
-                //     color: Constant.defaultCubeColorRed,
-                //     specular: 0xffffff,
-                //     shininess: 100
-                // });
-                const material = new THREE.MeshBasicMaterial( {
-                    map: texture
-                } );
+        // const material = new THREE.MeshPhongMaterial({
+        //     color: Constant.defaultCubeColorRed,
+        //     specular: 0xffffff,
+        //     shininess: 100
+        // });
+        const material = new THREE.MeshPhongMaterial( {
+            map,
+            specularMap,
+            specular: new THREE.Color('grey'),
+        } );
 
-                const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);
-                const earthMesh = new THREE.Mesh(geometry, material);
-                earthMesh.position.set(0, 0, 0);
-                scene.add(earthMesh);
-            },
-            undefined,
-            (err) => {
-                console.error(err);
-            }
-        );
+        const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);
+        const earthMesh = new THREE.Mesh(geometry, material);
+        earthMesh.position.set(0, 0, 0);
+        scene.add(earthMesh);
     };
 }

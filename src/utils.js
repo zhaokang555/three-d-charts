@@ -11,12 +11,12 @@ export default class Utils {
         return renderer;
     };
 
-    static addLightToScene = (scene) => {
-        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 1);
+    static addLightToScene = (scene, intensityDirectional = 1, intensityAmbient = 0.4) => {
+        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, intensityDirectional);
         light.position.set(1, 1, 2);
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4));
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, intensityAmbient));
     };
 
     static addControlsToCamera = (camera, renderer, rotate = false) => {
