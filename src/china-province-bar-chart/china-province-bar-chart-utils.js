@@ -9,9 +9,7 @@ const earthRadius = 1;
 export default class ChinaProvinceBarChartUtils {
     static getPerspectiveCamera = (scene) => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const distance = Math.cbrt(Math.pow(earthRadius, 2) / 3) + 0.3;
-        camera.position.set(distance, distance, distance);
-        camera.lookAt(0, 0, 0);
+        camera.position.set(-1, 1, -1); // 东九区, 纬度45度
         return camera;
     };
     static addEarthMeshToScene = (scene) => {
@@ -47,7 +45,7 @@ export default class ChinaProvinceBarChartUtils {
             side: THREE.DoubleSide,
             opacity: 0.5,
             transparent: true,
-            emissive: 0x444444, // 自发光
+            emissive: 0x333333, // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
