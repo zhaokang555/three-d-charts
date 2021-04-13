@@ -39,7 +39,7 @@ export default class ChinaProvinceBarChartUtils {
 
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
-        const geometry = new THREE.SphereGeometry(earthRadius + 0.006, 64, 64);
+        const geometry = new THREE.SphereGeometry(earthRadius + 0.002, 64, 64);
         const material  = new THREE.MeshLambertMaterial({
             map: loader.load(earth_clouds),
             side: THREE.DoubleSide,
