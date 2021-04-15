@@ -6,6 +6,7 @@ window.scene = scene;
 const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
 ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
+ChinaProvinceBarChartUtils.addBarsToScene(scene);
 
 Utils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
 
