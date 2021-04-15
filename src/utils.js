@@ -2,7 +2,6 @@ import * as THREE from "three";
 import Constant from "./constant";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
-
 export default class Utils {
     static getRenderer = () => {
         const renderer = new THREE.WebGLRenderer();

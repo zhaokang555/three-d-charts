@@ -19,8 +19,10 @@ const render = () => {
     controls.update();
 
     const cloudMesh = scene.getObjectByName('cloudMesh');
-    cloudMesh.rotateX(-0.0002);
-    cloudMesh.rotateY(0.0004);
+    if (cloudMesh) {
+        cloudMesh.rotateX(-0.0002);
+        cloudMesh.rotateY(0.0004);
+    }
 
     renderer.render( scene, camera );
 };
