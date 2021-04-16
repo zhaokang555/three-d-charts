@@ -45,11 +45,35 @@ export default class ChinaProvinceBarChartUtils {
         // TODO
         const hubei = china_geojson.features.find(f => f.properties.name === '湖北省');
         console.log(hubei);
+
+        const r = earthRadius * 1.003;
+
+        // 1. add bar
+        const center = hubei.properties.center;
+        const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
+        const cubeWidth = earthRadius * 0.01;
+        const value = earthRadius * 0.08;
+        const cube = new THREE.Mesh(
+            new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
+            new THREE.MeshPhongMaterial({
+                color: Constant.defaultCubeColorRed,
+                specular: 0xffffff,
+                shininess: 100
+            }),
+        );
+        cube.position.set(...centerXYZ);
+        const up = cube.up.clone().normalize();
+        const normal = new THREE.Vector3(...centerXYZ).normalize();
+        cube.quaternion.setFromUnitVectors(up, normal);
+        cube.translateY(value / 2);
+        scene.add(cube);
+
+        // 2. add line
         hubei.geometry.coordinates.forEach(polygon => {
             polygon.forEach(ring => {
                 const points = [];
                 ring.forEach(lonLat => {
-                    const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(earthRadius * 1.003, lonLat[0], lonLat[1]);
+                    const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
                     points.push(new THREE.Vector3(x, y, z));
                 });
                 const geometry = new THREE.BufferGeometry().setFromPoints(points);
