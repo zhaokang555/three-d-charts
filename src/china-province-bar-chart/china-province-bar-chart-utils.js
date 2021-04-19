@@ -51,17 +51,16 @@ export default class ChinaProvinceBarChartUtils {
 
     static addBarsToScene(scene, list) {
         const maxValue = Math.max(...list.map(kv => kv.value));
+        const maxBarHeight = 0.5 * earthRadius;
 
         list.forEach(kv => {
-            this._addBarToScene(kv.key, kv.value / maxValue * earthRadius * 0.5, scene);
+            const barHeight = kv.value / maxValue * maxBarHeight;
+            this._addBarToScene(kv.key, barHeight, scene);
         });
     }
 
-    static _addBarToScene = (provinceName, value, scene) => {
-        console.log(china_geojson.features.map(f => f.properties.name));
+    static _addBarToScene = (provinceName, barHeight, scene) => {
         const province = china_geojson.features.find(f => f.properties.name === provinceName);
-        console.log(province);
-
         const r = earthRadius + barAltitude;
 
         // 1. add bar
@@ -69,7 +68,7 @@ export default class ChinaProvinceBarChartUtils {
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.01;
         const cube = new THREE.Mesh(
-            new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
+            new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({
                 color: defaultCubeColorRed,
                 specular: 0xffffff,
@@ -81,7 +80,7 @@ export default class ChinaProvinceBarChartUtils {
         const up = cube.up.clone().normalize();
         const normal = new THREE.Vector3(...centerXYZ).normalize();
         cube.quaternion.setFromUnitVectors(up, normal);
-        cube.translateY(value / 2);
+        cube.translateY(barHeight / 2);
         scene.add(cube);
 
         // 2. add line

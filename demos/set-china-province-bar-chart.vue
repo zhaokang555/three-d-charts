@@ -65,8 +65,14 @@
                 inputKey: '',
                 inputValue: 0,
                 list: [
-                    {key: '北京市', value: 100},
-                    {key: '湖北省', value: 200},
+                    {key: '广东省', value: 110760.94},
+                    {key: '江苏省', value: 102700.00},
+                    {key: '山东省', value: 73129.00},
+                    {key: '浙江省', value: 64613.00},
+                    {key: '河南省', value: 54997.07},
+                    {key: '四川省', value: 48598.80},
+                    {key: '福建省', value: 43903.89},
+                    {key: '湖北省', value: 43443.46},
                 ]
             }
         },
