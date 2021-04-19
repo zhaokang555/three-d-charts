@@ -6,6 +6,7 @@ import earth_clouds from './8k_earth_clouds.png';
 import china_geojson from "./china-geojson";
 import ChinaProvinceBarChartAlgorithms from "./china-province-bar-chart-algorithms";
 import Constant from "../constant";
+import colormap from 'colormap';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -50,16 +51,22 @@ export default class ChinaProvinceBarChartUtils {
     };
 
     static addBarsToScene(scene, list) {
-        const maxValue = Math.max(...list.map(kv => kv.value));
+        const values = list.map(kv => kv.value);
+        const maxValue = Math.max(...values);
         const maxBarHeight = 0.5 * earthRadius;
+
+        const colors = colormap({colormap: 'hot', nshades: 100});
 
         list.forEach(kv => {
             const barHeight = kv.value / maxValue * maxBarHeight;
-            this._addBarToScene(kv.key, barHeight, scene);
+            const i = Math.round(kv.value / maxValue * 100);
+            const color = colors[i];
+            console.log(color);
+            this._addBarToScene(kv.key, barHeight, color, scene);
         });
     }
 
-    static _addBarToScene = (provinceName, barHeight, scene) => {
+    static _addBarToScene = (provinceName, barHeight, color, scene) => {
         const province = china_geojson.features.find(f => f.properties.name === provinceName);
         const r = earthRadius + barAltitude;
 
@@ -70,7 +77,7 @@ export default class ChinaProvinceBarChartUtils {
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({
-                color: defaultCubeColorRed,
+                color: color,
                 specular: 0xffffff,
                 shininess: 100,
                 side: THREE.DoubleSide,
@@ -112,5 +119,16 @@ export default class ChinaProvinceBarChartUtils {
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
         earthMesh.add(cloudMesh);
+    }
+
+    static _mapValueToColor(value, maxValue, minValue) {
+        const ratio = (value - minValue) / (maxValue - minValue);
+        const n = ratio * 255;
+
+        const r = Math.round(Math.sin(0.024 * n + 0) * 127 + 128);
+        const g = Math.round(Math.sin(0.024 * n + 2) * 127 + 128);
+        const b = Math.round(Math.sin(0.024 * n + 4) * 127 + 128);
+
+        return new THREE.Color(r, g, b).getHex();
     }
 }
