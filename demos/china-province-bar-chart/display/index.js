@@ -11,7 +11,7 @@ ChinaProvinceBarChartUtils.addBarsToScene(scene);
 Utils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
 
 const renderer = Utils.getRenderer();
-const controls = Utils.addControlsToCamera(camera, renderer);
+const controls = Utils.addControlsToCamera(camera, renderer, {minDistance: 1, maxDistance: 1000});
 const render = () => {
     requestAnimationFrame(render);
 
