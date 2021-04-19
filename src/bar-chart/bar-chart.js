@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import BarChartUtils from "./bar-chart-utils";
 import Utils from "../utils";
 
-export const init = (window) => {
+export const init = () => {
     const keys = JSON.parse(localStorage.getItem('keys'));
     const values = JSON.parse(localStorage.getItem('values'));
 
@@ -17,7 +17,7 @@ export const init = (window) => {
     // const camera = getPerspectiveCamera(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
     const pointer = new THREE.Vector2(-1, -1);
-    window.document.addEventListener( 'pointermove', event => {
+    document.addEventListener( 'pointermove', event => {
         pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
