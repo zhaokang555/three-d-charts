@@ -50,14 +50,19 @@ export default class ChinaProvinceBarChartUtils {
     };
 
     static addBarsToScene(scene) {
-        // TODO
-        const hubei = china_geojson.features.find(f => f.properties.name === '湖北省');
-        console.log(hubei);
+        this._addBarToScene('北京市', scene);
+        // this._addBarToScene('湖北省', scene);
+    }
+
+    static _addBarToScene = (provinceName, scene) => {
+        console.log(china_geojson.features.map(f => f.properties.name));
+        const province = china_geojson.features.find(f => f.properties.name === provinceName);
+        console.log(province);
 
         const r = earthRadius + barAltitude;
 
         // 1. add bar
-        const center = hubei.properties.center;
+        const center = province.properties.center;
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.01;
         const value = earthRadius * 0.08;
@@ -78,7 +83,7 @@ export default class ChinaProvinceBarChartUtils {
         scene.add(cube);
 
         // 2. add line
-        hubei.geometry.coordinates.forEach(polygon => {
+        province.geometry.coordinates.forEach(polygon => {
             polygon.forEach(ring => {
                 const points = [];
                 ring.forEach(lonLat => {
@@ -91,7 +96,7 @@ export default class ChinaProvinceBarChartUtils {
                 scene.add(line);
             })
         });
-    }
+    };
 
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
