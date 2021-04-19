@@ -49,12 +49,15 @@ export default class ChinaProvinceBarChartUtils {
         scene.add(earthMesh);
     };
 
-    static addBarsToScene(scene) {
-        this._addBarToScene('北京市', scene);
-        // this._addBarToScene('湖北省', scene);
+    static addBarsToScene(scene, list) {
+        const maxValue = Math.max(...list.map(kv => kv.value));
+
+        list.forEach(kv => {
+            this._addBarToScene(kv.key, kv.value / maxValue * earthRadius * 0.5, scene);
+        });
     }
 
-    static _addBarToScene = (provinceName, scene) => {
+    static _addBarToScene = (provinceName, value, scene) => {
         console.log(china_geojson.features.map(f => f.properties.name));
         const province = china_geojson.features.find(f => f.properties.name === provinceName);
         console.log(province);
@@ -65,7 +68,6 @@ export default class ChinaProvinceBarChartUtils {
         const center = province.properties.center;
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.01;
-        const value = earthRadius * 0.08;
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
             new THREE.MeshPhongMaterial({

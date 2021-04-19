@@ -6,12 +6,14 @@ import Constant from '../constant';
 const {earthRadius} = Constant;
 
 export const init = () => {
+    const list = JSON.parse(localStorage.getItem('list')) || [];
+
     const scene = new THREE.Scene();
     window.scene = scene;
     const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
     ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
-    ChinaProvinceBarChartUtils.addBarsToScene(scene);
+    ChinaProvinceBarChartUtils.addBarsToScene(scene, list);
 
     ChinaProvinceBarChartUtils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
 

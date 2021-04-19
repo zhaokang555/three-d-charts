@@ -13,7 +13,7 @@
                 <button @click="add">add new line</button>
             </li>
         </ul>
-        <button @click="display">display bar chart</button>
+        <button @click="display">display</button>
     </div>
 </template>
 
@@ -47,8 +47,7 @@
                 this.list.splice(index, 1);
             },
             display() {
-                localStorage.setItem('keys', JSON.stringify(this.list.map(kv => kv.key)));
-                localStorage.setItem('values', JSON.stringify(this.list.map(kv => kv.value)));
+                localStorage.setItem('list', JSON.stringify(this.list));
                 location.href = 'bar-chart/display/index.html';
             }
         }

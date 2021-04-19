@@ -4,7 +4,7 @@
         <h2>Demo 1: Bar chart</h2>
         <set-bar-chart></set-bar-chart>
         <h2>Demo 2: China province bar chart</h2>
-        <a href="china-province-bar-chart/display/index.html">China province bar chart</a>
+        <set-china-province-bar-chart></set-china-province-bar-chart>
     </div>
 </template>
 

@@ -3,8 +3,9 @@ import BarChartUtils from "./bar-chart-utils";
 import Utils from "../utils";
 
 export const init = () => {
-    const keys = JSON.parse(localStorage.getItem('keys'));
-    const values = JSON.parse(localStorage.getItem('values'));
+    const list = JSON.parse(localStorage.getItem('list')) || [];
+    const keys = list.map(kv => kv.key);
+    const values = list.map(kv => kv.value);
 
     const scene = new THREE.Scene();
     BarChartUtils.addCubesToScene(scene, values);
