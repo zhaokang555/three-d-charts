@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import {Utils, ChinaProvinceBarChartUtils} from '../../../src';
+import {Utils, ChinaProvinceBarChartUtils, Constant} from '../../../src';
+
+const {earthRadius} = Constant;
 
 const scene = new THREE.Scene();
 window.scene = scene;
@@ -8,10 +10,10 @@ const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
 ChinaProvinceBarChartUtils.addBarsToScene(scene);
 
-Utils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
+ChinaProvinceBarChartUtils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
 
 const renderer = Utils.getRenderer();
-const controls = Utils.addControlsToCamera(camera, renderer, {minDistance: 1, maxDistance: 1000});
+const controls = Utils.addControlsToCamera(camera, renderer, {minDistance: earthRadius, maxDistance: 1000 * earthRadius});
 const render = () => {
     requestAnimationFrame(render);
 

@@ -7,9 +7,17 @@ import china_geojson from "./china-geojson";
 import ChinaProvinceBarChartAlgorithms from "./china-province-bar-chart-algorithms";
 import Constant from "../constant";
 
-const earthRadius = 1;
+const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
 export default class ChinaProvinceBarChartUtils {
+    static addLightToScene = (scene) => {
+        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
+        light.position.set(-0.5, 0.5, -2);
+
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
+    };
+
     static getPerspectiveCamera = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1 * earthRadius, 1000 * earthRadius);
         camera.position.set(2 * earthRadius, 0, -2 * earthRadius); // 东九区, 纬度0度
@@ -17,11 +25,11 @@ export default class ChinaProvinceBarChartUtils {
     };
     static addEarthMeshToScene = (scene) => {
         const loader = new THREE.TextureLoader();
-        const map = loader.load(earth_daymap);
+        const map = loader.load(earth_nightmap);
         const specularMap = loader.load(earth_specular_map);
 
         // const material = new THREE.MeshPhongMaterial({
-        //     color: Constant.defaultCubeColorRed,
+        //     color: defaultCubeColorRed,
         //     specular: 0xffffff,
         //     shininess: 100
         // });
@@ -36,7 +44,7 @@ export default class ChinaProvinceBarChartUtils {
         earthMesh.position.set(0, 0, 0);
         earthMesh.rotateY(-Math.PI / 2);
 
-        ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
+        // ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
 
         scene.add(earthMesh);
     };
@@ -46,7 +54,7 @@ export default class ChinaProvinceBarChartUtils {
         const hubei = china_geojson.features.find(f => f.properties.name === '湖北省');
         console.log(hubei);
 
-        const r = earthRadius * 1.003;
+        const r = earthRadius + barAltitude;
 
         // 1. add bar
         const center = hubei.properties.center;
@@ -56,7 +64,7 @@ export default class ChinaProvinceBarChartUtils {
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
             new THREE.MeshPhongMaterial({
-                color: Constant.defaultCubeColorRed,
+                color: defaultCubeColorRed,
                 specular: 0xffffff,
                 shininess: 100,
                 side: THREE.DoubleSide,
@@ -78,7 +86,7 @@ export default class ChinaProvinceBarChartUtils {
                     points.push(new THREE.Vector3(x, y, z));
                 });
                 const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const material = new THREE.LineBasicMaterial( { color: Constant.defaultCubeColorRed } );
+                const material = new THREE.LineBasicMaterial( { color: defaultCubeColorRed } );
                 const line = new THREE.Line( geometry, material );
                 scene.add(line);
             })
@@ -87,7 +95,7 @@ export default class ChinaProvinceBarChartUtils {
 
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
-        const geometry = new THREE.SphereGeometry(earthRadius * 1.002, 64, 64);
+        const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
         const material  = new THREE.MeshLambertMaterial({
             map: loader.load(earth_clouds),
             side: THREE.DoubleSide,

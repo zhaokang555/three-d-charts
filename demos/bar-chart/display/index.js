@@ -10,7 +10,7 @@ BarChartUtils.addCubesToScene(scene, values);
 BarChartUtils.addAxesToScene(scene);
 BarChartUtils.addKeysToScene(scene, keys);
 BarChartUtils.addValuesToScene(scene, values);
-Utils.addLightToScene(scene);
+BarChartUtils.addLightToScene(scene);
 BarChartUtils.addPlaneToScene(scene);
 
 // const camera = getPerspectiveCamera(scene);

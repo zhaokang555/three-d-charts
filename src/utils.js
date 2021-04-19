@@ -10,14 +10,6 @@ export default class Utils {
         return renderer;
     };
 
-    static addLightToScene = (scene, intensityDirectional = 1, intensityAmbient = 0.4, position = [1, 1, 2]) => {
-        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, intensityDirectional);
-        light.position.set(...position);
-
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, intensityAmbient));
-    };
-
     static addControlsToCamera = (camera, renderer, options = {}) => {
         const controls = new OrbitControls(camera, renderer.domElement);
 

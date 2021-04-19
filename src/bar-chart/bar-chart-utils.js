@@ -4,6 +4,14 @@ import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 
 export default class BarChartUtils {
+    static addLightToScene = (scene) => {
+        const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 1);
+        light.position.set(1, 1, 2);
+
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4));
+    };
+
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
         const cubes = BarChartUtils.getCubes(scene);
