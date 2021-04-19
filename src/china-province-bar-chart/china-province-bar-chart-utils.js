@@ -55,7 +55,7 @@ export default class ChinaProvinceBarChartUtils {
         const maxValue = Math.max(...values);
         const maxBarHeight = 0.5 * earthRadius;
 
-        const colors = colormap({colormap: 'hot', nshades: 100});
+        const colors = colormap({colormap: 'hot', nshades: 150}).slice(50);
 
         list.forEach(kv => {
             const barHeight = kv.value / maxValue * maxBarHeight;
@@ -73,7 +73,7 @@ export default class ChinaProvinceBarChartUtils {
         // 1. add bar
         const center = province.properties.center;
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
-        const cubeWidth = earthRadius * 0.01;
+        const cubeWidth = earthRadius * 0.005;
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({

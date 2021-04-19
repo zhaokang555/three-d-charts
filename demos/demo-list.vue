@@ -5,7 +5,7 @@
         <set-bar-chart></set-bar-chart>
 
         <h2>Demo 2: China province bar chart</h2>
-        <h3>各省GDP</h3>
+        <h3>2020年中国各省GDP</h3>
         <set-china-province-bar-chart></set-china-province-bar-chart>
     </div>
 </template>
