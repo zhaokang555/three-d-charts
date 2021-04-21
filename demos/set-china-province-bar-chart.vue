@@ -110,6 +110,7 @@
         },
         methods: {
             add() {
+                // make sure inputKey is a valid province name
                 if (provinceList.indexOf(this.inputKey) > -1 && !Number.isNaN(this.inputValue)) {
                     this.list.push({
                         key: this.inputKey,

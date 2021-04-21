@@ -22,12 +22,13 @@ export default class BarChartAlgorithms {
     /**
      * @param cube: THREE.Mesh
      * @param offsetX: number
+     * @param offsetY: number Chinese font's bottom will go through the plane if no offsetY
      * @param offsetZ: number
      */
-    static getPositionOfKeyByCube = (cube, offsetX, offsetZ) => {
+    static getPositionOfKeyByCube = (cube, offsetX, offsetY, offsetZ) => {
         return [
             cube.position.x + offsetX,
-            0,
+            offsetY,
             offsetZ
         ];
     };

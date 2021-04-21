@@ -86,25 +86,28 @@ export default class BarChartUtils {
 
     static addKeysToScene = (scene, keys) => {
         const loader = new THREE.FontLoader();
-        const font = loader.parse( helvetiker_regular);
-        const cubes = BarChartUtils.getCubes(scene);
-        for (let i = 0; i < keys.length; ++i) {
-            const key = keys[i];
-            const cube = cubes[i];
-            const fontSize = BarChartUtils.getCubeWidthByCube(cube) / key.length;
-            const fontDepth = fontSize / 8;
-            const geometry = new THREE.TextGeometry( key, {
-                font: font,
-                size: fontSize,
-                height: fontDepth,
-            });
-            const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
-            const text = new THREE.Mesh( geometry, material );
-            text.geometry.computeBoundingBox();
-            const textWidth = text.geometry.boundingBox.max.x;
-            text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontDepth));
-            scene.add(text);
-        }
+        // ttf to json, see: https://gero3.github.io/facetype.js/
+        // load font async, because Alibaba_PuHuiTi_Regular.json is too large
+        loader.load('./Alibaba_PuHuiTi_Regular.json', font => {
+            const cubes = BarChartUtils.getCubes(scene);
+            for (let i = 0; i < keys.length; ++i) {
+                const key = keys[i];
+                const cube = cubes[i];
+                const fontSize = BarChartUtils.getCubeWidthByCube(cube) / key.length;
+                const fontDepth = fontSize / 8; // 3D字体厚度
+                const geometry = new THREE.TextGeometry( key, {
+                    font: font,
+                    size: fontSize,
+                    height: fontDepth,
+                });
+                const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
+                const text = new THREE.Mesh( geometry, material );
+                text.geometry.computeBoundingBox();
+                const textWidth = text.geometry.boundingBox.max.x;
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontSize / 8, fontDepth));
+                scene.add(text);
+            }
+        });
     };
 
     static addValuesToScene = (scene, values) => {
