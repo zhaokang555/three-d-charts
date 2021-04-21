@@ -8,7 +8,7 @@
             <li>
                 province:
                 <select v-model="inputKey">
-                    <option v-for="option in options" value="p">{{option}}</option>
+                    <option v-for="option in options" :value="option">{{option}}</option>
                 </select>
                 value:
                 <input v-model.number="inputValue" type="number">
@@ -71,6 +71,7 @@
                     {key: '浙江省', value: 64613.00},
                     {key: '河南省', value: 54997.07},
                     {key: '四川省', value: 48598.80},
+                    {key: '台湾省', value: 45855},
                     {key: '福建省', value: 43903.89},
                     {key: '湖北省', value: 43443.46},
                     {key: '湖南省', value: 41781.49},

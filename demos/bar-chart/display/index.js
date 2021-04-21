@@ -1,3 +1,4 @@
 import {initBarChart} from '../../../src';
 
-initBarChart();
+const list = JSON.parse(localStorage.getItem('list')) || [];
+initBarChart(list);

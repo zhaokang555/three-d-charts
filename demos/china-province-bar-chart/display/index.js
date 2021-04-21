@@ -1,3 +1,4 @@
 import {initChinaProvinceBarChart} from '../../../src';
 
-initChinaProvinceBarChart();
+const list = JSON.parse(localStorage.getItem('list')) || [];
+initChinaProvinceBarChart(list);

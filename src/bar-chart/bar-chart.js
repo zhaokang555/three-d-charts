@@ -2,8 +2,13 @@ import * as THREE from 'three';
 import BarChartUtils from "./bar-chart-utils";
 import Utils from "../utils";
 
-export const init = () => {
-    const list = JSON.parse(localStorage.getItem('list')) || [];
+/**
+ * @param list: Array<{
+ *     key: string;
+ *     value: string;
+ * }>
+ */
+export const init = (list) => {
     const keys = list.map(kv => kv.key);
     const values = list.map(kv => kv.value);
 
