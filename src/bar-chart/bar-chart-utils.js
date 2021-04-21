@@ -103,15 +103,10 @@ export default class BarChartUtils {
                 const cube = cubes[i];
                 const fontSize = BarChartUtils.getCubeWidthByCube(cube) / key.length;
                 const fontDepth = fontSize / 8; // 3D font thickness
-                const geometry = new THREE.TextGeometry( key, {
-                    font: font,
-                    size: fontSize,
-                    height: fontDepth,
-                });
+                const [geometry, textWidth] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
-                text.geometry.computeBoundingBox();
-                const textWidth = text.geometry.boundingBox.max.x;
+                // Chinese font's bottom will go through the plane if no offsetY
                 text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontSize / 8, fontDepth));
                 scene.add(text);
             }
@@ -181,5 +176,29 @@ export default class BarChartUtils {
         cube.geometry.computeBoundingBox();
         const boundingBox = cube.geometry.boundingBox;
         return boundingBox.max.x - boundingBox.min.x;
+    };
+
+    /**
+     * @param text: string
+     * @param font: THREE.Font
+     * @param cube: THREE.Mesh
+     * @return {[TextGeometry, number]}
+     * @private
+     */
+    static _getTextGeometryAndTextWidthWhichSameWithCubeWidth = (text, font, cube) => {
+        let geometry = new THREE.TextGeometry( text, {font});
+        geometry.computeBoundingBox();
+        let textWidth = geometry.boundingBox.max.x;
+
+        const fontSize = 100 / (textWidth / this.getCubeWidthByCube(cube)); // default font size is 100
+        geometry = new THREE.TextGeometry(text, {
+            font,
+            size: fontSize,
+            height: fontSize / 8,
+        });
+        geometry.computeBoundingBox();
+        textWidth = geometry.boundingBox.max.x;
+
+        return [geometry, textWidth];
     };
 }
