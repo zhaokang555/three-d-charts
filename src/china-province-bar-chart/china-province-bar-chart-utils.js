@@ -73,7 +73,7 @@ export default class ChinaProvinceBarChartUtils {
         // 1. add bar
         const center = province.properties.center;
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
-        const cubeWidth = earthRadius * 0.025; // 设定bar的底面边长
+        const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({

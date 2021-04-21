@@ -21,8 +21,13 @@ export default class BarChartUtils {
             const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
             planeWidth = Math.max(maxX, maxZ) * 2 + BarChartUtils.getCubeWidthByCube(cubes[0]);
         }
-        const plane = new THREE.Mesh(new THREE.PlaneGeometry(planeWidth, planeWidth),
-            new THREE.MeshLambertMaterial({color: Constant.defaultPlaneColorGray}));
+        const plane = new THREE.Mesh(
+            new THREE.PlaneGeometry(planeWidth, planeWidth),
+            new THREE.MeshLambertMaterial({
+                color: Constant.defaultPlaneColorGray,
+                side: THREE.DoubleSide,
+            })
+        );
         plane.rotation.x = -Math.PI / 2;
         plane.position.y = 0;
         scene.add(plane);
@@ -31,7 +36,6 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param values: Array<number>
-     * @param cubeWidth: number
      */
     static addCubesToScene = (scene, values) => {
         const cubeWidth = BarChartAlgorithms.getCubeWidthByValues(values);
@@ -84,6 +88,10 @@ export default class BarChartUtils {
         scene.add(axesHelper);
     };
 
+    /**
+     * @param scene: THREE.Scene
+     * @param keys: Array<string>
+     */
     static addKeysToScene = (scene, keys) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
@@ -94,7 +102,7 @@ export default class BarChartUtils {
                 const key = keys[i];
                 const cube = cubes[i];
                 const fontSize = BarChartUtils.getCubeWidthByCube(cube) / key.length;
-                const fontDepth = fontSize / 8; // 3D字体厚度
+                const fontDepth = fontSize / 8; // 3D font thickness
                 const geometry = new THREE.TextGeometry( key, {
                     font: font,
                     size: fontSize,
@@ -110,6 +118,10 @@ export default class BarChartUtils {
         });
     };
 
+    /**
+     * @param scene: THREE.Scene
+     * @param values: Array<number>
+     */
     static addValuesToScene = (scene, values) => {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
@@ -145,6 +157,13 @@ export default class BarChartUtils {
         return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
     };
 
+    /**
+     * @param scene: THREE.Scene
+     * @param camera: THREE.PerspectiveCamera
+     * @param raycaster: THREE.Raycaster
+     * @param pointer: THREE.Vector2
+     * @param defaultColor
+     */
     static highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = Constant.defaultCubeColorRed) => {
         raycaster.setFromCamera( pointer, camera );
 
