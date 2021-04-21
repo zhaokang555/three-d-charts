@@ -36,7 +36,7 @@ export const init = (list) => {
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
 
-        BarChartUtils.highlightCubeInFullWindowWithPerspectiveCamera(scene, camera, raycaster, pointer);
+        BarChartUtils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
 
         renderer.render( scene, camera );
     };

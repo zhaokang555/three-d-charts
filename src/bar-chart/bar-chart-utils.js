@@ -18,7 +18,7 @@ export default class BarChartUtils {
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
             const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
-            const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+            const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
             planeWidth = Math.max(maxX, maxZ) * 2 + BarChartUtils.getCubeWidthByCube(cubes[0]);
         }
         const plane = new THREE.Mesh(
@@ -47,7 +47,8 @@ export default class BarChartUtils {
                 new THREE.MeshPhongMaterial({
                     color: Constant.defaultCubeColorRed,
                     specular: 0xffffff,
-                    shininess: 100
+                    shininess: 100,
+                    side: THREE.DoubleSide,
                 }),
             );
             cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth));
@@ -58,15 +59,18 @@ export default class BarChartUtils {
     static getOrthographicCamera = (scene) => {
         const ratio = window.innerWidth / window.innerHeight;
 
-        let x = 100;
+        let planeWidth = 100;
         const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
         if (plane) {
-            x = plane.geometry.parameters.width;
+            planeWidth = plane.geometry.parameters.width;
         }
+        const x = planeWidth / 2 * 1.415;
         const y = x / ratio;
-        const camera = new THREE.OrthographicCamera(-x, x, y, -y);
+        const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 100, planeWidth * 100);
 
-        camera.position.set(-x, x, x);
+        camera.position.set(-x, x, x); // see from left-front-top position
+        camera.lookAt(0, 0, 0);
+        window.camera = camera;
         return camera;
     };
 
@@ -154,12 +158,12 @@ export default class BarChartUtils {
 
     /**
      * @param scene: THREE.Scene
-     * @param camera: THREE.PerspectiveCamera
+     * @param camera: THREE.Camera
      * @param raycaster: THREE.Raycaster
      * @param pointer: THREE.Vector2
      * @param defaultColor
      */
-    static highlightCubeInFullWindowWithPerspectiveCamera = (scene, camera, raycaster, pointer, defaultColor = Constant.defaultCubeColorRed) => {
+    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer, defaultColor = Constant.defaultCubeColorRed) => {
         raycaster.setFromCamera( pointer, camera );
 
         const cubes = BarChartUtils.getCubes(scene);
