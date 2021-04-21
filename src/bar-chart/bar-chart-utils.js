@@ -68,7 +68,7 @@ export default class BarChartUtils {
         const y = x / ratio;
         const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 100, planeWidth * 100);
 
-        camera.position.set(-x, x, x); // see from left-front-top position
+        camera.position.set(x, x, x); // see from left-front-top position
         camera.lookAt(0, 0, 0);
         window.camera = camera;
         return camera;

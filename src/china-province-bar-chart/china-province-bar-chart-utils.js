@@ -56,11 +56,11 @@ export default class ChinaProvinceBarChartUtils {
         const maxBarHeight = 0.5 * earthRadius;
 
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 150}).slice(50);
+        const colors = colormap({colormap: 'hot', nshades: 140}).slice(40);
 
         list.forEach(kv => {
             const barHeight = kv.value / maxValue * maxBarHeight;
-            const i = Math.round(kv.value / maxValue * 100);
+            const i = Math.round(kv.value / maxValue * 99); // i = 0, 1, 2, ..., 99
             const color = colors[i];
             this._addBarToScene(kv.key, barHeight, color, scene);
         });
@@ -68,16 +68,37 @@ export default class ChinaProvinceBarChartUtils {
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
         const province = china_geojson.features.find(f => f.properties.name === provinceName);
+        const center = province.properties.center;
         const r = earthRadius + barAltitude;
 
-        // 1. add bar
-        const center = province.properties.center;
+        this._addCubeToScene(center, barHeight, r, color, scene);
+
+        /**
+         *  province.geometry.coordinates: Array<MultiPolygon> 如: 台湾省
+         *  MultiPolygon: Array<Polygon> 如: 台湾岛, 钓鱼岛, ...
+         *  Polygon: Array<Ring> 如: 台湾岛外边界, 日月潭外边界, ...
+         *  Ring: Array<[lan, lat]>
+         */
+        province.geometry.coordinates.forEach(polygon => {
+            polygon.forEach(ring => this._addLineToScene(ring, r, scene));
+        });
+    };
+
+    /**
+     * @param center: [number, number]
+     * @param barHeight: number
+     * @param r: number
+     * @param color: string; like: #000000
+     * @param scene
+     * @private
+     */
+    static _addCubeToScene(center, barHeight, r, color, scene) {
         const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({
-                color: color,
+                color,
                 specular: 0xffffff,
                 shininess: 100,
                 side: THREE.DoubleSide,
@@ -89,22 +110,25 @@ export default class ChinaProvinceBarChartUtils {
         cube.quaternion.setFromUnitVectors(up, normal);
         cube.translateY(barHeight / 2);
         scene.add(cube);
+    }
 
-        // 2. add line
-        province.geometry.coordinates.forEach(polygon => {
-            polygon.forEach(ring => {
-                const points = [];
-                ring.forEach(lonLat => {
-                    const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
-                    points.push(new THREE.Vector3(x, y, z));
-                });
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const material = new THREE.LineBasicMaterial( { color: defaultCubeColorRed } );
-                const line = new THREE.Line( geometry, material );
-                scene.add(line);
-            })
+    /**
+     * @param ring: Array<[number, number]>
+     * @param r: number
+     * @param scene
+     * @private
+     */
+    static _addLineToScene(ring, r, scene) {
+        const points = [];
+        ring.forEach(lonLat => {
+            const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
+            points.push(new THREE.Vector3(x, y, z));
         });
-    };
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial( { color: defaultCubeColorRed } );
+        const line = new THREE.Line( geometry, material );
+        scene.add(line);
+    }
 
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
