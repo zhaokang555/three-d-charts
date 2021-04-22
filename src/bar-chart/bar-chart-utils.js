@@ -2,6 +2,7 @@ import * as THREE from "three";
 import BarChartAlgorithms from  "./bar-chart-algorithms";
 import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
+import colormap from "colormap";
 
 export default class BarChartUtils {
     static addLightToScene = (scene) => {
@@ -40,18 +41,26 @@ export default class BarChartUtils {
      */
     static addCubesToScene = (scene, values) => {
         const cubeWidth = BarChartAlgorithms.getCubeWidthByValues(values);
+        // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
+        const colors = colormap({colormap: 'hot', nshades: 200}).slice(50, 150); // do not use color which is too light or too dark
+        const maxValue = Math.max(...values);
 
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
+            const colorIndex = Math.round(value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
+            const color = colors[colorIndex];
+
             const cube = new THREE.Mesh(
                 new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
                 new THREE.MeshPhongMaterial({
-                    color: Constant.defaultCubeColorRed,
+                    // color: Constant.defaultCubeColorRed,
+                    color,
                     specular: 0xffffff,
                     shininess: 100,
                     side: THREE.DoubleSide,
                 }),
             );
+            cube.defaultColor = color; // store default color in cube mesh object
             cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth));
             scene.add(cube);
         }
@@ -147,14 +156,16 @@ export default class BarChartUtils {
      * @param camera: THREE.Camera
      * @param raycaster: THREE.Raycaster
      * @param pointer: THREE.Vector2
-     * @param defaultColor
      */
-    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer, defaultColor = Constant.defaultCubeColorRed) => {
+    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
         raycaster.setFromCamera( pointer, camera );
 
         const cubes = this._getCubes(scene);
         if (cubes.length > 0) {
-            cubes.forEach(cube => cube.material.color.set(defaultColor));
+            cubes.forEach(cube => {
+                const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
+                cube.material.color.set(defaultColor);
+            });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
                 intersects[0].object.material.color.set(Constant.defaultCubeHighlightColorWhite);

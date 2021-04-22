@@ -57,12 +57,12 @@ export default class ChinaProvinceBarChartUtils {
         const maxBarHeight = 0.5 * earthRadius;
 
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 140}).slice(40);
+        const colors = colormap({colormap: 'hot', nshades: 140}).slice(40); // do not use color which is too dark
 
         list.forEach(kv => {
             const barHeight = kv.value / maxValue * maxBarHeight;
-            const i = Math.round(kv.value / maxValue * 99); // i = 0, 1, 2, ..., 99
-            const color = colors[i];
+            const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
+            const color = colors[colorIndex];
             this._addBarToScene(kv.key, barHeight, color, scene);
         });
     }
