@@ -1,4 +1,10 @@
 export default class ChinaProvinceBarChartAlgorithms {
+    /**
+     * @param r: number
+     * @param lon: number
+     * @param lat: number
+     * @return {[number, number, number]}
+     */
     static getXYZByLonLat = (r, lon, lat) => {
         /**
          x = R * cos(lat) * sin(lon)

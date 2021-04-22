@@ -18,7 +18,7 @@ export const init = (list) => {
     ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
     ChinaProvinceBarChartUtils.addBarsToScene(scene, list);
 
-    ChinaProvinceBarChartUtils.addLightToScene(scene, 0.7, 0.7, [-0.5, 0.5, -2]);
+    ChinaProvinceBarChartUtils.addLightToScene(scene);
 
     const renderer = Utils.getRenderer();
     const controls = Utils.addControlsToCamera(camera, renderer, {minDistance: earthRadius, maxDistance: 1000 * earthRadius});

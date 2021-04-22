@@ -51,6 +51,13 @@ export default class ChinaProvinceBarChartUtils {
         scene.add(earthMesh);
     };
 
+    /**
+     * @param scene
+     * @param list: Array<{
+     *     key: string;
+     *     value: string;
+     * }>
+     */
     static addBarsToScene(scene, list) {
         const values = list.map(kv => kv.value);
         const maxValue = Math.max(...values);

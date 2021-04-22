@@ -15,7 +15,7 @@
                 <button @click="add">add new line</button>
             </li>
         </ul>
-        <button @click="display">display</button>
+        <button @click="display">generate chine province bar chart</button>
     </div>
 </template>
 
@@ -61,7 +61,6 @@
         name: "set-china-province-bar-chart",
         data() {
             return {
-                provinceList,
                 inputKey: '',
                 inputValue: 0,
                 list: [
