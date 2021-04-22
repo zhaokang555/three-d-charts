@@ -14,7 +14,7 @@ export default class BarChartUtils {
 
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
-        const cubes = BarChartUtils.getCubes(scene);
+        const cubes = this._getCubes(scene);
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
             const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
@@ -95,7 +95,7 @@ export default class BarChartUtils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('./Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = BarChartUtils.getCubes(scene);
+            const cubes = this._getCubes(scene);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
@@ -119,7 +119,7 @@ export default class BarChartUtils {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
         const font = loader.parse( helvetiker_regular);
-        const cubes = BarChartUtils.getCubes(scene);
+        const cubes = this._getCubes(scene);
         const valueTextMaxLength = Math.max(...valueTextList.map(v => v.length));
         const fontSize = BarChartUtils.getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
         const fontDepth = fontSize / 8;
@@ -143,14 +143,6 @@ export default class BarChartUtils {
     };
 
     /**
-     * @param scene
-     * @return {Array<THREE.Mesh>}
-     */
-    static getCubes = (scene) => {
-        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
-    };
-
-    /**
      * @param scene: THREE.Scene
      * @param camera: THREE.Camera
      * @param raycaster: THREE.Raycaster
@@ -160,7 +152,7 @@ export default class BarChartUtils {
     static highlightCubeInFullWindow = (scene, camera, raycaster, pointer, defaultColor = Constant.defaultCubeColorRed) => {
         raycaster.setFromCamera( pointer, camera );
 
-        const cubes = BarChartUtils.getCubes(scene);
+        const cubes = this._getCubes(scene);
         if (cubes.length > 0) {
             cubes.forEach(cube => cube.material.color.set(defaultColor));
             const intersects = raycaster.intersectObjects(cubes, true);
@@ -211,5 +203,14 @@ export default class BarChartUtils {
         textWidth = geometry.boundingBox.max.x;
 
         return [geometry, textWidth];
+    };
+
+    /**
+     * @param scene
+     * @return {Array<THREE.Mesh>}
+     * @private
+     */
+    static _getCubes = (scene) => {
+        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
     };
 }
