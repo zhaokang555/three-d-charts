@@ -30,6 +30,7 @@ export default class BarChartUtils {
         );
         plane.rotation.x = -Math.PI / 2;
         plane.position.y = 0;
+        plane.name = 'planeMesh'; // for find plane mesh in scene;
         scene.add(plane);
     };
 
@@ -59,29 +60,22 @@ export default class BarChartUtils {
     static getOrthographicCamera = (scene) => {
         const ratio = window.innerWidth / window.innerHeight;
 
-        let planeWidth = 100;
-        const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
-        if (plane) {
-            planeWidth = plane.geometry.parameters.width;
-        }
+        const planeWidth = this.getPlaneWidthFromScene(scene);
         const x = planeWidth / 2 * 1.415;
         const y = x / ratio;
-        const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 100, planeWidth * 100);
+        const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
 
-        camera.position.set(x, x, x); // see from left-front-top position
-        camera.lookAt(0, 0, 0);
+        camera.position.set(-x, x, x); // see from left-front-top position
+        // camera.lookAt(0, 0, 0);
         window.camera = camera;
         return camera;
     };
 
     static getPerspectiveCamera = (scene) => {
-        let x = 100;
-        const plane = scene.children.find(child => child.type === 'Mesh' && child.geometry.type === 'PlaneGeometry');
-        if (plane) {
-            x = plane.geometry.parameters.width / 2 * 1.732;
-        }
+        const planeWidth = this.getPlaneWidthFromScene(scene);
+        const x = planeWidth / 2 * 1.732;
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, planeWidth * 4);
         camera.position.set(x, x, x);
         camera.lookAt(0, 0, 0);
         return camera;
@@ -180,6 +174,19 @@ export default class BarChartUtils {
         cube.geometry.computeBoundingBox();
         const boundingBox = cube.geometry.boundingBox;
         return boundingBox.max.x - boundingBox.min.x;
+    };
+
+    /**
+     * @param scene
+     * @return {number}
+     */
+    static getPlaneWidthFromScene = (scene) => {
+        let planeWidth = 100;
+        const planeMesh = scene.getObjectByName('planeMesh');
+        if (planeMesh) {
+            planeWidth = planeMesh.geometry.parameters.width
+        }
+        return planeWidth;
     };
 
     /**

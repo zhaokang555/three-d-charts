@@ -20,7 +20,7 @@ export const init = (list) => {
     BarChartUtils.addLightToScene(scene);
     BarChartUtils.addPlaneToScene(scene);
 
-    // const camera = getPerspectiveCamera(scene);
+    // const camera = BarChartUtils.getPerspectiveCamera(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
     const pointer = new THREE.Vector2(-1, -1);
     document.addEventListener( 'pointermove', event => {
@@ -28,7 +28,10 @@ export const init = (list) => {
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
     const renderer = Utils.getRenderer();
-    const controls = Utils.addControlsToCamera(camera, renderer, {rotate: true});
+    const controls = Utils.addControlsToCamera(camera, renderer, {
+        rotate: true,
+        maxDistance: BarChartUtils.getPlaneWidthFromScene(scene) * 2,
+    });
     const raycaster = new THREE.Raycaster();
     const render = () => {
         requestAnimationFrame(render); // fallback: setTimeout 16.7

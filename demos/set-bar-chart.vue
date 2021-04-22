@@ -25,10 +25,16 @@
                 inputKey: '',
                 inputValue: 0,
                 list: [
-                    {key: 'AAA', value: 3},
-                    {key: 'BBBB', value: 4},
-                    {key: 'CCCCC', value: 5},
-                    {key: 'DDDDDD', value: 6},
+                    {key: '广东省', value: 110760.94},
+                    {key: '江苏省', value: 102700.00},
+                    {key: '浙江省', value: 64613.00},
+                    {key: '四川省', value: 48598.80},
+                    {key: '台湾省', value: 45855},
+                    {key: '湖北省', value: 43443.46},
+                    {key: '上海市', value: 38700.58},
+                    {key: '北京市', value: 36102.60},
+                    {key: '陕西省', value: 26181.86},
+                    {key: '西藏自治区', value: 1902.74},
                 ]
             }
         },

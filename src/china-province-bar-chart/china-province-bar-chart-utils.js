@@ -22,6 +22,7 @@ export default class ChinaProvinceBarChartUtils {
     static getPerspectiveCamera = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1 * earthRadius, 1000 * earthRadius);
         camera.position.set(2 * earthRadius, 0, -2 * earthRadius); // 东九区, 纬度0度
+        window.camera = camera;
         return camera;
     };
     static addEarthMeshToScene = (scene) => {
