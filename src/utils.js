@@ -16,6 +16,8 @@ export default class Utils {
      *     minDistance?: number;
      *     maxDistance?: number;
      *     rotate?: boolean;
+     *     minZoom?: number;
+     *     maxZoom?: number;
      * }
      * @return {OrbitControls}
      */
@@ -24,8 +26,15 @@ export default class Utils {
 
         controls.enableDamping = true; // 是否有惯性
         controls.enableZoom = true; // 是否可以缩放
-        controls.minDistance = options.minDistance || 1; // 设置相机距离原点的最近距离
-        controls.maxDistance = options.maxDistance || 1000; // 设置相机距离原点的最远距离
+        controls.zoomSpeed = 0.5;
+        if (camera.type === "PerspectiveCamera") {
+            controls.minDistance = options.minDistance || 1; // 设置相机距离原点的最近距离
+            controls.maxDistance = options.maxDistance || 1000; // 设置相机距离原点的最远距离
+        } else if (camera.type === "OrthographicCamera") {
+            controls.minZoom = options.minZoom || 0;
+            controls.maxZoom = options.maxZoom || Infinity;
+        }
+
         controls.enablePan = true; // 是否开启右键拖拽
 
         if (options.rotate) { //是否自动旋转
@@ -33,6 +42,7 @@ export default class Utils {
             controls.autoRotateSpeed = 0.5;
         }
 
+        window.controls = controls;
         return controls;
     };
 }

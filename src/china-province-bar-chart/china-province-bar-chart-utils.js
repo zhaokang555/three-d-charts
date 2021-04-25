@@ -13,14 +13,15 @@ const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 export default class ChinaProvinceBarChartUtils {
     static addLightToScene = (scene) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
-        light.position.set(-0.5, 0.5, -2);
+        const radianOfBeijing = -30 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
+        light.position.set(Math.cos(radianOfBeijing), 0, Math.sin(radianOfBeijing)); // 平行光的位置，直射东八区
 
         scene.add(light);
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
     };
 
     static getPerspectiveCamera = () => {
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1 * earthRadius, 1000 * earthRadius);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
         camera.position.set(2 * earthRadius, 0, -2 * earthRadius); // 东九区, 纬度0度
         window.camera = camera;
         return camera;
@@ -37,8 +38,9 @@ export default class ChinaProvinceBarChartUtils {
         // });
         const material = new THREE.MeshPhongMaterial( {
             map,
-            specularMap,
-            specular: new THREE.Color('grey'),
+            specularMap, // 镜面反射贴图
+            specular: 0x808080,
+            shininess: 22,
         } );
 
         const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);

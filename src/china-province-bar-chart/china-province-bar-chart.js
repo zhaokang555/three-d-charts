@@ -21,7 +21,10 @@ export const init = (list) => {
     ChinaProvinceBarChartUtils.addLightToScene(scene);
 
     const renderer = Utils.getRenderer();
-    const controls = Utils.addControlsToCamera(camera, renderer, {minDistance: earthRadius, maxDistance: 1000 * earthRadius});
+    const controls = Utils.addControlsToCamera(camera, renderer, {
+        minDistance: 1.05 * earthRadius,
+        maxDistance: 10 * earthRadius
+    });
     const render = () => {
         requestAnimationFrame(render);
 

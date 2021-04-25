@@ -30,7 +30,7 @@ export const init = (list) => {
     const renderer = Utils.getRenderer();
     const controls = Utils.addControlsToCamera(camera, renderer, {
         rotate: true,
-        maxDistance: BarChartUtils.getPlaneWidthFromScene(scene) * 2,
+        maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
     const raycaster = new THREE.Raycaster();
     const render = () => {
