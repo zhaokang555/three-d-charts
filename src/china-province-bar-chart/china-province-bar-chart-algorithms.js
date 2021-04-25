@@ -10,11 +10,11 @@ export default class ChinaProvinceBarChartAlgorithms {
         const lonRadian = lon / 180 * PI;
         const latRadian = lat / 180 * PI;
 
-        const y = r * sin(latRadian);
+        const y = r * sin(latRadian); // 在经线圈平面上, 计算y
 
-        const rOnEquatorialPlane = r * cos(latRadian);
-        const x = rOnEquatorialPlane * cos(lonRadian);
-        const z = rOnEquatorialPlane * sin(lonRadian);
+        const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面（XY坐标系）上, 计算r的投影距离
+        const x = rOnEquatorialPlane * cos(lonRadian); // 在俯视图中, 计算x
+        const z = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算x
 
         /**
          x = R * cos(lat) * cos(lon)
