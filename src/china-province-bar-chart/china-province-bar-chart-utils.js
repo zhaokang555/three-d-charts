@@ -13,8 +13,8 @@ const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 export default class ChinaProvinceBarChartUtils {
     static addLightToScene = (scene) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
-        const lonRadianOfBeijing = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
-        light.position.set(Math.cos(lonRadianOfBeijing), 0, Math.sin(lonRadianOfBeijing)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
+        const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
+        light.position.set(Math.cos(lonRadianOfUtc8), 0, Math.sin(lonRadianOfUtc8)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
@@ -22,10 +22,10 @@ export default class ChinaProvinceBarChartUtils {
 
     static getPerspectiveCamera = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
-        const lonRadianOfBeijing = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
+        const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
-        camera.position.set(Math.cos(lonRadianOfBeijing) * rCamera, 0, Math.sin(lonRadianOfBeijing) * rCamera); // 东8区, 纬度0度
+        camera.position.set(Math.cos(lonRadianOfUtc8) * rCamera, 0, Math.sin(lonRadianOfUtc8) * rCamera); // 东8区, 纬度0度
         window.camera = camera;
         return camera;
     };
