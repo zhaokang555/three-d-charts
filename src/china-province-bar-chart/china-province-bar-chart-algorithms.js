@@ -1,21 +1,26 @@
 export default class ChinaProvinceBarChartAlgorithms {
     /**
-     * @param r: number
-     * @param lon: number
-     * @param lat: number
+     * @param r: number 到地心的距离
+     * @param lon: number 经度
+     * @param lat: number 纬度
      * @return {[number, number, number]}
      */
     static getXYZByLonLat = (r, lon, lat) => {
-        /**
-         x = R * cos(lat) * sin(lon)
-         y = R * sin(lat)
-         z = R * cos(lat) * cos(lon)
-         */
+        const {sin, cos, PI} = Math;
+        const lonRadian = lon / 180 * PI;
+        const latRadian = lat / 180 * PI;
 
-        return [
-            r * Math.cos(lat / 180 * Math.PI) * Math.sin(lon / 180 * Math.PI),
-            r * Math.sin(lat / 180 * Math.PI),
-            r * Math.cos(lat / 180 * Math.PI) * Math.cos(lon / 180 * Math.PI),
-        ]
+        const y = r * sin(latRadian);
+
+        const rOnEquatorialPlane = r * cos(latRadian);
+        const x = rOnEquatorialPlane * cos(lonRadian);
+        const z = rOnEquatorialPlane * sin(lonRadian);
+
+        /**
+         x = R * cos(lat) * cos(lon)
+         y = R * sin(lat)
+         z = R * cos(lat) * sin(lon)
+         */
+        return [x, y, z];
     };
 }

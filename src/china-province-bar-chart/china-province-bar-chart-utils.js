@@ -13,8 +13,8 @@ const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 export default class ChinaProvinceBarChartUtils {
     static addLightToScene = (scene) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
-        const radianOfBeijing = -30 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
-        light.position.set(Math.cos(radianOfBeijing), 0, Math.sin(radianOfBeijing)); // 平行光的位置，直射东八区
+        const lonRadianOfBeijing = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
+        light.position.set(Math.cos(lonRadianOfBeijing), 0, Math.sin(lonRadianOfBeijing)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
@@ -22,7 +22,10 @@ export default class ChinaProvinceBarChartUtils {
 
     static getPerspectiveCamera = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
-        camera.position.set(2 * earthRadius, 0, -2 * earthRadius); // 东九区, 纬度0度
+        const lonRadianOfBeijing = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
+        const rCamera = 2 * earthRadius; // 相机到地心距离
+
+        camera.position.set(Math.cos(lonRadianOfBeijing) * rCamera, 0, Math.sin(lonRadianOfBeijing) * rCamera); // 东8区, 纬度0度
         window.camera = camera;
         return camera;
     };
@@ -46,7 +49,7 @@ export default class ChinaProvinceBarChartUtils {
         const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);
         const earthMesh = new THREE.Mesh(geometry, material);
         earthMesh.position.set(0, 0, 0);
-        earthMesh.rotateY(-Math.PI / 2);
+        // earthMesh.rotateY(-Math.PI / 2);
 
         // ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
 
@@ -103,7 +106,7 @@ export default class ChinaProvinceBarChartUtils {
      * @private
      */
     static _addCubeToScene(center, barHeight, r, color, scene) {
-        const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, center[0], center[1]);
+        const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, -center[0], center[1]); // 东经为负数
         const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
@@ -131,7 +134,7 @@ export default class ChinaProvinceBarChartUtils {
     static _addLineToScene(ring, r, scene) {
         const points = [];
         ring.forEach(lonLat => {
-            const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
+            const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, -lonLat[0], lonLat[1]); // 东经为负数
             points.push(new THREE.Vector3(x, y, z));
         });
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
