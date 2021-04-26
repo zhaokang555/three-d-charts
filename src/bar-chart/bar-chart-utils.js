@@ -7,10 +7,10 @@ import colormap from "colormap";
 export default class BarChartUtils {
     static addLightToScene = (scene) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 1);
-        light.position.set(1, 1, 2);
+        light.position.set(1, 1, 2); // 平行光从右上前方射过来
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4));
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4)); // 环境光
     };
 
     static addPlaneToScene = (scene) => {
@@ -18,9 +18,16 @@ export default class BarChartUtils {
         const cubes = this._getCubes(scene);
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
+            // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
             const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
             const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-            planeWidth = Math.max(maxX, maxZ) * 2 + BarChartUtils.getCubeWidthByCube(cubes[0]);
+            const planeWidthByMaxX = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
+            console.log(planeWidthByMaxX, maxZ, planeWidthByMaxX-maxZ);
+            if (planeWidthByMaxX > maxZ) {
+                planeWidth = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
+            } else {
+                planeWidth = maxZ;
+            }
         }
         const plane = new THREE.Mesh(
             new THREE.PlaneGeometry(planeWidth, planeWidth),
@@ -29,8 +36,8 @@ export default class BarChartUtils {
                 side: THREE.DoubleSide,
             })
         );
-        plane.rotation.x = -Math.PI / 2;
-        plane.position.y = 0;
+        // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
+        plane.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
         plane.name = 'planeMesh'; // for find plane mesh in scene;
         scene.add(plane);
     };
@@ -74,9 +81,8 @@ export default class BarChartUtils {
         const y = x / ratio;
         const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
 
-        camera.position.set(-x, x, x); // see from left-front-top position
+        camera.position.set(-x / 2, x / 2, x); // see from left-front-top position
         // camera.lookAt(0, 0, 0);
-        window.camera = camera;
         return camera;
     };
 
@@ -108,7 +114,7 @@ export default class BarChartUtils {
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
-                const fontSize = BarChartUtils.getCubeWidthByCube(cube) / key.length;
+                const fontSize = this.getCubeWidthByCube(cube) / key.length;
                 const fontDepth = fontSize / 8; // 3D font thickness
                 const [geometry, textWidth] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
@@ -130,7 +136,7 @@ export default class BarChartUtils {
         const font = loader.parse( helvetiker_regular);
         const cubes = this._getCubes(scene);
         const valueTextMaxLength = Math.max(...valueTextList.map(v => v.length));
-        const fontSize = BarChartUtils.getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
+        const fontSize = this.getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
         const fontDepth = fontSize / 8;
 
         for (let i = 0; i < values.length; ++i) {
