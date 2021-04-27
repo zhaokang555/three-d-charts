@@ -5,18 +5,32 @@ export default class BarChartAlgorithms {
      */
     static getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
+    static getCubeWidthByLists = (lists) => {
+        let sum = 0;
+        let count = 0;
+        lists.forEach(list => {
+            list.forEach(kv => {
+                sum += kv.value;
+                count += 1;
+            });
+        });
+        return sum / count;
+    };
+
     /**
      * @param n: number
      * @param value: number
      * @param cubeWidth: number
+     * @param baseLineIndex: number 第几排柱子
      * @return {[number, number, number]}
      */
-    static getPositionOfNthBar = (n, value, cubeWidth) => {
+    static getPositionOfNthBar = (n, value, cubeWidth, baseLineIndex = 0) => {
         const cubeGap = cubeWidth * 0.4;
+        const baseLine = 0 - (cubeWidth + cubeGap) * baseLineIndex - (cubeWidth / 2);
         return [
             n * cubeGap + cubeWidth * (2 * n + 1) / 2,
             value / 2,
-            0 - (cubeWidth / 2)
+            baseLine,
         ]
     };
 
@@ -38,16 +52,17 @@ export default class BarChartAlgorithms {
 
     /**
      * @param cube: THREE.Mesh
+     * @param cubeWidth
      * @param offsetX: number
      * @param offsetY: number
      * @param offsetZ: number
      * @return {[number, number, number]}
      */
-    static getPositionOfKeyByCube = (cube, offsetX, offsetY, offsetZ) => {
+    static getPositionOfKeyByCube = (cube, cubeWidth, offsetX, offsetY, offsetZ) => {
         return [
             cube.position.x + offsetX,
             offsetY,
-            offsetZ
+            cube.position.z + cubeWidth /2 + offsetZ
         ];
     };
 

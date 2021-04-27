@@ -44,9 +44,11 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param values: Array<number>
+     * @param baseLineIndex: number 第几排柱子
+     * @param cubeWidth
      */
-    static addCubesToScene = (scene, values) => {
-        const cubeWidth = BarChartAlgorithms.getCubeWidthByValues(values);
+    static addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth) => {
+        cubeWidth = cubeWidth || BarChartAlgorithms.getCubeWidthByValues(values);
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
         const colors = colormap({colormap: 'hot', nshades: 200}).slice(50, 150); // do not use color which is too light or too dark
         const maxValue = Math.max(...values);
@@ -67,7 +69,8 @@ export default class BarChartUtils {
                 }),
             );
             cube.defaultColor = color; // store default color in cube mesh object
-            cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth));
+            cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
+            cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
             scene.add(cube);
         }
     };
@@ -103,23 +106,25 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param keys: Array<string>
+     * @param baseLineIndex
      */
-    static addKeysToScene = (scene, keys) => {
+    static addKeysToScene = (scene, keys, baseLineIndex = 0) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
-        loader.load('./Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this._getCubes(scene);
+        loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
+            const cubes = this._getCubes(scene, baseLineIndex);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
-                const charWidth = this.getCubeWidthByCube(cube) / key.length;
+                const cubeWidth = this.getCubeWidthByCube(cube);
+                const charWidth = cubeWidth / key.length;
                 const fontDepth = charWidth / 8; // 3D font thickness
                 const [geometry, textWidth] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, charWidth / 8, fontDepth));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
                 scene.add(text);
             }
         });
@@ -225,10 +230,12 @@ export default class BarChartUtils {
 
     /**
      * @param scene
-     * @return {Array<THREE.Mesh>}
+     * @param baseLineIndex: number 第几排柱子
+     * @return {THREE.Mesh[]}
      * @private
      */
-    static _getCubes = (scene) => {
-        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+    static _getCubes = (scene, baseLineIndex = 0) => {
+        const cubes = scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+        return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
 }
