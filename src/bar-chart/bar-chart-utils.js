@@ -22,7 +22,6 @@ export default class BarChartUtils {
             const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
             const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
             const planeWidthByMaxX = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
-            console.log(planeWidthByMaxX, maxZ, planeWidthByMaxX-maxZ);
             if (planeWidthByMaxX > maxZ) {
                 planeWidth = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
             } else {
@@ -114,13 +113,13 @@ export default class BarChartUtils {
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
-                const fontSize = this.getCubeWidthByCube(cube) / key.length;
-                const fontDepth = fontSize / 8; // 3D font thickness
+                const charWidth = this.getCubeWidthByCube(cube) / key.length;
+                const fontDepth = charWidth / 8; // 3D font thickness
                 const [geometry, textWidth] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, fontSize / 8, fontDepth));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], -textWidth / 2, charWidth / 8, fontDepth));
                 scene.add(text);
             }
         });
@@ -210,7 +209,9 @@ export default class BarChartUtils {
         geometry.computeBoundingBox();
         let textWidth = geometry.boundingBox.max.x;
 
-        const fontSize = 100 / (textWidth / this.getCubeWidthByCube(cube)); // default font size is 100
+        // default font size is 100, so:
+        // textWidth / 100 = cubeWidth / fontSize
+        const fontSize = this.getCubeWidthByCube(cube) * 100 / textWidth;
         geometry = new THREE.TextGeometry(text, {
             font,
             size: fontSize,
