@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import Constant from "../constant";
-import BarChart2ArgumentsAlgorithms from "./bar-chart-2-arguments-algorithms";
+import BarChartAlgorithms from "./bar-chart-algorithms";
 import BarChartUtils from "./bar-chart-utils";
 
 export default class BarChart2ArgumentsUtils {
@@ -19,7 +19,7 @@ export default class BarChart2ArgumentsUtils {
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left front corner
-                text.position.set(...BarChart2ArgumentsAlgorithms.getPositionOfKeyByCube(cubes[i], cubeWidth));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cubes[i], cubeWidth));
                 text.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将text绕x轴顺时针旋转90度
                 scene.add(text);
             }

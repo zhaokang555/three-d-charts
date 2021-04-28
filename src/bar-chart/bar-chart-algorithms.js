@@ -35,22 +35,6 @@ export default class BarChartAlgorithms {
     };
 
     /**
-     * @param n: number
-     * @param cubeWidth: number
-     * @param fontDepth: number
-     * @param offset: number
-     * @return {[number, number, number]}
-     */
-    static getPositionOfNthKey = (n, cubeWidth, fontDepth, offset) => {
-        const cubeGap = cubeWidth * 0.4;
-        return [
-            n * cubeGap + cubeWidth * n + offset,
-            0,
-            fontDepth
-        ];
-    };
-
-    /**
      * @param cube: THREE.Mesh
      * @param cubeWidth
      * @param offsetX: number
@@ -63,6 +47,14 @@ export default class BarChartAlgorithms {
             cube.position.x + offsetX,
             offsetY,
             cube.position.z + cubeWidth /2 + offsetZ
+        ];
+    };
+
+    static getPositionOfKeyOnTopByCube = (cube, cubeWidth) => {
+        return [
+            cube.position.x - cubeWidth / 2,
+            cube.position.y * 2,
+            cube.position.z + cubeWidth / 2,
         ];
     };
 
