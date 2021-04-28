@@ -1,6 +1,6 @@
-import {initBarChart2Arguments} from '../../../src';
+import {initBarChart2Args} from '../../../src';
 
-initBarChart2Arguments([
+initBarChart2Args([
     [
         {key: 'A1', value: 100},
         {key: 'B1', value: 200},
