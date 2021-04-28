@@ -3,18 +3,18 @@ import Constant from "../constant";
 import BarChart2ArgumentsAlgorithms from "./bar-chart-2-arguments-algorithms";
 import BarChartUtils from "./bar-chart-utils";
 
-export default class BarChart2ArgumentsUtils extends BarChartUtils {
+export default class BarChart2ArgumentsUtils {
     static addKeysToScene = (scene, keys, baseLineIndex = 0) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this._getCubes(scene, baseLineIndex);
+            const cubes = BarChartUtils.getCubes(scene, baseLineIndex);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
-                const cubeWidth = this.getCubeWidthByCube(cube);
-                const [geometry] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
+                const cubeWidth = BarChartUtils.getCubeWidthByCube(cube);
+                const [geometry] = BarChartUtils.getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY

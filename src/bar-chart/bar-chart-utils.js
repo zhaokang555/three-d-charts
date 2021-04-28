@@ -15,7 +15,7 @@ export default class BarChartUtils {
 
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
-        const cubes = this._getCubes(scene);
+        const cubes = this.getCubes(scene);
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
             // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
@@ -112,14 +112,14 @@ export default class BarChartUtils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this._getCubes(scene);
+            const cubes = this.getCubes(scene);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
                 const cubeWidth = this.getCubeWidthByCube(cube);
                 const charWidth = cubeWidth / key.length;
                 const fontDepth = charWidth / 8; // 3D font thickness
-                const [geometry, textWidth] = this._getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
+                const [geometry, textWidth] = this.getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
@@ -138,7 +138,7 @@ export default class BarChartUtils {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
         const font = loader.parse( helvetiker_regular);
-        const cubes = this._getCubes(scene);
+        const cubes = this.getCubes(scene);
         const valueTextMaxLength = Math.max(...valueTextList.map(v => v.length));
         const fontSize = this.getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
         const fontDepth = fontSize / 8;
@@ -170,7 +170,7 @@ export default class BarChartUtils {
     static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
         raycaster.setFromCamera( pointer, camera );
 
-        const cubes = this._getCubes(scene);
+        const cubes = this.getCubes(scene);
         if (cubes.length > 0) {
             cubes.forEach(cube => {
                 const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
@@ -207,9 +207,8 @@ export default class BarChartUtils {
      * @param font: THREE.Font
      * @param cube: THREE.Mesh
      * @return {[TextGeometry, number]}
-     * @private
      */
-    static _getTextGeometryAndTextWidthWhichSameWithCubeWidth = (text, font, cube) => {
+    static getTextGeometryAndTextWidthWhichSameWithCubeWidth = (text, font, cube) => {
         let geometry = new THREE.TextGeometry( text, {font});
         geometry.computeBoundingBox();
         let textWidth = geometry.boundingBox.max.x;
@@ -232,9 +231,8 @@ export default class BarChartUtils {
      * @param scene
      * @param baseLineIndex: number 第几排柱子
      * @return {THREE.Mesh[]}
-     * @private
      */
-    static _getCubes = (scene, baseLineIndex = 0) => {
+    static getCubes = (scene, baseLineIndex = 0) => {
         const cubes = scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
