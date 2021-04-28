@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import BarChartUtils from "./bar-chart-utils";
 import Utils from "../utils";
 import BarChartAlgorithms from "./bar-chart-algorithms";
-import BarChart2ArgumentsUtils from './bar-chart-2-arguments-utils';
 
 /**
  * @param lists: Array<Array<{
@@ -19,7 +18,7 @@ export const init = (lists) => {
         const values = list.map(kv => kv.value);
 
         BarChartUtils.addCubesToScene(scene, values, i, cubeWidth);
-        BarChart2ArgumentsUtils.addKeysToScene(scene, keys, i);
+        BarChartUtils.addKeysOnTopToScene(scene, keys, i);
         BarChartUtils.addPlaneToScene(scene);
     });
 
