@@ -106,14 +106,13 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param keys: Array<string>
-     * @param baseLineIndex
      */
-    static addKeysToScene = (scene, keys, baseLineIndex = 0) => {
+    static addKeysToScene = (scene, keys) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this._getCubes(scene, baseLineIndex);
+            const cubes = this._getCubes(scene);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
@@ -124,6 +123,7 @@ export default class BarChartUtils {
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
+                // text.position means its top left back corner
                 text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
                 scene.add(text);
             }
