@@ -19,4 +19,16 @@ initBarChart2Args([
         {key: 'C3', value: 320},
         {key: 'D3', value: 420},
     ],
+    [
+        {key: 'A4', value: 130},
+        {key: 'B4', value: 230},
+        {key: 'C4', value: 330},
+        {key: 'D4', value: 430},
+    ],
+    [
+        {key: 'A5', value: 140},
+        {key: 'B5', value: 240},
+        {key: 'C5', value: 340},
+        {key: 'D5', value: 440},
+    ],
 ]);

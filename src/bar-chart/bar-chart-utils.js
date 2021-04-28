@@ -20,12 +20,14 @@ export default class BarChartUtils {
         if (cubePositions.length > 0) {
             // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
             const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
-            const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-            const planeWidthByMaxX = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
-            if (planeWidthByMaxX > maxZ) {
-                planeWidth = maxX * 2 + this.getCubeWidthByCube(cubes[0]);
+            const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+            const maxXZ = Math.max(maxX, maxZ);
+            const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
+            const planeWidthByMaxXZ = maxXZ * 2 + this.getCubeWidthByCube(cubes[0]);
+            if (planeWidthByMaxXZ > maxY) {
+                planeWidth = maxXZ * 2 + this.getCubeWidthByCube(cubes[0]);
             } else {
-                planeWidth = maxZ;
+                planeWidth = maxY;
             }
         }
         const plane = new THREE.Mesh(
@@ -135,7 +137,7 @@ export default class BarChartUtils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = BarChartUtils.getCubes(scene, baseLineIndex);
+            const cubes = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubes[i];
@@ -249,13 +251,17 @@ export default class BarChartUtils {
         return [geometry, textWidth];
     };
 
+    static getCubes = (scene) => {
+        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+    };
+
     /**
      * @param scene
      * @param baseLineIndex: number 第几排柱子
      * @return {THREE.Mesh[]}
      */
-    static getCubes = (scene, baseLineIndex = 0) => {
-        const cubes = scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+    static getCubesInBaseLine = (scene, baseLineIndex) => {
+        const cubes = this.getCubes(scene);
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
 }
