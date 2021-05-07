@@ -46,10 +46,9 @@
             }
         },
         methods: {
-
             display() {
-                localStorage.setItem("lists", this.lists);
-                location.href = "bar-chart-2-args/display/index.html";
+                localStorage.setItem('lists', this.lists);
+                this.$router.push('bar-chart-2-args-display');
             }
         }
     }

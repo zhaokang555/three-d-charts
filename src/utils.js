@@ -2,10 +2,14 @@ import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export default class Utils {
-    static getRenderer = () => {
+    /**
+     * @param container: HTMLElement
+     * @return {WebGLRenderer}
+     */
+    static getRenderer = (container) => {
         const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight); // 将输出canvas的大小调整为(width, height)
-        document.body.appendChild(renderer.domElement); // 将生成的canvas挂在body上
+        renderer.setSize(container.offsetWidth, container.offsetHeight); // 将输出canvas的大小调整为container的大小
+        container.appendChild(renderer.domElement); // 将生成的canvas挂在container上
         return renderer;
     };
 

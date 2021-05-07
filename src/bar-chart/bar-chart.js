@@ -7,8 +7,9 @@ import Utils from "../utils";
  *     key: string;
  *     value: string;
  * }>
+ * @param container: HTMLElement
  */
-export const init = (list) => {
+export const init = (list, container) => {
     const keys = list.map(kv => kv.key);
     const values = list.map(kv => kv.value);
     const keyMaxLength = Math.max(...keys.map(k => k.length));
@@ -24,7 +25,7 @@ export const init = (list) => {
 
     // const camera = BarChartUtils.getPerspectiveCamera(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
-    const renderer = Utils.getRenderer();
+    const renderer = Utils.getRenderer(container);
     const controls = Utils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME

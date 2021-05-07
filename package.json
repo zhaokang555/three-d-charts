@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel ./demos/**/*.html",
-    "build": "parcel build ./demos/**/*.html"
+    "dev": "parcel ./demos/index.html",
+    "build": "parcel build ./demos/index.html"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +19,8 @@
     "colormap": "^2.3.2",
     "three": "^0.126.0",
     "vue": "^2.6.12",
-    "vue-hot-reload-api": "^2.3.4"
+    "vue-hot-reload-api": "^2.3.4",
+    "vue-router": "^3.5.1"
   },
   "staticFiles": {
     "staticPath": "public",

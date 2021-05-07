@@ -16,8 +16,17 @@
 </template>
 
 <script>
+    import SetBarChart from './SetBarChart'
+    import SetBarChart2Args from './SetBarChart2Args'
+    import SetChinaProvinceBarChart from './SetChinaProvinceBarChart'
+
     export default {
-        name: "demo-list"
+        name: "DemoList",
+        components: {
+            'set-bar-chart': SetBarChart,
+            'set-bar-chart-2-args': SetBarChart2Args,
+            'set-china-province-bar-chart': SetChinaProvinceBarChart,
+        }
     }
 </script>
 

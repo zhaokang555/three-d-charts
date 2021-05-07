@@ -52,7 +52,7 @@
             },
             display() {
                 localStorage.setItem('list', JSON.stringify(this.list));
-                location.href = 'bar-chart/display/index.html';
+                this.$router.push('bar-chart-display');
             }
         }
     }

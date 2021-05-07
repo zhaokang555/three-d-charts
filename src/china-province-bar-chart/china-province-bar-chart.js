@@ -10,8 +10,9 @@ const {earthRadius} = Constant;
  *     key: string;
  *     value: string;
  * }>
+ * @param container: HTMLElement
  */
-export const init = (list) => {
+export const init = (list, container) => {
     const scene = new THREE.Scene();
     const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
 
@@ -20,7 +21,7 @@ export const init = (list) => {
 
     ChinaProvinceBarChartUtils.addLightToScene(scene);
 
-    const renderer = Utils.getRenderer();
+    const renderer = Utils.getRenderer(container);
     const controls = Utils.addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius

@@ -8,8 +8,9 @@ import BarChartAlgorithms from "./bar-chart-algorithms";
  *     key: string;
  *     value: string;
  * }>>
+ * @param container: HTMLElement
  */
-export const init = (lists) => {
+export const init = (lists, container) => {
     const scene = new THREE.Scene();
     const cubeWidth = BarChartAlgorithms.getCubeWidthByLists(lists);
     const [keyMaxlength, valueMaxlength] = BarChartAlgorithms.getKeyAndValueMaxLength(lists);
@@ -27,7 +28,7 @@ export const init = (lists) => {
 
     BarChartUtils.addLightToScene(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
-    const renderer = Utils.getRenderer();
+    const renderer = Utils.getRenderer(container);
     const controls = Utils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME

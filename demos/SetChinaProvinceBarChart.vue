@@ -124,7 +124,7 @@
             },
             display() {
                 localStorage.setItem('list', JSON.stringify(this.list));
-                location.href = 'china-province-bar-chart/display/index.html';
+                this.$router.push('china-province-bar-chart-display');
             }
         }
     }
