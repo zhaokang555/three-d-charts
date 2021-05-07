@@ -1,6 +1,6 @@
 <template>
     <div>
-        <textarea cols="50" rows="32" v-model="list"></textarea>
+        <textarea cols="50" rows="32" v-model="lists"></textarea>
         <button @click="display">generate bar chart 2 args</button>
     </div>
 </template>
@@ -10,7 +10,7 @@
         name: "set-bar-chart-2-args",
         data() {
             return {
-                list:
+                lists:
 `[
     [
         {"key": "A1", "value": 100},
@@ -48,7 +48,7 @@
         methods: {
 
             display() {
-                localStorage.setItem("list", this.list);
+                localStorage.setItem("lists", this.lists);
                 location.href = "bar-chart-2-args/display/index.html";
             }
         }

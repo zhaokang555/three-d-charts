@@ -126,29 +126,42 @@ export default class BarChartUtils {
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left back corner
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cubes[i], cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cube, cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
                 scene.add(text);
             }
         });
     };
 
-    static addKeysOnTopToScene = (scene, keys, baseLineIndex = 0) => {
+    static addKeysOnTopToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
+            const cubes = this.getCubes(scene);
+            const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
+            const fontSize = this.getCubeWidthByCube(cubes[0]) / keyMaxlength;
+            const fontDepth = fontSize / 8;
+
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
-                const cube = cubes[i];
-                const cubeWidth = BarChartUtils.getCubeWidthByCube(cube);
-                const [geometry] = BarChartUtils.getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
+                const cube = cubesInBaseLine[i];
+                const geometry = new THREE.TextGeometry( key, {
+                    font: font,
+                    size: fontSize,
+                    height: fontDepth,
+                });
+                geometry.computeBoundingBox();
+                const textWidth = geometry.boundingBox.max.x;
+
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
+
                 const text = new THREE.Mesh( geometry, material );
-                // Chinese font's bottom will go through the plane if no offsetY
-                // text.position means its top left front corner
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cubes[i], cubeWidth));
-                text.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将text绕x轴顺时针旋转90度
+
+                const valueMesh = scene.getObjectById(cube.valueMeshId);
+                const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
+
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, -textWidth / 2, valueMeshHeight));
+                // text.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将text绕x轴顺时针旋转90度
                 scene.add(text);
             }
         });
@@ -157,19 +170,21 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param values: Array<number>
+     * @param valueMaxLength
+     * @param baseLineIndex
      */
-    static addValuesToScene = (scene, values) => {
+    static addValuesToScene = (scene, values, valueMaxLength, baseLineIndex = 0) => {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
-        const font = loader.parse( helvetiker_regular);
+        const font = loader.parse(helvetiker_regular);
         const cubes = this.getCubes(scene);
-        const valueTextMaxLength = Math.max(...valueTextList.map(v => v.length));
-        const fontSize = this.getCubeWidthByCube(cubes[0]) / valueTextMaxLength;
+        const fontSize = this.getCubeWidthByCube(cubes[0]) / valueMaxLength;
         const fontDepth = fontSize / 8;
+        const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
 
         for (let i = 0; i < values.length; ++i) {
             const valueText = valueTextList[i];
-            const cube = cubes[i];
+            const cube = cubesInBaseLine[i];
 
             const geometry = new THREE.TextGeometry( valueText, {
                 font: font,
@@ -182,6 +197,7 @@ export default class BarChartUtils {
             const textWidth = text.geometry.boundingBox.max.x;
             text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube, -textWidth / 2));
             scene.add(text);
+            cube.valueMeshId = text.id;
         }
     };
 

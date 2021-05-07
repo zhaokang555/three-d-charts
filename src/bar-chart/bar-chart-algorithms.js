@@ -17,6 +17,22 @@ export default class BarChartAlgorithms {
         return sum / count;
     };
 
+    static getKeyAndValueMaxLength = (lists) => {
+        let keyMaxlength = 0;
+        let valueMaxlength = 0;
+        lists.forEach(list => {
+            list.forEach(kv => {
+                const keyLen = kv.key.length;
+                const valueLen = kv.value.toString().length;
+
+                keyMaxlength = Math.max(keyMaxlength, keyLen);
+                valueMaxlength = Math.max(valueMaxlength, valueLen);
+            });
+        });
+
+        return [keyMaxlength, valueMaxlength];
+    };
+
     /**
      * @param n: number
      * @param value: number
@@ -50,11 +66,11 @@ export default class BarChartAlgorithms {
         ];
     };
 
-    static getPositionOfKeyOnTopByCube = (cube, cubeWidth) => {
+    static getPositionOfKeyOnTopByCube = (cube, offsetX, offsetY) => {
         return [
-            cube.position.x - cubeWidth / 2,
-            cube.position.y * 2,
-            cube.position.z + cubeWidth / 2,
+            cube.position.x + offsetX,
+            this._getValueByCube(cube) + offsetY,
+            cube.position.z
         ];
     };
 
@@ -64,17 +80,20 @@ export default class BarChartAlgorithms {
      * @return {[number, number, number]}
      */
     static getPositionOfValueByCube = (cube, offsetX) => {
+        return [
+            cube.position.x + offsetX,
+            this._getValueByCube(cube),
+            cube.position.z
+        ]
+    };
+
+
+    static _getValueByCube = (cube) => {
         // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
         // 边界矩形不会默认计算，默认为null
         cube.geometry.computeBoundingBox();
         const boundingBox = cube.geometry.boundingBox;
-        const value = boundingBox.max.y - boundingBox.min.y; // value = cube height
-
-        return [
-            cube.position.x + offsetX,
-            value,
-            cube.position.z
-        ]
+        return boundingBox.max.y - boundingBox.min.y; // value = cube height
     };
 
 };
