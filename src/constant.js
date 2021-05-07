@@ -1,5 +1,6 @@
 export default class Constant {
     static defaultTextColorBlue = 0x156289;
+    static defaultTextHighlightColorRed = 0xff0000;
     static defaultPlaneColorGray = 0xcccccc;
     static defaultCubeColorRed = 0xff0000;
     static defaultCubeHighlightColorWhite = 0xffffff;

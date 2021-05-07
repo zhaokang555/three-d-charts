@@ -138,6 +138,7 @@ export default class BarChartUtils {
                 // text.position means its top left back corner
                 text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cube, cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
                 scene.add(text);
+                cube.keyMeshId = text.id;
             }
         });
     };
@@ -179,6 +180,7 @@ export default class BarChartUtils {
                 text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, -textWidth / 2, valueMeshHeight));
                 // text.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将text绕x轴顺时针旋转90度
                 scene.add(text);
+                cube.keyMeshId = text.id;
             }
         });
     };
@@ -231,10 +233,19 @@ export default class BarChartUtils {
             cubes.forEach(cube => {
                 const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
                 cube.material.color.set(defaultColor);
+                const keyMesh = scene.getObjectById(cube.keyMeshId);
+                const valueMesh = scene.getObjectById(cube.valueMeshId);
+                keyMesh && keyMesh.material.color.set(Constant.defaultTextColorBlue);
+                valueMesh && valueMesh.material.color.set(Constant.defaultTextColorBlue);
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
-                intersects[0].object.material.color.set(Constant.defaultCubeHighlightColorWhite);
+                const cube = intersects[0].object;
+                cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
+                const keyMesh = scene.getObjectById(cube.keyMeshId);
+                const valueMesh = scene.getObjectById(cube.valueMeshId);
+                keyMesh && keyMesh.material.color.set(Constant.defaultTextHighlightColorRed);
+                valueMesh && valueMesh.material.color.set(Constant.defaultTextHighlightColorRed);
             }
         }
     };
