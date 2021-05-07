@@ -149,15 +149,15 @@ export default class BarChartUtils {
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
             const cubes = this.getCubes(scene);
             const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
-            const fontSize = this.getCubeWidthByCube(cubes[0]) / keyMaxlength;
-            const fontDepth = fontSize / 8;
+            const charWidth = this.getCubeWidthByCube(cubes[0]) / keyMaxlength;
+            const fontDepth = charWidth / 8;
 
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
                 const geometry = new THREE.TextGeometry( key, {
                     font: font,
-                    size: fontSize,
+                    size: charWidth,
                     height: fontDepth,
                 });
                 geometry.computeBoundingBox();
@@ -188,8 +188,8 @@ export default class BarChartUtils {
         const loader = new THREE.FontLoader();
         const font = loader.parse(helvetiker_regular);
         const cubes = this.getCubes(scene);
-        const fontSize = this.getCubeWidthByCube(cubes[0]) / valueMaxLength;
-        const fontDepth = fontSize / 8;
+        const charWidth = this.getCubeWidthByCube(cubes[0]) / valueMaxLength;
+        const fontDepth = charWidth / 8;
         const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
 
         for (let i = 0; i < values.length; ++i) {
@@ -198,7 +198,7 @@ export default class BarChartUtils {
 
             const geometry = new THREE.TextGeometry( valueText, {
                 font: font,
-                size: fontSize,
+                size: charWidth,
                 height: fontDepth,
             });
             const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
