@@ -62,7 +62,7 @@ export default class BarChartAlgorithms {
         return [
             cube.position.x + offsetX,
             offsetY,
-            cube.position.z + cubeWidth /2 + offsetZ
+            cube.position.z + cubeWidth / 2 + offsetZ
         ];
     };
 

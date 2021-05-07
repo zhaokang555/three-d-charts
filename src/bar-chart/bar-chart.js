@@ -11,12 +11,13 @@ import Utils from "../utils";
 export const init = (list) => {
     const keys = list.map(kv => kv.key);
     const values = list.map(kv => kv.value);
+    const keyMaxLength = Math.max(...keys.map(k => k.length));
     const valueMaxLength = Math.max(...values.map(v => v.toString().length));
 
     const scene = new THREE.Scene();
     BarChartUtils.addCubesToScene(scene, values);
     BarChartUtils.addAxesToScene(scene);
-    BarChartUtils.addKeysToScene(scene, keys);
+    BarChartUtils.addKeysToScene(scene, keys, keyMaxLength);
     BarChartUtils.addValuesToScene(scene, values, valueMaxLength);
     BarChartUtils.addLightToScene(scene);
     BarChartUtils.addPlaneToScene(scene);

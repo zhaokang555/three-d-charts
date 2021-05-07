@@ -108,20 +108,30 @@ export default class BarChartUtils {
     /**
      * @param scene: THREE.Scene
      * @param keys: Array<string>
+     * @param keyMaxlength
+     * @param baseLineIndex
      */
-    static addKeysToScene = (scene, keys) => {
+    static addKeysToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this.getCubes(scene);
+            const cubesInBaseLine = this.getCubesInBaseLine(scene, baseLineIndex);
+            const cubeWidth = this.getCubeWidthByCube(cubesInBaseLine[0]);
+            const charWidth = cubeWidth / keyMaxlength;
+            const fontDepth = charWidth / 8; // 3D font thickness
+
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
-                const cube = cubes[i];
-                const cubeWidth = this.getCubeWidthByCube(cube);
-                const charWidth = cubeWidth / key.length;
-                const fontDepth = charWidth / 8; // 3D font thickness
-                const [geometry, textWidth] = this.getTextGeometryAndTextWidthWhichSameWithCubeWidth(key, font, cube);
+                const cube = cubesInBaseLine[i];
+                const geometry = new THREE.TextGeometry( key, {
+                    font: font,
+                    size: charWidth,
+                    height: fontDepth,
+                });
+                geometry.computeBoundingBox();
+                const textWidth = geometry.boundingBox.max.x;
+
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
