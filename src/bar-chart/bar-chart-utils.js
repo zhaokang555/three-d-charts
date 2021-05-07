@@ -265,6 +265,11 @@ export default class BarChartUtils {
         const planeMesh = scene.getObjectByName('planeMesh');
         if (planeMesh) {
             planeWidth = planeMesh.geometry.parameters.width
+        } else {
+            // when no plane, use max value * value length instead
+            const cubes = this.getCubes(scene);
+            const values = cubes.map(this.getValueByCube);
+            planeWidth = Math.max(...values) * values.length;
         }
         return planeWidth;
     };
@@ -281,5 +286,13 @@ export default class BarChartUtils {
     static getCubesInBaseLine = (scene, baseLineIndex) => {
         const cubes = this.getCubes(scene);
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
+    };
+
+    static getValueByCube = (cube) => {
+        // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
+        // 边界矩形不会默认计算，默认为null
+        cube.geometry.computeBoundingBox();
+        const boundingBox = cube.geometry.boundingBox;
+        return boundingBox.max.y - boundingBox.min.y; // value = cube height
     };
 }

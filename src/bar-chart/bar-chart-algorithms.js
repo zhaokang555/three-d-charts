@@ -1,3 +1,5 @@
+import BarChartUtils from "./bar-chart-utils";
+
 export default class BarChartAlgorithms {
     /**
      * @param values: Array<number>
@@ -83,7 +85,7 @@ export default class BarChartAlgorithms {
     static getPositionOfKeyOnTopByCube = (cube, offsetX, offsetY) => {
         return [
             cube.position.x + offsetX,
-            this._getValueByCube(cube) + offsetY,
+            BarChartUtils.getValueByCube(cube) + offsetY,
             cube.position.z
         ];
     };
@@ -96,18 +98,8 @@ export default class BarChartAlgorithms {
     static getPositionOfValueByCube = (cube, offsetX) => {
         return [
             cube.position.x + offsetX,
-            this._getValueByCube(cube),
+            BarChartUtils.getValueByCube(cube),
             cube.position.z
         ]
     };
-
-
-    static _getValueByCube = (cube) => {
-        // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
-        // 边界矩形不会默认计算，默认为null
-        cube.geometry.computeBoundingBox();
-        const boundingBox = cube.geometry.boundingBox;
-        return boundingBox.max.y - boundingBox.min.y; // value = cube height
-    };
-
 };
