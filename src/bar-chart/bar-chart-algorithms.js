@@ -5,6 +5,13 @@ export default class BarChartAlgorithms {
      */
     static getCubeWidthByValues = (values) => values.reduce((sum, val) => sum + val, 0) / values.length;
 
+    /**
+     * @param lists: Array<Array<{
+     *     key: string;
+     *     value: string;
+     * }>>
+     * * @return {number}
+     */
     static getCubeWidthByLists = (lists) => {
         let sum = 0;
         let count = 0;
@@ -17,6 +24,13 @@ export default class BarChartAlgorithms {
         return sum / count;
     };
 
+    /**
+     * @param lists: Array<Array<{
+     *     key: string;
+     *     value: string;
+     * }>>
+     * * @return {[number, number]}
+     */
     static getKeyAndValueMaxLength = (lists) => {
         let keyMaxlength = 0;
         let valueMaxlength = 0;

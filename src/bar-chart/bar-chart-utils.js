@@ -142,6 +142,12 @@ export default class BarChartUtils {
         });
     };
 
+    /**
+     * @param scene
+     * @param keys: Array<string>
+     * @param keyMaxlength: number
+     * @param baseLineIndex: number
+     */
     static addKeysOnTopToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => {
         const loader = new THREE.FontLoader();
         // ttf to json, see: https://gero3.github.io/facetype.js/
@@ -250,31 +256,6 @@ export default class BarChartUtils {
             planeWidth = planeMesh.geometry.parameters.width
         }
         return planeWidth;
-    };
-
-    /**
-     * @param text: string
-     * @param font: THREE.Font
-     * @param cube: THREE.Mesh
-     * @return {[TextGeometry, number]}
-     */
-    static getTextGeometryAndTextWidthWhichSameWithCubeWidth = (text, font, cube) => {
-        let geometry = new THREE.TextGeometry( text, {font});
-        geometry.computeBoundingBox();
-        let textWidth = geometry.boundingBox.max.x;
-
-        // default font size is 100, so:
-        // textWidth / 100 = cubeWidth / fontSize
-        const fontSize = this.getCubeWidthByCube(cube) * 100 / textWidth;
-        geometry = new THREE.TextGeometry(text, {
-            font,
-            size: fontSize,
-            height: fontSize / 8,
-        });
-        geometry.computeBoundingBox();
-        textWidth = geometry.boundingBox.max.x;
-
-        return [geometry, textWidth];
     };
 
     static getCubes = (scene) => {
