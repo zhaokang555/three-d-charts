@@ -24,17 +24,17 @@ export const init = (list) => {
 
     // const camera = BarChartUtils.getPerspectiveCamera(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
-    const pointer = new THREE.Vector2(-1, -1);
-    document.addEventListener( 'pointermove', event => {
-        pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
     const renderer = Utils.getRenderer();
     const controls = Utils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
     const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2(-1, -1);
+    document.addEventListener( 'pointermove', event => {
+        pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
     const render = () => {
         requestAnimationFrame(render); // fallback: setTimeout 16.7
 

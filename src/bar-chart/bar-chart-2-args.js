@@ -33,11 +33,19 @@ export const init = (lists) => {
         maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
 
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2(-1, -1);
+    document.addEventListener( 'pointermove', event => {
+        pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
     const render = () => {
         requestAnimationFrame(render); // fallback: setTimeout 16.7
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
+
+        BarChartUtils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
 
         renderer.render( scene, camera );
     };
