@@ -1,8 +1,4 @@
 import * as THREE from "three";
-import earth_daymap from './8k_earth_daymap.jpeg';
-import earth_nightmap from './8k_earth_nightmap.jpeg';
-import earth_specular_map from './8k_earth_specular_map.png';
-import earth_clouds from './8k_earth_clouds.png';
 import china_geojson from "./china-geojson";
 import ChinaProvinceBarChartAlgorithms from "./china-province-bar-chart-algorithms";
 import Constant from "../constant";
@@ -31,8 +27,8 @@ export default class ChinaProvinceBarChartUtils {
     };
     static addEarthMeshToScene = (scene) => {
         const loader = new THREE.TextureLoader();
-        const map = loader.load(earth_nightmap);
-        const specularMap = loader.load(earth_specular_map);
+        const map = loader.load('/8k_earth_nightmap.jpeg');
+        const specularMap = loader.load('/8k_earth_specular_map.png');
 
         // const material = new THREE.MeshPhongMaterial({
         //     color: defaultCubeColorRed,
@@ -147,7 +143,7 @@ export default class ChinaProvinceBarChartUtils {
         const loader = new THREE.TextureLoader();
         const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
         const material  = new THREE.MeshLambertMaterial({
-            map: loader.load(earth_clouds),
+            map: loader.load('/8k_earth_clouds.png'),
             side: THREE.DoubleSide,
             opacity: 0.5,
             transparent: true,
