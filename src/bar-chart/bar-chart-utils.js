@@ -48,16 +48,20 @@ export default class BarChartUtils {
      * @param values: Array<number>
      * @param baseLineIndex: number 第几排柱子
      * @param cubeWidth
+     * @param maxValue
+     * @param minValue
      */
-    static addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth) => {
+    static addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth, maxValue, minValue) => {
         cubeWidth = cubeWidth || BarChartAlgorithms.getCubeWidthByValues(values);
+        maxValue = maxValue || Math.max(...values);
+        minValue = minValue || Math.min(...values);
+
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
         const colors = colormap({colormap: 'hot', nshades: 200}).slice(50, 150); // do not use color which is too light or too dark
-        const maxValue = Math.max(...values);
 
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
-            const colorIndex = Math.round(value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
+            const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
             const color = colors[colorIndex];
 
             const cube = new THREE.Mesh(

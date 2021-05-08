@@ -49,6 +49,16 @@ export default class BarChartAlgorithms {
         return [keyMaxlength, valueMaxlength];
     };
 
+    static getMaxAndMinValueByLists = (lists) => {
+        let maxValue = 0;
+        let minValue = 0;
+        lists.forEach(list => list.forEach(kv => {
+            maxValue = Math.max(maxValue, kv.value);
+            minValue = Math.min(minValue, kv.value);
+        }));
+        return [maxValue, minValue];
+    };
+
     /**
      * @param n: number
      * @param value: number

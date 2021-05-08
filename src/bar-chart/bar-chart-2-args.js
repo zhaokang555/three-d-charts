@@ -14,12 +14,13 @@ export const init = (lists, container) => {
     const scene = new THREE.Scene();
     const cubeWidth = BarChartAlgorithms.getCubeWidthByLists(lists);
     const [keyMaxlength, valueMaxlength] = BarChartAlgorithms.getKeyAndValueMaxLength(lists);
+    const [maxValue, minValue] = BarChartAlgorithms.getMaxAndMinValueByLists(lists);
 
     lists.forEach((list, i) => {
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
-        BarChartUtils.addCubesToScene(scene, values, i, cubeWidth);
+        BarChartUtils.addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
         BarChartUtils.addAxesToScene(scene);
         BarChartUtils.addValuesToScene(scene, values, valueMaxlength, i);
         BarChartUtils.addKeysOnTopToScene(scene, keys, keyMaxlength, i);
