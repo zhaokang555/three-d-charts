@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel ./demos/index.html",
-    "build": "parcel build ./demos/index.html"
+    "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./three-d-charts-demos/"
   },
   "author": "",
   "license": "ISC",
@@ -23,7 +23,7 @@
     "vue-router": "^3.5.1"
   },
   "staticFiles": {
-    "staticPath": "public",
+    "staticPath": "static",
     "watcherGlob": "**"
   }
 }
