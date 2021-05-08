@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel ./demos/index.html",
-    "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./three-d-charts-demos/"
+    "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./"
   },
   "author": "",
   "license": "ISC",
