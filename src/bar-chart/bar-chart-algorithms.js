@@ -49,6 +49,13 @@ export default class BarChartAlgorithms {
         return [keyMaxlength, valueMaxlength];
     };
 
+    /**
+     * @param lists: Array<Array<{
+     *     key: string;
+     *     value: string;
+     * }>>
+     * * @return {[number, number]}
+     */
     static getMaxAndMinValueByLists = (lists) => {
         let maxValue = 0;
         let minValue = 0;
@@ -101,7 +108,6 @@ export default class BarChartAlgorithms {
 
     /**
      * @param cube: THREE.Mesh
-     * @param offsetX: number
      * @return {[number, number, number]}
      */
     static getPositionOfValueByCube = (cube) => {

@@ -269,6 +269,10 @@ export default class BarChartUtils {
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
 
+    /**
+     * @param cube: THREE.Mesh
+     * @return {number}
+     */
     static getValueByCube = (cube) => {
         // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
         // 边界矩形不会默认计算，默认为null
@@ -292,18 +296,25 @@ export default class BarChartUtils {
             size,
             height: fontDepth,
         });
-        geometry.center(); // has called geometry.computeBoundingBox() in center(), note: do not call center() again
+        geometry.center(); // has called geometry.computeBoundingBox() in center()
         geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在cube里/plane里
-        // after translate, geometry.boundingBox.min.y = 0
+        // after translate, geometry.boundingBox.min.y = 0 and geometry.boundingBox.max.y = height
+        // NOTE: do not call center() again after translate, it will make geometry.boundingBox.min.y = -height/2 and geometry.boundingBox.max.y = height/2
         return geometry;
     };
 
+    /**
+     * @param mesh: THREE.Mesh
+     */
     static setTextMeshScaleTo2ByBottomCenter = (mesh) => {
         if (mesh) {
             mesh.scale.set(2, 2, 2);
         }
     };
 
+    /**
+     * @param mesh: THREE.Mesh
+     */
     static setTextMeshScaleTo1ByBottomCenter = (mesh) => {
         if (mesh) {
             mesh.scale.set(1, 1, 1);
