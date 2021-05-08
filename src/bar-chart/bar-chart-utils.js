@@ -74,6 +74,7 @@ export default class BarChartUtils {
                     side: THREE.DoubleSide,
                 }),
             );
+            cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
             cube.defaultColor = color; // store default color in cube mesh object
             cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
             cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
@@ -232,7 +233,6 @@ export default class BarChartUtils {
     };
 
     static getCubeWidthByCube = (cube) => {
-        cube.geometry.computeBoundingBox();
         const boundingBox = cube.geometry.boundingBox;
         return boundingBox.max.x - boundingBox.min.x;
     };
@@ -274,11 +274,6 @@ export default class BarChartUtils {
      * @return {number}
      */
     static getValueByCube = (cube) => {
-        // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
-        // 边界矩形不会默认计算，默认为null
-        if (!cube.geometry.boundingBox) {
-            cube.geometry.computeBoundingBox();
-        }
         const boundingBox = cube.geometry.boundingBox;
         return boundingBox.max.y - boundingBox.min.y; // value = cube height
     };
