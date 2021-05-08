@@ -168,7 +168,7 @@ export default class BarChartUtils {
                 const valueMesh = scene.getObjectById(cube.valueMeshId);
                 const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 1.5));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
                 scene.add(text);
                 cube.keyMeshId = text.id;
             }
@@ -218,19 +218,15 @@ export default class BarChartUtils {
             cubes.forEach(cube => {
                 const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
                 cube.material.color.set(defaultColor);
-                // const keyMesh = scene.getObjectById(cube.keyMeshId);
-                // const valueMesh = scene.getObjectById(cube.valueMeshId);
-                // keyMesh && keyMesh.scale.set(1, 1, 1);
-                // valueMesh && valueMesh.scale.set(1, 1, 1);
+                this.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                this.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
                 const cube = intersects[0].object;
                 cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
-                // const keyMesh = scene.getObjectById(cube.keyMeshId);
-                // const valueMesh = scene.getObjectById(cube.valueMeshId);
-                // keyMesh && keyMesh.scale.set(2, 2, 2);
-                // valueMesh && valueMesh.scale.set(2, 2, 2);
+                this.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                this.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             }
         }
     };
@@ -283,14 +279,34 @@ export default class BarChartUtils {
         return boundingBox.max.y - boundingBox.min.y; // value = cube height
     };
 
+    /**
+     * @param text: string
+     * @param font: THREE.Font
+     * @param size: number
+     * @param fontDepth: number
+     * @return {TextGeometry}
+     */
     static _createTextGeometry = (text, font, size, fontDepth) => {
         const geometry = new THREE.TextGeometry( text, {
             font,
             size,
             height: fontDepth,
         });
-        geometry.center(); // has called geometry.computeBoundingBox() in center()
+        geometry.center(); // has called geometry.computeBoundingBox() in center(), note: do not call center() again
         geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在cube里/plane里
+        // after translate, geometry.boundingBox.min.y = 0
         return geometry;
+    };
+
+    static setTextMeshScaleTo2ByBottomCenter = (mesh) => {
+        if (mesh) {
+            mesh.scale.set(2, 2, 2);
+        }
+    };
+
+    static setTextMeshScaleTo1ByBottomCenter = (mesh) => {
+        if (mesh) {
+            mesh.scale.set(1, 1, 1);
+        }
     };
 }
