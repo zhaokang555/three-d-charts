@@ -128,19 +128,13 @@ export default class BarChartUtils {
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
-                const geometry = new THREE.TextGeometry( key, {
-                    font: font,
-                    size: charWidth,
-                    height: fontDepth,
-                });
-                geometry.computeBoundingBox();
-                const textWidth = geometry.boundingBox.max.x;
+                const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
 
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left back corner
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cube, cubeWidth, -textWidth / 2, charWidth / 8, fontDepth));
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
                 scene.add(text);
                 cube.keyMeshId = text.id;
             }
@@ -166,14 +160,7 @@ export default class BarChartUtils {
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
-                const geometry = new THREE.TextGeometry( key, {
-                    font: font,
-                    size: charWidth,
-                    height: fontDepth,
-                });
-                geometry.computeBoundingBox();
-                const textWidth = geometry.boundingBox.max.x;
-
+                const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
                 const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
 
                 const text = new THREE.Mesh( geometry, material );
@@ -181,8 +168,7 @@ export default class BarChartUtils {
                 const valueMesh = scene.getObjectById(cube.valueMeshId);
                 const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, -textWidth / 2, valueMeshHeight));
-                // text.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将text绕x轴顺时针旋转90度
+                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 1.5));
                 scene.add(text);
                 cube.keyMeshId = text.id;
             }
@@ -208,16 +194,11 @@ export default class BarChartUtils {
             const valueText = valueTextList[i];
             const cube = cubesInBaseLine[i];
 
-            const geometry = new THREE.TextGeometry( valueText, {
-                font: font,
-                size: charWidth,
-                height: fontDepth,
-            });
+            const geometry = this._createTextGeometry(valueText, font, charWidth, fontDepth);
             const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
             const text = new THREE.Mesh( geometry, material );
-            text.geometry.computeBoundingBox();
-            const textWidth = text.geometry.boundingBox.max.x;
-            text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube, -textWidth / 2));
+
+            text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube));
             scene.add(text);
             cube.valueMeshId = text.id;
         }
@@ -237,19 +218,19 @@ export default class BarChartUtils {
             cubes.forEach(cube => {
                 const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
                 cube.material.color.set(defaultColor);
-                const keyMesh = scene.getObjectById(cube.keyMeshId);
-                const valueMesh = scene.getObjectById(cube.valueMeshId);
-                keyMesh && keyMesh.material.color.set(Constant.defaultTextColorBlue);
-                valueMesh && valueMesh.material.color.set(Constant.defaultTextColorBlue);
+                // const keyMesh = scene.getObjectById(cube.keyMeshId);
+                // const valueMesh = scene.getObjectById(cube.valueMeshId);
+                // keyMesh && keyMesh.scale.set(1, 1, 1);
+                // valueMesh && valueMesh.scale.set(1, 1, 1);
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
                 const cube = intersects[0].object;
                 cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
-                const keyMesh = scene.getObjectById(cube.keyMeshId);
-                const valueMesh = scene.getObjectById(cube.valueMeshId);
-                keyMesh && keyMesh.material.color.set(Constant.defaultTextHighlightColorRed);
-                valueMesh && valueMesh.material.color.set(Constant.defaultTextHighlightColorRed);
+                // const keyMesh = scene.getObjectById(cube.keyMeshId);
+                // const valueMesh = scene.getObjectById(cube.valueMeshId);
+                // keyMesh && keyMesh.scale.set(2, 2, 2);
+                // valueMesh && valueMesh.scale.set(2, 2, 2);
             }
         }
     };
@@ -295,8 +276,21 @@ export default class BarChartUtils {
     static getValueByCube = (cube) => {
         // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox
         // 边界矩形不会默认计算，默认为null
-        cube.geometry.computeBoundingBox();
+        if (!cube.geometry.boundingBox) {
+            cube.geometry.computeBoundingBox();
+        }
         const boundingBox = cube.geometry.boundingBox;
         return boundingBox.max.y - boundingBox.min.y; // value = cube height
+    };
+
+    static _createTextGeometry = (text, font, size, fontDepth) => {
+        const geometry = new THREE.TextGeometry( text, {
+            font,
+            size,
+            height: fontDepth,
+        });
+        geometry.center(); // has called geometry.computeBoundingBox() in center()
+        geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在cube里/plane里
+        return geometry;
     };
 }

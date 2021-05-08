@@ -79,22 +79,21 @@ export default class BarChartAlgorithms {
     /**
      * @param cube: THREE.Mesh
      * @param cubeWidth
-     * @param offsetX: number
      * @param offsetY: number
      * @param offsetZ: number
      * @return {[number, number, number]}
      */
-    static getPositionOfKeyByCube = (cube, cubeWidth, offsetX, offsetY, offsetZ) => {
+    static getPositionOfKeyByCube = (cube, cubeWidth, offsetY, offsetZ) => {
         return [
-            cube.position.x + offsetX,
+            cube.position.x,
             offsetY,
             cube.position.z + cubeWidth / 2 + offsetZ
         ];
     };
 
-    static getPositionOfKeyOnTopByCube = (cube, offsetX, offsetY) => {
+    static getPositionOfKeyOnTopByCube = (cube, offsetY) => {
         return [
-            cube.position.x + offsetX,
+            cube.position.x,
             BarChartUtils.getValueByCube(cube) + offsetY,
             cube.position.z
         ];
@@ -105,9 +104,9 @@ export default class BarChartAlgorithms {
      * @param offsetX: number
      * @return {[number, number, number]}
      */
-    static getPositionOfValueByCube = (cube, offsetX) => {
+    static getPositionOfValueByCube = (cube) => {
         return [
-            cube.position.x + offsetX,
+            cube.position.x,
             BarChartUtils.getValueByCube(cube),
             cube.position.z
         ]
