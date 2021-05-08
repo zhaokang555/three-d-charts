@@ -57,7 +57,7 @@ export default class BarChartUtils {
         minValue = minValue || Math.min(...values);
 
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 120}).slice(10, 110); // do not use color which is too light or too dark
+        const colors = colormap({colormap: 'hot', nshades: 140}).slice(20, 120); // do not use color which is too light or too dark
 
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
@@ -67,11 +67,10 @@ export default class BarChartUtils {
             const cube = new THREE.Mesh(
                 new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
                 new THREE.MeshPhongMaterial({
-                    // color: Constant.defaultCubeColorRed,
                     color,
-                    specular: 0xffffff,
-                    shininess: 100,
                     side: THREE.DoubleSide,
+                    emissive: color, // 自发光
+                    emissiveIntensity: 0.2,
                 }),
             );
             cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
