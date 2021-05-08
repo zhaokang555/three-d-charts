@@ -13,3 +13,7 @@ https://zhaokang555.github.io/three-d-charts-demos
 - `npm i`
 - `npm run dev`
 - open `localhost:1234/index.html`
+
+# Build demos
+- `npm run build:demos`
+note: remember move `three-d-charts-demos/Alibaba_PuHuiTi_Regular.json` to your server `/` path since I used `parcel-plugin-static-files-copy`
