@@ -57,7 +57,7 @@ export default class BarChartUtils {
         minValue = minValue || Math.min(...values);
 
         // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 200}).slice(50, 150); // do not use color which is too light or too dark
+        const colors = colormap({colormap: 'hot', nshades: 120}).slice(10, 110); // do not use color which is too light or too dark
 
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
@@ -130,8 +130,7 @@ export default class BarChartUtils {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
                 const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
-
-                const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
+                const material = this._createTextMaterial();
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left back corner
@@ -162,8 +161,7 @@ export default class BarChartUtils {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
                 const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
-                const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
-
+                const material = this._createTextMaterial();
                 const text = new THREE.Mesh( geometry, material );
 
                 const valueMesh = scene.getObjectById(cube.valueMeshId);
@@ -196,7 +194,7 @@ export default class BarChartUtils {
             const cube = cubesInBaseLine[i];
 
             const geometry = this._createTextGeometry(valueText, font, charWidth, fontDepth);
-            const material = new THREE.MeshPhongMaterial({color: Constant.defaultTextColorBlue});
+            const material = this._createTextMaterial();
             const text = new THREE.Mesh( geometry, material );
 
             text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube));
@@ -296,6 +294,15 @@ export default class BarChartUtils {
         // after translate, geometry.boundingBox.min.y = 0 and geometry.boundingBox.max.y = height
         // NOTE: do not call center() again after translate, it will make geometry.boundingBox.min.y = -height/2 and geometry.boundingBox.max.y = height/2
         return geometry;
+    };
+
+    static _createTextMaterial = () => {
+        return new THREE.MeshPhongMaterial({
+            color: Constant.defaultTextColorBlue,
+            // specular: Constant.defaultTextColorBlue, // 高光颜色
+            emissive: Constant.defaultTextColorBlue, // 自发光
+            emissiveIntensity: 0.8,
+        });
     };
 
     /**
