@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import china_geojson from "./china-geojson";
+import china_geo_json from "./china.geo.json";
 import ChinaProvinceBarChartAlgorithms from "./china-province-bar-chart-algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
@@ -79,7 +79,7 @@ export default class ChinaProvinceBarChartUtils {
     }
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
-        const province = china_geojson.features.find(f => f.properties.name === provinceName);
+        const province = china_geo_json.features.find(f => f.properties.name === provinceName);
         const center = province.properties.center;
         const r = earthRadius + barAltitude;
 
