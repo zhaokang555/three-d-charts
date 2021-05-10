@@ -1,4 +1,4 @@
-export default class ChinaProvinceBarChartAlgorithms {
+export default class BarChartOnTheEarthAlgorithms {
     /**
      * @param r: number 到地心的距离
      * @param lon: number 经度

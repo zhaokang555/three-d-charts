@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import Utils from '../utils';
-import ChinaProvinceBarChartUtils from './china-province-bar-chart-utils';
+import BarChartOnTheEarthUtils from './bar-chart-on-the-earth-utils';
 import Constant from '../constant';
 
 const {earthRadius} = Constant;
@@ -14,12 +14,12 @@ const {earthRadius} = Constant;
  */
 export const init = (list, container) => {
     const scene = new THREE.Scene();
-    const camera = ChinaProvinceBarChartUtils.getPerspectiveCamera(scene);
+    const camera = BarChartOnTheEarthUtils.getPerspectiveCamera(scene);
 
-    ChinaProvinceBarChartUtils.addEarthMeshToScene(scene);
-    ChinaProvinceBarChartUtils.addBarsToScene(scene, list);
+    BarChartOnTheEarthUtils.addEarthMeshToScene(scene);
+    BarChartOnTheEarthUtils.addBarsToScene(scene, list);
 
-    ChinaProvinceBarChartUtils.addLightToScene(scene);
+    BarChartOnTheEarthUtils.addLightToScene(scene);
 
     const renderer = Utils.getRenderer(container);
     const controls = Utils.addControlsToCamera(camera, renderer, {

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import china_geo_json from "./china.geo.json";
-import ChinaProvinceBarChartAlgorithms from "./china-province-bar-chart-algorithms";
+import BarChartOnTheEarthAlgorithms from "./bar-chart-on-the-earth-algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
@@ -9,7 +9,7 @@ import earth_clouds from './8k_earth_clouds.png';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
-export default class ChinaProvinceBarChartUtils {
+export default class BarChartOnTheEarthUtils {
     static addLightToScene = (scene) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
         const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
@@ -91,7 +91,7 @@ export default class ChinaProvinceBarChartUtils {
          *  Polygon: Array<Ring> 如: 台湾岛外边界, 日月潭外边界, ...
          *  Ring: Array<[lan, lat]>
          */
-        province.geometry.coordinates.forEach(polygon => {
+        province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
             polygon.forEach(ring => this._addLineToScene(ring, r, scene));
         });
     };
@@ -105,7 +105,7 @@ export default class ChinaProvinceBarChartUtils {
      * @private
      */
     static _addCubeToScene(center, barHeight, r, color, scene) {
-        const centerXYZ = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, -center[0], center[1]); // 东经为负数
+        const centerXYZ = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, -center[0], center[1]); // 东经为负数
         const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
@@ -133,7 +133,7 @@ export default class ChinaProvinceBarChartUtils {
     static _addLineToScene(ring, r, scene) {
         const points = [];
         ring.forEach(lonLat => {
-            const [x, y, z] = ChinaProvinceBarChartAlgorithms.getXYZByLonLat(r, -lonLat[0], lonLat[1]); // 东经为负数
+            const [x, y, z] = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, -lonLat[0], lonLat[1]); // 东经为负数
             points.push(new THREE.Vector3(x, y, z));
         });
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
