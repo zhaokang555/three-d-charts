@@ -1,3 +1,8 @@
+import * as turf from "@turf/turf";
+import * as THREE from "three";
+import Constant from "../constant";
+const {earthRadius} = Constant;
+
 export default class BarChartOnTheEarthAlgorithms {
     /**
      * @param r: number 到地心的距离
@@ -23,5 +28,15 @@ export default class BarChartOnTheEarthAlgorithms {
          z = R * cos(lat) * sin(lon)
          */
         return [x, y, z];
+    };
+
+    /**
+     * @param fromCoordinates: [number, number];
+     * @param toCoordinates: [number, number];
+     */
+    static getCurveHeight = (fromCoordinates, toCoordinates) => {
+        const distance = turf.distance(fromCoordinates, toCoordinates, {units: 'kilometers'});
+        // 中国两城市最远距离5172km
+        return earthRadius * (0.2 + 0.3 * distance / 5172); // 0.2~0.5 * earthRadius
     };
 }

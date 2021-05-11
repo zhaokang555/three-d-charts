@@ -108,23 +108,26 @@ export default class BarChartOnTheEarthUtils {
                 ));
 
                 const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
-                const midPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
-                    earthRadius * 1.4,
+                const curveHeight = BarChartOnTheEarthAlgorithms.getCurveHeight(fromCity.coordinates, toCity.coordinates);
+                const controlPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+                    earthRadius + curveHeight,
                     midpoint.geometry.coordinates[0],
                     midpoint.geometry.coordinates[1],
                 ));
 
                 const curve = new THREE.QuadraticBezierCurve3( // 三维二次贝塞尔曲线
                     fromVec,
-                    midPointVec,
+                    controlPointVec,
                     toVec
                 );
 
+                // using BufferGeometry().setFromPoints()
                 // const points = curve.getPoints( 50 );
                 // const geometry = new THREE.BufferGeometry().setFromPoints( points );
                 // const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
                 // const curveObject = new THREE.Line( geometry, material );
 
+                // using TubeGeometry
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
                     color: 0x00ff00,
