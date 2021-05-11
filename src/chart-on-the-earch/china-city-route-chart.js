@@ -17,10 +17,9 @@ export const init = (list, container) => {
     const camera = BarChartOnTheEarthUtils.getPerspectiveCamera(scene);
 
     BarChartOnTheEarthUtils.addEarthMeshToScene(scene);
-    // BarChartOnTheEarthUtils.addBarsToScene(scene, list);
     BarChartOnTheEarthUtils.addRoutesToScene(scene, [
-        {from: '北京', to: '广州', weight: 1},
         {from: '北京', to: '上海', weight: 2},
+        {from: '上海', to: '武汉', weight: 3},
     ]);
 
     BarChartOnTheEarthUtils.addLightToScene(scene);

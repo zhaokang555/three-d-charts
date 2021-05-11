@@ -7,7 +7,7 @@ import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
-import {Vector3} from "three";
+import * as turf from '@turf/turf'
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -98,33 +98,40 @@ export default class BarChartOnTheEarthUtils {
             if (fromCity && toCity) {
                 const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius,
-                    fromCity.coordinates[0],
+                    -fromCity.coordinates[0],
                     fromCity.coordinates[1]
                 ));
                 const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius,
-                    toCity.coordinates[0],
+                    -toCity.coordinates[0],
                     toCity.coordinates[1]
                 ));
-                const controlCoordinates = [
-                    (fromCity.coordinates[0] + toCity.coordinates[0]) / 2,
-                    (fromCity.coordinates[1] + toCity.coordinates[1]) / 2,
-                ];
-                const controlVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+
+                const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
+                const midPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius * 1.4,
-                    controlCoordinates[0],
-                    controlCoordinates[1],
+                    -midpoint.geometry.coordinates[0],
+                    midpoint.geometry.coordinates[1],
                 ));
+
                 const curve = new THREE.QuadraticBezierCurve3( // 三维二次贝塞尔曲线
                     fromVec,
-                    controlVec,
+                    midPointVec,
                     toVec
                 );
 
-                const points = curve.getPoints( 50 );
-                const geometry = new THREE.BufferGeometry().setFromPoints( points );
-                const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-                const curveObject = new THREE.Line( geometry, material );
+                // const points = curve.getPoints( 50 );
+                // const geometry = new THREE.BufferGeometry().setFromPoints( points );
+                // const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+                // const curveObject = new THREE.Line( geometry, material );
+
+                const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
+                const material = new THREE.MeshPhongMaterial({
+                    color: 0x00ff00,
+                    specular: 0xffffff,
+                    side: THREE.DoubleSide,
+                });
+                const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
             }
         });
