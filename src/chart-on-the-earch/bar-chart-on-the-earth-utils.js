@@ -98,19 +98,19 @@ export default class BarChartOnTheEarthUtils {
             if (fromCity && toCity) {
                 const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius,
-                    -fromCity.coordinates[0],
+                    fromCity.coordinates[0],
                     fromCity.coordinates[1]
                 ));
                 const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius,
-                    -toCity.coordinates[0],
+                    toCity.coordinates[0],
                     toCity.coordinates[1]
                 ));
 
                 const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
                 const midPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius * 1.4,
-                    -midpoint.geometry.coordinates[0],
+                    midpoint.geometry.coordinates[0],
                     midpoint.geometry.coordinates[1],
                 ));
 
@@ -164,7 +164,7 @@ export default class BarChartOnTheEarthUtils {
      * @private
      */
     static _addCubeToScene(center, barHeight, r, color, scene) {
-        const centerXYZ = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, -center[0], center[1]); // 东经为负数
+        const centerXYZ = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
@@ -192,7 +192,7 @@ export default class BarChartOnTheEarthUtils {
     static _addLineToScene(ring, r, scene) {
         const points = [];
         ring.forEach(lonLat => {
-            const [x, y, z] = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, -lonLat[0], lonLat[1]); // 东经为负数
+            const [x, y, z] = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
             points.push(new THREE.Vector3(x, y, z));
         });
         const geometry = new THREE.BufferGeometry().setFromPoints(points);

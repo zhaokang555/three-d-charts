@@ -6,6 +6,7 @@ export default class BarChartOnTheEarthAlgorithms {
      * @return {[number, number, number]}
      */
     static getXYZByLonLat = (r, lon, lat) => {
+        lon = -lon; // 在我们的坐标系下, 东经为负数
         const {sin, cos, PI} = Math;
         const lonRadian = lon / 180 * PI;
         const latRadian = lat / 180 * PI;
