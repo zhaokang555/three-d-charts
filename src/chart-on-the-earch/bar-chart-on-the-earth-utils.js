@@ -1,11 +1,13 @@
 import * as THREE from "three";
 import china_geo_json from "./china.geo.json";
+import china_city from './china_city.json';
 import BarChartOnTheEarthAlgorithms from "./bar-chart-on-the-earth-algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
+import {Vector3} from "three";
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -75,6 +77,56 @@ export default class BarChartOnTheEarthUtils {
             const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
             const color = colors[colorIndex];
             this._addBarToScene(kv.key, barHeight, color, scene);
+        });
+    }
+
+    /**
+     * @param scene
+     * @param list: Array<{
+     *     from: string;
+     *     to: string;
+     *     weight: number;
+     * }>
+     */
+    static addRoutesToScene(scene, list) {
+        const maxWeight = Math.max(...list.map(line => line.weight));
+        const minWeight = Math.min(...list.map(line => line.weight));
+
+        list.forEach(({from, to, weight}) => {
+            const fromCity = china_city.find(item => item.name === from);
+            const toCity = china_city.find(item => item.name === to);
+            if (fromCity && toCity) {
+                const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+                    earthRadius,
+                    fromCity.coordinates[0],
+                    fromCity.coordinates[1]
+                ));
+                const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+                    earthRadius,
+                    toCity.coordinates[0],
+                    toCity.coordinates[1]
+                ));
+                const controlCoordinates = [
+                    (fromCity.coordinates[0] + toCity.coordinates[0]) / 2,
+                    (fromCity.coordinates[1] + toCity.coordinates[1]) / 2,
+                ];
+                const controlVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+                    earthRadius * 1.4,
+                    controlCoordinates[0],
+                    controlCoordinates[1],
+                ));
+                const curve = new THREE.QuadraticBezierCurve3( // 三维二次贝塞尔曲线
+                    fromVec,
+                    controlVec,
+                    toVec
+                );
+
+                const points = curve.getPoints( 50 );
+                const geometry = new THREE.BufferGeometry().setFromPoints( points );
+                const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+                const curveObject = new THREE.Line( geometry, material );
+                scene.add( curveObject );
+            }
         });
     }
 
