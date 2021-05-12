@@ -36,7 +36,7 @@ export default class BarChartOnTheEarthAlgorithms {
      */
     static getCurveHeight = (fromCoordinates, toCoordinates) => {
         const distance = turf.distance(fromCoordinates, toCoordinates, {units: 'kilometers'});
-        // 中国两城市最远距离5172km
-        return earthRadius * (0.2 + 0.3 * distance / 5172); // 0.2~0.5 * earthRadius
+        const maxDistance = 6371 * Math.PI; // 地球上两城市最远距离约6371*PI km
+        return earthRadius * (0.1 + 2 * distance / maxDistance); // 0.2~0.5 * earthRadius
     };
 }

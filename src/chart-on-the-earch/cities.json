@@ -36,5 +36,9 @@
   {"name": "海口", "coordinates": [110.35000, 20.01667]},
   {"name": "首尔", "coordinates": [126.967, 37.567]},
   {"name": "东京", "coordinates": [139.73, 35.68]},
+  {"name": "莫斯科", "coordinates": [37.617, 55.75]},
+  {"name": "开罗", "coordinates": [31.24574, 30.06107]},
+  {"name": "曼谷", "coordinates": [100.517, 13.75]},
+  {"name": "纽约", "coordinates": [-74.0, 40.717]},
   {"name": "澳门", "coordinates": [113.50000, 22.20000]}
 ]

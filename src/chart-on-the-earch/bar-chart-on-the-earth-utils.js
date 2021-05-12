@@ -111,6 +111,7 @@ export default class BarChartOnTheEarthUtils {
 
                 const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
                 const curveHeight = BarChartOnTheEarthAlgorithms.getCurveHeight(fromCity.coordinates, toCity.coordinates);
+                console.log(from, curveHeight);
                 const controlPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius + curveHeight,
                     midpoint.geometry.coordinates[0],
@@ -144,7 +145,7 @@ export default class BarChartOnTheEarthUtils {
                     // color: 0x00ff00,
                     // side: THREE.DoubleSide,
                     transparent: true,
-                    opacity: 0.8
+                    opacity: 0.9
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
