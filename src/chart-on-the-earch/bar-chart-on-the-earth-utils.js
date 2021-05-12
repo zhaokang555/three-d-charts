@@ -134,7 +134,7 @@ export default class BarChartOnTheEarthUtils {
                 const texture = loader.load(point);
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.x = 2;
+                texture.repeat.x = weight;
                 textures.push(texture);
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
