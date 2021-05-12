@@ -7,7 +7,7 @@
 
 <script>
     export default {
-        name: "set-china-city-route-chart",
+        name: "set-city-route-chart",
         data() {
             return {
                 list:
@@ -26,7 +26,7 @@
         methods: {
             display() {
                 localStorage.setItem('list', this.list);
-                this.$router.push('china-city-route-chart-display');
+                this.$router.push('city-route-chart-display');
             }
         }
     }

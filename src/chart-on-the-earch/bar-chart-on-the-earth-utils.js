@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import china_geo_json from "./china.geo.json";
-import china_city from './china_city.json';
+import cities from './cities.json';
 import BarChartOnTheEarthAlgorithms from "./bar-chart-on-the-earth-algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
@@ -95,8 +95,8 @@ export default class BarChartOnTheEarthUtils {
         const textureAndSpeedList = [];
 
         list.forEach(({from, to, weight}) => {
-            const fromCity = china_city.find(item => item.name === from);
-            const toCity = china_city.find(item => item.name === to);
+            const fromCity = cities.find(item => item.name === from);
+            const toCity = cities.find(item => item.name === to);
             if (fromCity && toCity) {
                 const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius,

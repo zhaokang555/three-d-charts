@@ -15,7 +15,7 @@
         <set-china-province-bar-chart></set-china-province-bar-chart>
 
         <h2>Demo 4: China city route chart</h2>
-        <set-china-city-route-chart></set-china-city-route-chart>
+        <set-city-route-chart></set-city-route-chart>
     </div>
 </template>
 
@@ -23,7 +23,7 @@
     import SetBarChart from './SetBarChart'
     import SetBarChart2Args from './SetBarChart2Args'
     import SetChinaProvinceBarChart from './SetChinaProvinceBarChart'
-    import SetChinaCityRouteChart from "./SetChinaCityRouteChart";
+    import SetCityRouteChart from "./SetCityRouteChart";
 
     export default {
         name: "DemoList",
@@ -31,7 +31,7 @@
             'set-bar-chart': SetBarChart,
             'set-bar-chart-2-args': SetBarChart2Args,
             'set-china-province-bar-chart': SetChinaProvinceBarChart,
-            'set-china-city-route-chart': SetChinaCityRouteChart,
+            'set-city-route-chart': SetCityRouteChart,
         }
     }
 </script>

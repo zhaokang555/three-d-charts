@@ -3,13 +3,13 @@
 </template>
 
 <script>
-    import {initChinaCityRouteChart} from '../src';
+    import {initCityRouteChart} from '../src';
 
     export default {
-        name: "ChinaCityRouteChartDisplay",
+        name: "CityRouteChartDisplay",
         mounted() {
             const list = JSON.parse(localStorage.getItem('list')) || [];
-            initChinaCityRouteChart(list, this.$refs.container);
+            initCityRouteChart(list, this.$refs.container);
         }
     }
 </script>
