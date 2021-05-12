@@ -17,7 +17,7 @@ export const init = (list, container) => {
     const camera = BarChartOnTheEarthUtils.getPerspectiveCamera(scene);
 
     BarChartOnTheEarthUtils.addEarthMeshToScene(scene);
-    BarChartOnTheEarthUtils.addRoutesToScene(scene, [
+    const updateRoutes = BarChartOnTheEarthUtils.addRoutesToScene(scene, [
         {from: '北京', to: '上海', weight: 2},
         {from: '上海', to: '武汉', weight: 3},
         {from: '哈尔滨', to: '拉萨', weight: 4},
@@ -35,6 +35,8 @@ export const init = (list, container) => {
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
+
+        updateRoutes();
 
         renderer.render( scene, camera );
     };

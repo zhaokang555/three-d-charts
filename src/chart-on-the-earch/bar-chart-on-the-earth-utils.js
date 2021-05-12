@@ -7,7 +7,8 @@ import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
-import * as turf from '@turf/turf'
+import * as turf from '@turf/turf';
+import point from './point.png';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -91,6 +92,7 @@ export default class BarChartOnTheEarthUtils {
     static addRoutesToScene(scene, list) {
         const maxWeight = Math.max(...list.map(line => line.weight));
         const minWeight = Math.min(...list.map(line => line.weight));
+        const textures = [];
 
         list.forEach(({from, to, weight}) => {
             const fromCity = china_city.find(item => item.name === from);
@@ -128,16 +130,33 @@ export default class BarChartOnTheEarthUtils {
                 // const curveObject = new THREE.Line( geometry, material );
 
                 // using TubeGeometry
+                const loader = new THREE.TextureLoader();
+                const texture = loader.load(point);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.x = 2;
+                textures.push(texture);
+
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
-                    color: 0x00ff00,
-                    specular: 0xffffff,
-                    side: THREE.DoubleSide,
+                    map: texture,
+                    // color: 0x00ff00,
+                    // side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.8
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
             }
         });
+
+        const updateRoutes = () => {
+            textures.forEach(t => {
+                t.offset.x -= 0.005 * earthRadius;
+            });
+        };
+
+        return updateRoutes;
     }
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
