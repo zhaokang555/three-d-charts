@@ -92,7 +92,7 @@ export default class BarChartOnTheEarthUtils {
     static addRoutesToScene(scene, list) {
         const maxWeight = Math.max(...list.map(line => line.weight));
         const minWeight = Math.min(...list.map(line => line.weight));
-        const textures = [];
+        const textureAndSpeedList = [];
 
         list.forEach(({from, to, weight}) => {
             const fromCity = china_city.find(item => item.name === from);
@@ -134,8 +134,9 @@ export default class BarChartOnTheEarthUtils {
                 const texture = loader.load(point);
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.x = weight;
-                textures.push(texture);
+                // note: speed = (0.002 ~ 0.012) * earthRadius
+                const speed = (0.002 + 0.01 * (weight - minWeight) / (maxWeight - minWeight)) * earthRadius;
+                textureAndSpeedList.push({texture, speed});
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
@@ -151,9 +152,7 @@ export default class BarChartOnTheEarthUtils {
         });
 
         const updateRoutes = () => {
-            textures.forEach(t => {
-                t.offset.x -= 0.005 * earthRadius;
-            });
+            textureAndSpeedList.forEach(({texture: t, speed: s}) => t.offset.x -= s);
         };
 
         return updateRoutes;

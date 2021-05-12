@@ -12,9 +12,9 @@
             return {
                 list:
 `[
-    {"from": "北京", "to": "上海", "weight": 2},
-    {"from": "上海", "to": "武汉", "weight": 3},
-    {"from": "哈尔滨", "to": "拉萨", "weight": 4}
+    {"from": "上海", "to": "北京", "weight": 5},
+    {"from": "武汉", "to": "北京", "weight": 2},
+    {"from": "拉萨", "to": "北京", "weight": 1}
 ]`
             }
         },
