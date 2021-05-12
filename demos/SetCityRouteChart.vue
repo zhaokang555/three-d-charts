@@ -15,6 +15,8 @@
     {"from": "上海", "to": "北京", "weight": 10},
     {"from": "成都", "to": "北京", "weight": 6},
     {"from": "台北", "to": "北京", "weight": 5},
+    {"from": "首尔", "to": "北京", "weight": 5},
+    {"from": "东京", "to": "北京", "weight": 5},
     {"from": "昆明", "to": "北京", "weight": 4},
     {"from": "海口", "to": "北京", "weight": 4},
     {"from": "哈尔滨", "to": "北京", "weight": 3},
