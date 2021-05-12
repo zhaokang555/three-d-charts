@@ -14,7 +14,7 @@
         <h3>2020年中国各省GDP</h3>
         <set-china-province-bar-chart></set-china-province-bar-chart>
 
-        <h2>Demo 4: China city route chart</h2>
+        <h2>Demo 4: City route chart</h2>
         <set-city-route-chart></set-city-route-chart>
     </div>
 </template>

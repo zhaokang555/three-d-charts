@@ -19,7 +19,7 @@ export default class BarChartOnTheEarthUtils {
         light.position.set(Math.cos(lonRadianOfUtc8), 0, Math.sin(lonRadianOfUtc8)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.9));
     };
 
     static getPerspectiveCamera = () => {
@@ -111,7 +111,6 @@ export default class BarChartOnTheEarthUtils {
 
                 const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
                 const curveHeight = BarChartOnTheEarthAlgorithms.getCurveHeight(fromCity.coordinates, toCity.coordinates);
-                console.log(from, curveHeight);
                 const controlPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
                     earthRadius + curveHeight,
                     midpoint.geometry.coordinates[0],
