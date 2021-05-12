@@ -134,8 +134,8 @@ export default class BarChartOnTheEarthUtils {
                 const texture = loader.load(point);
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                // note: speed = (0.002 ~ 0.012) * earthRadius
-                const speed = (0.002 + 0.01 * (weight - minWeight) / (maxWeight - minWeight)) * earthRadius;
+                // note: speed = (0.001 ~ 0.011) * earthRadius
+                const speed = (0.001 + 0.01 * (weight - minWeight) / (maxWeight - minWeight)) * earthRadius;
                 textureAndSpeedList.push({texture, speed});
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
