@@ -10,7 +10,7 @@ export default class BarChartUtils {
         light.position.set(1, 1, 2); // 平行光从右上前方射过来
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.4)); // 环境光
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.55)); // 环境光
     };
 
     static addPlaneToScene = (scene) => {
@@ -47,11 +47,12 @@ export default class BarChartUtils {
      * @param scene: THREE.Scene
      * @param values: Array<number>
      * @param baseLineIndex: number 第几排柱子
-     * @param cubeWidth
-     * @param maxValue
-     * @param minValue
+     * @param cubeWidth: number
+     * @param maxValue: number
+     * @param minValue: number
      */
     static addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth, maxValue, minValue) => {
+        // set default value
         cubeWidth = cubeWidth || BarChartAlgorithms.getCubeWidthByValues(values);
         maxValue = maxValue || Math.max(...values);
         minValue = minValue || Math.min(...values);
@@ -66,12 +67,7 @@ export default class BarChartUtils {
 
             const cube = new THREE.Mesh(
                 new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
-                new THREE.MeshPhongMaterial({
-                    color,
-                    side: THREE.DoubleSide,
-                    emissive: color, // 自发光
-                    emissiveIntensity: 0.2,
-                }),
+                new THREE.MeshPhongMaterial({color, side: THREE.DoubleSide}),
             );
             cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
             cube.defaultColor = color; // store default color in cube mesh object
