@@ -77,7 +77,7 @@ export default class BarChartOnTheEarthUtils {
             const barHeight = kv.value / maxValue * maxBarHeight;
             const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
             const color = colors[colorIndex];
-            this._addBarToScene(kv.key, barHeight, color, scene);
+            BarChartOnTheEarthUtils._addBarToScene(kv.key, barHeight, color, scene);
         });
     }
 
@@ -163,7 +163,7 @@ export default class BarChartOnTheEarthUtils {
         const center = province.properties.center;
         const r = earthRadius + barAltitude;
 
-        this._addCubeToScene(center, barHeight, r, color, scene);
+        BarChartOnTheEarthUtils._addCubeToScene(center, barHeight, r, color, scene);
 
         /**
          *  province.geometry.coordinates: Array<MultiPolygon> 如: 台湾省
@@ -172,7 +172,7 @@ export default class BarChartOnTheEarthUtils {
          *  Ring: Array<[lan, lat]>
          */
         province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-            polygon.forEach(ring => this._addLineToScene(ring, r, scene));
+            polygon.forEach(ring => BarChartOnTheEarthUtils._addLineToScene(ring, r, scene));
         });
     };
 
