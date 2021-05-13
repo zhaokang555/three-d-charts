@@ -19,7 +19,7 @@ export default class BarChartOnTheEarthUtils {
         light.position.set(Math.cos(lonRadianOfUtc8), 0, Math.sin(lonRadianOfUtc8)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.9));
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
     };
 
     static getPerspectiveCamera = () => {
@@ -141,10 +141,12 @@ export default class BarChartOnTheEarthUtils {
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
                     map: texture,
-                    // color: '#00ff00',
-                    // side: THREE.DoubleSide,
                     transparent: true,
-                    opacity: 0.9
+                    opacity: 0.9,
+
+                    // 会变成白色
+                    emissive: '#ffffff', // 自发光
+                    emissiveIntensity: 1,
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
@@ -191,8 +193,6 @@ export default class BarChartOnTheEarthUtils {
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({
                 color,
-                specular: '#ffffff',
-                shininess: 100,
                 side: THREE.DoubleSide,
             }),
         );
