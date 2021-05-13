@@ -19,7 +19,7 @@ export const init = (list, container) => {
     BarChartOnTheEarthUtils.addEarthMeshToScene(scene);
     const updateRoutes = BarChartOnTheEarthUtils.addRoutesToScene(scene, list);
 
-    BarChartOnTheEarthUtils.addLightToScene(scene);
+    BarChartOnTheEarthUtils.addLightToScene(scene, 1);
 
     const renderer = Utils.getRenderer(container);
     const controls = Utils.addControlsToCamera(camera, renderer, {

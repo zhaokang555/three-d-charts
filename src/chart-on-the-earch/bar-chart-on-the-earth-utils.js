@@ -13,13 +13,13 @@ import point from './point.png';
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
 export default class BarChartOnTheEarthUtils {
-    static addLightToScene = (scene) => {
+    static addLightToScene = (scene, ambientLightIntensity = 0.7) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
         const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
         light.position.set(Math.cos(lonRadianOfUtc8), 0, Math.sin(lonRadianOfUtc8)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.7));
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, ambientLightIntensity));
     };
 
     static getPerspectiveCamera = () => {
@@ -144,9 +144,9 @@ export default class BarChartOnTheEarthUtils {
                     transparent: true,
                     opacity: 0.9,
 
-                    // 会变成白色
-                    emissive: '#ffffff', // 自发光
-                    emissiveIntensity: 1,
+                    // 换种样式, 会变成白色
+                    // emissive: '#ffffff', // 自发光
+                    // emissiveIntensity: 1,
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
