@@ -15,7 +15,7 @@ export default class BarChartUtils {
 
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
-        const cubes = this.getCubes(scene);
+        const cubes = BarChartUtils.getCubes(scene);
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
             // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
@@ -23,9 +23,9 @@ export default class BarChartUtils {
             const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
             const maxXZ = Math.max(maxX, maxZ);
             const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-            const planeWidthByMaxXZ = maxXZ * 2 + this.getCubeWidthByCube(cubes[0]);
+            const planeWidthByMaxXZ = maxXZ * 2 + BarChartUtils.getCubeWidthByCube(cubes[0]);
             if (planeWidthByMaxXZ > maxY) {
-                planeWidth = maxXZ * 2 + this.getCubeWidthByCube(cubes[0]);
+                planeWidth = maxXZ * 2 + BarChartUtils.getCubeWidthByCube(cubes[0]);
             } else {
                 planeWidth = maxY;
             }
@@ -80,7 +80,7 @@ export default class BarChartUtils {
     static getOrthographicCamera = (scene) => {
         const ratio = window.innerWidth / window.innerHeight;
 
-        const planeWidth = this.getPlaneWidthFromScene(scene);
+        const planeWidth = BarChartUtils.getPlaneWidthFromScene(scene);
         const x = planeWidth / 2 * 1.415;
         const y = x / ratio;
         const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
@@ -91,7 +91,7 @@ export default class BarChartUtils {
     };
 
     static getPerspectiveCamera = (scene) => {
-        const planeWidth = this.getPlaneWidthFromScene(scene);
+        const planeWidth = BarChartUtils.getPlaneWidthFromScene(scene);
         const x = planeWidth / 2 * 1.732;
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, planeWidth * 4);
@@ -116,16 +116,16 @@ export default class BarChartUtils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubesInBaseLine = this.getCubesInBaseLine(scene, baseLineIndex);
-            const cubeWidth = this.getCubeWidthByCube(cubesInBaseLine[0]);
+            const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
+            const cubeWidth = BarChartUtils.getCubeWidthByCube(cubesInBaseLine[0]);
             const charWidth = cubeWidth / keyMaxlength;
             const fontDepth = charWidth / 8; // 3D font thickness
 
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
-                const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
-                const material = this._createTextMaterial();
+                const geometry = BarChartUtils._createTextGeometry(key, font, charWidth, fontDepth);
+                const material = BarChartUtils._createTextMaterial();
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left back corner
@@ -147,16 +147,16 @@ export default class BarChartUtils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = this.getCubes(scene);
+            const cubes = BarChartUtils.getCubes(scene);
             const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
-            const charWidth = this.getCubeWidthByCube(cubes[0]) / keyMaxlength;
+            const charWidth = BarChartUtils.getCubeWidthByCube(cubes[0]) / keyMaxlength;
             const fontDepth = charWidth / 8;
 
             for (let i = 0; i < keys.length; ++i) {
                 const key = keys[i];
                 const cube = cubesInBaseLine[i];
-                const geometry = this._createTextGeometry(key, font, charWidth, fontDepth);
-                const material = this._createTextMaterial();
+                const geometry = BarChartUtils._createTextGeometry(key, font, charWidth, fontDepth);
+                const material = BarChartUtils._createTextMaterial();
                 const text = new THREE.Mesh( geometry, material );
 
                 const valueMesh = scene.getObjectById(cube.valueMeshId);
@@ -179,8 +179,8 @@ export default class BarChartUtils {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
         const font = loader.parse(helvetiker_regular);
-        const cubes = this.getCubes(scene);
-        const charWidth = this.getCubeWidthByCube(cubes[0]) / valueMaxLength;
+        const cubes = BarChartUtils.getCubes(scene);
+        const charWidth = BarChartUtils.getCubeWidthByCube(cubes[0]) / valueMaxLength;
         const fontDepth = charWidth / 8;
         const cubesInBaseLine = BarChartUtils.getCubesInBaseLine(scene, baseLineIndex);
 
@@ -188,8 +188,8 @@ export default class BarChartUtils {
             const valueText = valueTextList[i];
             const cube = cubesInBaseLine[i];
 
-            const geometry = this._createTextGeometry(valueText, font, charWidth, fontDepth);
-            const material = this._createTextMaterial();
+            const geometry = BarChartUtils._createTextGeometry(valueText, font, charWidth, fontDepth);
+            const material = BarChartUtils._createTextMaterial();
             const text = new THREE.Mesh( geometry, material );
 
             text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube));
@@ -207,20 +207,20 @@ export default class BarChartUtils {
     static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
         raycaster.setFromCamera( pointer, camera );
 
-        const cubes = this.getCubes(scene);
+        const cubes = BarChartUtils.getCubes(scene);
         if (cubes.length > 0) {
             cubes.forEach(cube => {
                 const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
                 cube.material.color.set(defaultColor);
-                this.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                this.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+                BarChartUtils.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                BarChartUtils.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
                 const cube = intersects[0].object;
                 cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
-                this.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                this.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+                BarChartUtils.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                BarChartUtils.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             }
         }
     };
@@ -241,8 +241,8 @@ export default class BarChartUtils {
             planeWidth = planeMesh.geometry.parameters.width
         } else {
             // when no plane, use max value * value length instead
-            const cubes = this.getCubes(scene);
-            const values = cubes.map(this.getValueByCube);
+            const cubes = BarChartUtils.getCubes(scene);
+            const values = cubes.map(BarChartUtils.getValueByCube);
             planeWidth = Math.max(...values) * values.length;
         }
         return planeWidth;
@@ -258,7 +258,7 @@ export default class BarChartUtils {
      * @return {THREE.Mesh[]}
      */
     static getCubesInBaseLine = (scene, baseLineIndex) => {
-        const cubes = this.getCubes(scene);
+        const cubes = BarChartUtils.getCubes(scene);
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
 
