@@ -38,13 +38,13 @@ export default class BarChartOnTheEarthUtils {
 
         // const material = new THREE.MeshPhongMaterial({
         //     color: defaultCubeColorRed,
-        //     specular: 0xffffff,
+        //     specular: '#ffffff',
         //     shininess: 100
         // });
         const material = new THREE.MeshPhongMaterial( {
             map,
             specularMap, // 镜面反射贴图
-            specular: 0x808080,
+            specular: '#808080',
             shininess: 22,
         } );
 
@@ -126,7 +126,7 @@ export default class BarChartOnTheEarthUtils {
                 // using BufferGeometry().setFromPoints()
                 // const points = curve.getPoints( 50 );
                 // const geometry = new THREE.BufferGeometry().setFromPoints( points );
-                // const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+                // const material = new THREE.LineBasicMaterial( { color : '#ff0000' } );
                 // const curveObject = new THREE.Line( geometry, material );
 
                 // using TubeGeometry
@@ -141,7 +141,7 @@ export default class BarChartOnTheEarthUtils {
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
                     map: texture,
-                    // color: 0x00ff00,
+                    // color: '#00ff00',
                     // side: THREE.DoubleSide,
                     transparent: true,
                     opacity: 0.9
@@ -191,7 +191,7 @@ export default class BarChartOnTheEarthUtils {
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
             new THREE.MeshPhongMaterial({
                 color,
-                specular: 0xffffff,
+                specular: '#ffffff',
                 shininess: 100,
                 side: THREE.DoubleSide,
             }),
@@ -230,7 +230,7 @@ export default class BarChartOnTheEarthUtils {
             side: THREE.DoubleSide,
             opacity: 0.5,
             transparent: true,
-            emissive: 0x333333, // 自发光
+            emissive: '#333333', // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
