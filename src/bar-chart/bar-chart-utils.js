@@ -69,6 +69,7 @@ export default class BarChartUtils {
                 new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
                 new THREE.MeshPhongMaterial({color, side: THREE.DoubleSide}),
             );
+            cube.name = 'cubeMesh-' + value;
             cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
             cube.defaultColor = color; // store default color in cube mesh object
             cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object

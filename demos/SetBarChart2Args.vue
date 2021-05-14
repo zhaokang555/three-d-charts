@@ -1,6 +1,6 @@
 <template>
     <div>
-        <textarea cols="50" rows="32" v-model="lists"></textarea>
+        <textarea cols="50" rows="20" v-model="lists"></textarea>
         <button @click="display">generate bar chart 2 args</button>
     </div>
 </template>

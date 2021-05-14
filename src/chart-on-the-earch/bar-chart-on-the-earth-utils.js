@@ -7,7 +7,7 @@ import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
-import point from './point.png';
+import routeTexture from './route.png';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -126,22 +126,18 @@ export default class BarChartOnTheEarthUtils {
 
                 // using TubeGeometry
                 const loader = new THREE.TextureLoader();
-                const texture = loader.load(point);
-                texture.wrapS = THREE.RepeatWrapping;
+                const texture = loader.load(routeTexture);
+                texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
                 texture.wrapT = THREE.RepeatWrapping;
-                // note: speed = (0.001 ~ 0.011) * earthRadius
-                const speed = (0.001 + 0.01 * (weight - minWeight) / (maxWeight - minWeight)) * earthRadius;
+                // texture.repeat.x = 2; // 纹理重复几次, 默认1次
+                const weightRange = maxWeight - minWeight || 1;
+                const speed = (0.001 + 0.01 * (weight - minWeight) / weightRange) * earthRadius; // note: speed = (0.001 ~ 0.011) * earthRadius
                 textureAndSpeedList.push({texture, speed});
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
                 const material = new THREE.MeshPhongMaterial({
                     map: texture,
                     transparent: true,
-                    opacity: 0.9,
-
-                    // 换种样式, 会变成白色
-                    // emissive: '#ffffff', // 自发光
-                    // emissiveIntensity: 1,
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
                 scene.add( curveObject );
