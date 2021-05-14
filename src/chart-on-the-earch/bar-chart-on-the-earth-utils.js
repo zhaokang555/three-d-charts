@@ -7,7 +7,6 @@ import colormap from 'colormap';
 import earth_nightmap from './8k_earth_nightmap.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
-import * as turf from '@turf/turf';
 import point from './point.png';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
@@ -39,18 +38,21 @@ export default class BarChartOnTheEarthUtils {
         // const material = new THREE.MeshPhongMaterial({
         //     color: defaultCubeColorRed,
         //     specular: '#ffffff',
-        //     shininess: 100
+        //     shininess: 100,
+        //     side: THREE.DoubleSide,
         // });
         const material = new THREE.MeshPhongMaterial( {
             map,
             specularMap, // 镜面反射贴图
             specular: '#808080',
             shininess: 22,
+            side: THREE.DoubleSide,
         } );
 
         const geometry = new THREE.SphereGeometry(earthRadius, 64, 64);
         const earthMesh = new THREE.Mesh(geometry, material);
         earthMesh.position.set(0, 0, 0);
+        earthMesh.name = 'earthMesh';
         // earthMesh.rotateY(-Math.PI / 2);
 
         // ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
@@ -109,13 +111,7 @@ export default class BarChartOnTheEarthUtils {
                     toCity.coordinates[1]
                 ));
 
-                const midpoint = turf.midpoint(fromCity.coordinates, toCity.coordinates); // 测地线中点
-                const curveHeight = BarChartOnTheEarthAlgorithms.getCurveHeight(fromCity.coordinates, toCity.coordinates);
-                const controlPointVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
-                    earthRadius + curveHeight,
-                    midpoint.geometry.coordinates[0],
-                    midpoint.geometry.coordinates[1],
-                ));
+                const controlPointVec = BarChartOnTheEarthAlgorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
 
                 const curve = new THREE.QuadraticBezierCurve3( // 三维二次贝塞尔曲线
                     fromVec,
@@ -168,6 +164,7 @@ export default class BarChartOnTheEarthUtils {
         BarChartOnTheEarthUtils._addCubeToScene(center, barHeight, r, color, scene);
 
         /**
+         *  个人理解:
          *  province.geometry.coordinates: Array<MultiPolygon> 如: 台湾省
          *  MultiPolygon: Array<Polygon> 如: 台湾岛, 钓鱼岛, ...
          *  Polygon: Array<Ring> 如: 台湾岛外边界, 日月潭外边界, ...
@@ -235,16 +232,5 @@ export default class BarChartOnTheEarthUtils {
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
         earthMesh.add(cloudMesh);
-    }
-
-    static _mapValueToColor(value, maxValue, minValue) {
-        const ratio = (value - minValue) / (maxValue - minValue);
-        const n = ratio * 255;
-
-        const r = Math.round(Math.sin(0.024 * n + 0) * 127 + 128);
-        const g = Math.round(Math.sin(0.024 * n + 2) * 127 + 128);
-        const b = Math.round(Math.sin(0.024 * n + 4) * 127 + 128);
-
-        return new THREE.Color(r, g, b).getHex();
     }
 }

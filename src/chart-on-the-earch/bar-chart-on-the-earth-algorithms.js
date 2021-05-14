@@ -1,4 +1,3 @@
-import * as turf from "@turf/turf";
 import * as THREE from "three";
 import Constant from "../constant";
 const {earthRadius} = Constant;
@@ -31,12 +30,31 @@ export default class BarChartOnTheEarthAlgorithms {
     };
 
     /**
+     * @param scene
      * @param fromCoordinates: [number, number];
      * @param toCoordinates: [number, number];
+     * @return {THREE.Vector3}
      */
-    static getCurveHeight = (fromCoordinates, toCoordinates) => {
-        const distance = turf.distance(fromCoordinates, toCoordinates, {units: 'kilometers'});
-        const maxDistance = 6371 * Math.PI; // 地球上两城市最远距离约6371*PI km
-        return earthRadius * (0.1 + 2 * distance / maxDistance); // 0.2~0.5 * earthRadius
+    static getControlPointPosition = (scene, fromCoordinates, toCoordinates) => {
+        const getXYZByLonLat = BarChartOnTheEarthAlgorithms.getXYZByLonLat;
+        const Vector3 = THREE.Vector3;
+
+        const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));
+        const toPosition = new Vector3(...getXYZByLonLat(earthRadius, ...toCoordinates));
+
+        const midpointPositionInTheEarth = fromPosition.lerp(toPosition, 0.5); // 插值
+
+        const raycaster = new THREE.Raycaster(new Vector3(), midpointPositionInTheEarth.normalize());
+        const earthMesh = scene.getObjectByName('earthMesh');
+        if (earthMesh) {
+            const intersects = raycaster.intersectObject(earthMesh);
+            if (intersects.length > 0) {
+                const midpointPositionOnTheEarth = intersects[0].point;
+                const distance = fromPosition.distanceTo(toPosition);
+                const maxDistance = earthRadius * 2;
+                return midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance);
+            }
+        }
+        return new Vector3();
     };
 }
