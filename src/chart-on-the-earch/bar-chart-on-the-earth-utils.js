@@ -130,8 +130,7 @@ export default class BarChartOnTheEarthUtils {
                 texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
                 texture.wrapT = THREE.RepeatWrapping;
                 // texture.repeat.x = 2; // 纹理重复几次, 默认1次
-                const weightRange = maxWeight - minWeight || 1;
-                const speed = (0.001 + 0.01 * (weight - minWeight) / weightRange) * earthRadius; // note: speed = (0.001 ~ 0.011) * earthRadius
+                const speed = weight / maxWeight * (1 / 60); // max speed = 1 / 60
                 textureAndSpeedList.push({texture, speed});
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
