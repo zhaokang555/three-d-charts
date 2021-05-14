@@ -19,7 +19,7 @@ export default class BarChartOnTheEarthAlgorithms {
 
         const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面（XY坐标系）上, 计算r的投影距离
         const x = rOnEquatorialPlane * cos(lonRadian); // 在俯视图中, 计算x
-        const z = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算x
+        const z = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算z
 
         /**
          x = R * cos(lat) * cos(lon)
@@ -42,22 +42,24 @@ export default class BarChartOnTheEarthAlgorithms {
         const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));
         const toPosition = new Vector3(...getXYZByLonLat(earthRadius, ...toCoordinates));
 
-        let midpointPositionInTheEarth = fromPosition.lerp(toPosition, 0.5); // 插值
-        if (midpointPositionInTheEarth.lengthSq() - 0 < Number.EPSILON) { // 如果出现中点在地心的情况
-            return new Vector3(earthRadius * 3.1, 0, 0);
-        }
+        const midpointPositionList = [];
+        midpointPositionList.push(fromPosition.clone().lerp(toPosition, 0.49)); // 插值
+        midpointPositionList.push(fromPosition.clone().lerp(toPosition, 0.51)); // 插值
 
-        const raycaster = new THREE.Raycaster(new Vector3(), midpointPositionInTheEarth.normalize()); // 从地心向中点的方向发射射线
         const earthMesh = scene.getObjectByName('earthMesh');
         if (earthMesh) {
-            const intersects = raycaster.intersectObject(earthMesh);
-            if (intersects.length > 0) {
-                const midpointPositionOnTheEarth = intersects[0].point;
-                const distance = fromPosition.distanceTo(toPosition);
-                const maxDistance = earthRadius * 2;
-                return midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance);
-            }
+            midpointPositionList.forEach(midpointPosition => {
+                const raycaster = new THREE.Raycaster(new Vector3(), midpointPosition.clone().normalize()); // 从地心向中点的方向发射射线
+                const intersects = raycaster.intersectObject(earthMesh);
+                if (intersects.length > 0) {
+                    const midpointPositionOnTheEarth = intersects[0].point;
+                    const distance = fromPosition.distanceTo(toPosition);
+                    const maxDistance = earthRadius * 2;
+                    midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance));
+                }
+            });
         }
-        return new Vector3(); // never
+
+        return midpointPositionList;
     };
 }

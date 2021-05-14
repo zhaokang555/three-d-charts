@@ -22,7 +22,8 @@
     {"from": "拉萨", "to": "北京", "weight": 1},
     {"from": "开罗", "to": "北京", "weight": 1},
     {"from": "纽约", "to": "北京", "weight": 1},
-    {"from": "莫斯科", "to": "北京", "weight": 1}
+    {"from": "莫斯科", "to": "北京", "weight": 1},
+    {"from": "布宜诺斯艾利斯", "to": "北京", "weight": 1}
 ]`
             }
         },

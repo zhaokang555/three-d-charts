@@ -40,5 +40,8 @@
   {"name": "开罗", "coordinates": [31.24574, 30.06107]},
   {"name": "曼谷", "coordinates": [100.517, 13.75]},
   {"name": "纽约", "coordinates": [-74.0, 40.717]},
+  {"name": "布宜诺斯艾利斯", "coordinates": [-58.5, -34.5]},
+  {"name": "悉尼", "coordinates": [151.12, -33.84]},
+  {"name": "里斯本", "coordinates": [-9.16, 38.75]},
   {"name": "澳门", "coordinates": [113.50000, 22.20000]}
 ]

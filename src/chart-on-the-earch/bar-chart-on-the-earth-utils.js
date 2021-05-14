@@ -112,9 +112,9 @@ export default class BarChartOnTheEarthUtils {
 
                 const controlPointVec = BarChartOnTheEarthAlgorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
 
-                const curve = new THREE.QuadraticBezierCurve3( // 三维二次贝塞尔曲线
+                const curve = new THREE.CubicBezierCurve3( // 三维三次贝塞尔曲线
                     fromVec,
-                    controlPointVec,
+                    ...controlPointVec,
                     toVec
                 );
 
