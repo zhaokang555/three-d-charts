@@ -4,7 +4,7 @@ import cities from './cities.json';
 import BarChartOnTheEarthAlgorithms from "./bar-chart-on-the-earth-algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
-import earth_nightmap from './8k_earth_nightmap.jpeg';
+import earth_nightmap from './BlackMarble_2016_3km.jpg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
 import routeTexture from './route.png';
