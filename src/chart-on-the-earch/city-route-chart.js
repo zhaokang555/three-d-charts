@@ -26,8 +26,10 @@ export const init = (list, container) => {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
     });
+
+    let cancelId = null;
     const render = () => {
-        requestAnimationFrame(render);
+        cancelId = requestAnimationFrame(render);
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
@@ -36,6 +38,7 @@ export const init = (list, container) => {
 
         renderer.render( scene, camera );
     };
+    cancelId = requestAnimationFrame(render);
 
-    render();
+    return () => cancelAnimationFrame(cancelId);
 };

@@ -46,7 +46,6 @@ export default class Utils {
             controls.autoRotateSpeed = 0.5;
         }
 
-        window.controls = controls;
         return controls;
     };
 }

@@ -7,10 +7,18 @@
 
     export default {
         name: "ChinaProvinceBarChartDisplay",
+        data() {
+            return {
+                clean: () => null,
+            }
+        },
         mounted() {
             const list = JSON.parse(localStorage.getItem('list')) || [];
-            initChinaProvinceBarChart(list, this.$refs.container);
-        }
+            this.clean = initChinaProvinceBarChart(list, this.$refs.container);
+        },
+        beforeDestroy() {
+            this.clean();
+        },
     }
 </script>
 

@@ -27,7 +27,6 @@ export default class BarChartOnTheEarthUtils {
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
         camera.position.set(Math.cos(lonRadianOfUtc8) * rCamera, 0, Math.sin(lonRadianOfUtc8) * rCamera); // 东8区, 纬度0度
-        window.camera = camera;
         return camera;
     };
     static addEarthMeshToScene = (scene) => {

@@ -36,8 +36,10 @@ export const init = (list, container) => {
         pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
+
+    let cancelId = null;
     const render = () => {
-        requestAnimationFrame(render); // fallback: setTimeout 16.7
+        cancelId = requestAnimationFrame(render); // fallback: setTimeout
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
@@ -46,6 +48,7 @@ export const init = (list, container) => {
 
         renderer.render( scene, camera );
     };
+    cancelId = requestAnimationFrame(render);
 
-    render();
+    return () => cancelAnimationFrame(cancelId);
 };

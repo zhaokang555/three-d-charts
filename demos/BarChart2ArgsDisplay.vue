@@ -7,10 +7,18 @@
 
     export default {
         name: "BarChart2Args",
+        data() {
+            return {
+                clean: () => null,
+            }
+        },
         mounted() {
             const lists = JSON.parse(localStorage.getItem('lists')) || [];
-            initBarChart2Args(lists, this.$refs.container);
-        }
+            this.clean = initBarChart2Args(lists, this.$refs.container);
+        },
+        beforeDestroy() {
+            this.clean();
+        },
     }
 </script>
 

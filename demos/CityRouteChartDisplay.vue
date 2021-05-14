@@ -7,10 +7,18 @@
 
     export default {
         name: "CityRouteChartDisplay",
+        data() {
+            return {
+                clean: () => null,
+            }
+        },
         mounted() {
             const list = JSON.parse(localStorage.getItem('list')) || [];
-            initCityRouteChart(list, this.$refs.container);
-        }
+            this.clean = initCityRouteChart(list, this.$refs.container);
+        },
+        beforeDestroy() {
+            this.clean();
+        },
     }
 </script>
 
