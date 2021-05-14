@@ -42,9 +42,12 @@ export default class BarChartOnTheEarthAlgorithms {
         const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));
         const toPosition = new Vector3(...getXYZByLonLat(earthRadius, ...toCoordinates));
 
-        const midpointPositionInTheEarth = fromPosition.lerp(toPosition, 0.5); // 插值
+        let midpointPositionInTheEarth = fromPosition.lerp(toPosition, 0.5); // 插值
+        if (midpointPositionInTheEarth.lengthSq() - 0 < Number.EPSILON) { // 如果出现中点在地心的情况
+            return new Vector3(earthRadius * 3.1, 0, 0);
+        }
 
-        const raycaster = new THREE.Raycaster(new Vector3(), midpointPositionInTheEarth.normalize());
+        const raycaster = new THREE.Raycaster(new Vector3(), midpointPositionInTheEarth.normalize()); // 从地心向中点的方向发射射线
         const earthMesh = scene.getObjectByName('earthMesh');
         if (earthMesh) {
             const intersects = raycaster.intersectObject(earthMesh);
@@ -55,6 +58,6 @@ export default class BarChartOnTheEarthAlgorithms {
                 return midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance);
             }
         }
-        return new Vector3();
+        return new Vector3(); // never
     };
 }
