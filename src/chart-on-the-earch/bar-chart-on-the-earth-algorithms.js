@@ -42,6 +42,7 @@ export default class BarChartOnTheEarthAlgorithms {
         const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));
         const toPosition = new Vector3(...getXYZByLonLat(earthRadius, ...toCoordinates));
 
+        // 在经过起始点的大圆上取两个控制点
         const midpointPositionList = [];
         midpointPositionList.push(fromPosition.clone().lerp(toPosition, 0.49)); // 插值
         midpointPositionList.push(fromPosition.clone().lerp(toPosition, 0.51)); // 插值

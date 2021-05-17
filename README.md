@@ -3,6 +3,7 @@
 ![bar-chart](./readme-pic/bar-chart.png)
 ![bar-chart-2-args](./readme-pic/bar-chart-2-args.png)
 ![china-province-bar-chart](./readme-pic/china-province-bar-chart.png)
+![city-route-chart](./readme-pic/city-route-chart.png)
 
 # Demos online
 
