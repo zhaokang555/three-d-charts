@@ -11,6 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.2.0",
+    "glslify-bundle": "^5.1.1",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "vue-template-compiler": "^2.6.12"

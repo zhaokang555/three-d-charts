@@ -8,6 +8,8 @@ import earth_nightmap from './BlackMarble_2016_3km.jpg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.png';
 import routeTexture from './route.png';
+import routeVert from './route.vert';
+import routeFrag from './route.frag';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
@@ -99,32 +101,15 @@ export default class Utils {
             const fromCity = cities.find(item => item.name === from);
             const toCity = cities.find(item => item.name === to);
             if (fromCity && toCity) {
-                const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
-                    earthRadius,
-                    fromCity.coordinates[0],
-                    fromCity.coordinates[1]
-                ));
-                const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
-                    earthRadius,
-                    toCity.coordinates[0],
-                    toCity.coordinates[1]
-                ));
+                const curve = Utils._getRouteCurve(scene, fromCity, toCity);
 
-                const controlPointVec = BarChartOnTheEarthAlgorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
-
-                const curve = new THREE.CubicBezierCurve3( // 三维三次贝塞尔曲线
-                    fromVec,
-                    ...controlPointVec,
-                    toVec
-                );
-
-                // using BufferGeometry().setFromPoints()
+                // 1. using BufferGeometry().setFromPoints()
                 // const points = curve.getPoints( 50 );
                 // const geometry = new THREE.BufferGeometry().setFromPoints( points );
                 // const material = new THREE.LineBasicMaterial( { color : '#ff0000' } );
                 // const curveObject = new THREE.Line( geometry, material );
 
-                // using TubeGeometry
+                // 2. using TubeGeometry
                 const loader = new THREE.TextureLoader();
                 const texture = loader.load(routeTexture);
                 texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
@@ -134,11 +119,22 @@ export default class Utils {
                 textureAndSpeedList.push({texture, speed});
 
                 const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
-                const material = new THREE.MeshPhongMaterial({
-                    map: texture,
-                    transparent: true,
+                // 2.1 using MeshPhongMaterial
+                // const material = new THREE.MeshPhongMaterial({
+                //     map: texture,
+                //     transparent: true,
+                // });
+                // 2.2 using shader
+                const material = new THREE.ShaderMaterial({
+                    uniforms: {
+                        color: { value: new THREE.Vector4(1, 1) }
+                    },
+                    vertexShader: routeVert,
+                    fragmentShader: routeFrag,
+                    transparent: true
                 });
                 const curveObject = new THREE.Mesh( geometry, material );
+
                 scene.add( curveObject );
             }
         });
@@ -149,6 +145,34 @@ export default class Utils {
 
         return updateRoutes;
     }
+
+    /**
+     * @param scene
+     * @param fromCity: {coordinates: [number, number]}
+     * @param toCity: {coordinates: [number, number]}
+     * @return {THREE.CubicBezierCurve3}
+     * @private
+     */
+    static _getRouteCurve = (scene, fromCity, toCity) => {
+        const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+            earthRadius,
+            fromCity.coordinates[0],
+            fromCity.coordinates[1]
+        ));
+        const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+            earthRadius,
+            toCity.coordinates[0],
+            toCity.coordinates[1]
+        ));
+
+        const controlPointVec = BarChartOnTheEarthAlgorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
+
+        return new THREE.CubicBezierCurve3( // 三维三次贝塞尔曲线
+            fromVec,
+            ...controlPointVec,
+            toVec
+        );
+    };
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
         const province = china_geo_json.features.find(f => f.properties.name === provinceName);
