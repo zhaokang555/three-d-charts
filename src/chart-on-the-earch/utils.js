@@ -91,10 +91,10 @@ export default class Utils {
      *     to: string;
      *     weight: number;
      * }>
+     * @return {function}
      */
     static addRoutesToScene(scene, list) {
         const maxWeight = Math.max(...list.map(line => line.weight));
-        const minWeight = Math.min(...list.map(line => line.weight));
         const textureAndSpeedList = [];
 
         list.forEach(({from, to, weight}) => {
@@ -102,48 +102,14 @@ export default class Utils {
             const toCity = cities.find(item => item.name === to);
             if (fromCity && toCity) {
                 const curve = Utils._getRouteCurve(scene, fromCity, toCity);
-
-                // 1. using BufferGeometry().setFromPoints()
-                // const points = curve.getPoints( 50 );
-                // const geometry = new THREE.BufferGeometry().setFromPoints( points );
-                // const material = new THREE.LineBasicMaterial( { color : '#ff0000' } );
-                // const curveObject = new THREE.Line( geometry, material );
-
-                // 2. using TubeGeometry
-                const loader = new THREE.TextureLoader();
-                const texture = loader.load(routeTexture);
-                texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
-                texture.wrapT = THREE.RepeatWrapping;
-                // texture.repeat.x = 2; // 纹理重复几次, 默认1次
-                const speed = weight / maxWeight * (1 / 60); // max speed = 1 / 60
-                textureAndSpeedList.push({texture, speed});
-
-                const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
-                // 2.1 using MeshPhongMaterial
-                // const material = new THREE.MeshPhongMaterial({
-                //     map: texture,
-                //     transparent: true,
-                // });
-                // 2.2 using shader
-                const material = new THREE.ShaderMaterial({
-                    uniforms: {
-                        color: { value: new THREE.Vector4(1, 1) }
-                    },
-                    vertexShader: routeVert,
-                    fragmentShader: routeFrag,
-                    transparent: true
-                });
-                const curveObject = new THREE.Mesh( geometry, material );
-
-                scene.add( curveObject );
+                const route = Utils._getRouteMeshOfTube(curve, weight, maxWeight, textureAndSpeedList);
+                scene.add(route);
             }
         });
 
-        const updateRoutes = () => {
+        return () => {
             textureAndSpeedList.forEach(({texture: t, speed: s}) => t.offset.x -= s);
         };
-
-        return updateRoutes;
     }
 
     /**
@@ -172,6 +138,40 @@ export default class Utils {
             ...controlPointVec,
             toVec
         );
+    };
+
+    static _getRouteMeshOfLine = (curve) => {
+        const points = curve.getPoints( 50 );
+        const geometry = new THREE.BufferGeometry().setFromPoints( points );
+        const material = new THREE.LineBasicMaterial( { color : '#ff0000' } );
+        return new THREE.Line( geometry, material );
+    };
+
+    static _getRouteMeshOfTube = (curve, weight, maxWeight, textureAndSpeedList) => {
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load(routeTexture);
+        texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
+        texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.x = 2; // 纹理重复几次, 默认1次
+        const speed = weight / maxWeight * (1 / 60); // max speed = 1 / 60
+        textureAndSpeedList.push({texture, speed});
+
+        const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
+        // 1 using MeshPhongMaterial
+        // const material = new THREE.MeshPhongMaterial({
+        //     map: texture,
+        //     transparent: true,
+        // });
+        // 2 using shader
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                color: { value: new THREE.Vector4(1, 1) }
+            },
+            vertexShader: routeVert,
+            fragmentShader: routeFrag,
+            transparent: true
+        });
+        return new THREE.Mesh( geometry, material );
     };
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
