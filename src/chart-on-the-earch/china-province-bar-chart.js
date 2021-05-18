@@ -26,6 +26,7 @@ export const init = (list, container) => {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
     });
+    const updateHighlight = CommonUtils.initHighlightCube(scene, camera);
 
     let cancelId = null;
     const render = () => {
@@ -33,6 +34,8 @@ export const init = (list, container) => {
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
+
+        updateHighlight();
 
         const cloudMesh = scene.getObjectByName('cloudMesh');
         if (cloudMesh) {

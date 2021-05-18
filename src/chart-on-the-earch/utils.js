@@ -251,6 +251,7 @@ export default class Utils {
         const normal = new THREE.Vector3(...centerXYZ).normalize();
         cube.quaternion.setFromUnitVectors(up, normal);
         cube.translateY(barHeight / 2);
+        cube.defaultColor = color; // store default color in cube mesh object
         scene.add(cube);
     }
 
