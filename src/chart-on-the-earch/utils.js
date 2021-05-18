@@ -148,30 +148,51 @@ export default class Utils {
     };
 
     static _getRouteMeshOfTube = (curve, weight, maxWeight, textureAndSpeedList) => {
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(routeTexture);
-        texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
-        texture.wrapT = THREE.RepeatWrapping;
-        // texture.repeat.x = 2; // 纹理重复几次, 默认1次
+        const texture = Utils._createRouteTexture();
         const speed = weight / maxWeight * (1 / 60); // max speed = 1 / 60
         textureAndSpeedList.push({texture, speed});
 
         const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
         // 1 using MeshPhongMaterial
-        // const material = new THREE.MeshPhongMaterial({
-        //     map: texture,
-        //     transparent: true,
-        // });
-        // 2 using shader
-        const material = new THREE.ShaderMaterial({
-            uniforms: {
-                color: { value: new THREE.Vector4(1, 1) }
-            },
-            vertexShader: routeVert,
-            fragmentShader: routeFrag,
-            transparent: true
+        const material = new THREE.MeshPhongMaterial({
+            map: texture,
+            transparent: true,
         });
+        // 2 using shader
+        // const material = new THREE.ShaderMaterial({
+        //     uniforms: {
+        //         color: { value: new THREE.Vector4(1, 1) }
+        //     },
+        //     vertexShader: routeVert,
+        //     fragmentShader: routeFrag,
+        //     transparent: true
+        // });
         return new THREE.Mesh( geometry, material );
+    };
+
+    static _createRouteTexture = () => {
+        // const loader = new THREE.TextureLoader();
+        // const texture = loader.load(routeTexture);
+        // texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
+        // texture.wrapT = THREE.RepeatWrapping;
+        // // texture.repeat.x = 2; // 纹理重复几次, 默认1次
+
+        // OR
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 1;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createLinearGradient(0,0,100,0);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
+        grad.addColorStop(0.9, 'rgba(255, 255, 255, 0.1)');
+        grad.addColorStop(0.98, 'rgba(255, 255, 255, 0.9)');
+        grad.addColorStop(0.99, 'rgba(255, 255, 255, 1)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 1)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0,0,100,1);
+        const texture = new THREE.CanvasTexture(canvas, null, THREE.RepeatWrapping, THREE.RepeatWrapping);
+        return texture;
     };
 
     static _addBarToScene = (provinceName, barHeight, color, scene) => {
