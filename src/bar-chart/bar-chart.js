@@ -44,7 +44,7 @@ export const init = (list, container) => {
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
 
-        Utils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
+        CommonUtils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
 
         renderer.render( scene, camera );
     };

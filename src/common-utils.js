@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import Constant from "./constant";
 
 export default class CommonUtils {
     /**
      * @param container: HTMLElement
-     * @return {WebGLRenderer}
+     * @return {THREE.WebGLRenderer}
      */
     static getRenderer = (container) => {
         const renderer = new THREE.WebGLRenderer();
@@ -47,5 +48,54 @@ export default class CommonUtils {
         }
 
         return controls;
+    };
+
+    /**
+     * @param scene: THREE.Scene
+     * @param camera: THREE.Camera
+     * @param raycaster: THREE.Raycaster
+     * @param pointer: THREE.Vector2
+     */
+    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
+        raycaster.setFromCamera( pointer, camera );
+
+        const cubes = CommonUtils.getCubes(scene);
+        if (cubes.length > 0) {
+            cubes.forEach(cube => {
+                const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
+                cube.material.color.set(defaultColor);
+                CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+            });
+            const intersects = raycaster.intersectObjects(cubes, true);
+            if (intersects.length > 0) {
+                const cube = intersects[0].object;
+                cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
+                CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+            }
+        }
+    };
+
+    static getCubes = (scene) => {
+        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
+    };
+
+    /**
+     * @param mesh: THREE.Mesh
+     */
+    static _setTextMeshScaleTo2ByBottomCenter = (mesh) => {
+        if (mesh) {
+            mesh.scale.set(2, 2, 2);
+        }
+    };
+
+    /**
+     * @param mesh: THREE.Mesh
+     */
+    static _setTextMeshScaleTo1ByBottomCenter = (mesh) => {
+        if (mesh) {
+            mesh.scale.set(1, 1, 1);
+        }
     };
 }

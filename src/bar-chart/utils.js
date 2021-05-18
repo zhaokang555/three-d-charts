@@ -3,6 +3,7 @@ import Algorithms from "./algorithms";
 import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import colormap from "colormap";
+import CommonUtils from "../common-utils";
 
 export default class Utils {
     static addLightToScene = (scene) => {
@@ -15,7 +16,7 @@ export default class Utils {
 
     static addPlaneToScene = (scene) => {
         let planeWidth = 100;
-        const cubes = Utils.getCubes(scene);
+        const cubes = CommonUtils.getCubes(scene);
         const cubePositions = cubes.map(cube => cube.position);
         if (cubePositions.length > 0) {
             // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
@@ -148,7 +149,7 @@ export default class Utils {
         // ttf to json, see: https://gero3.github.io/facetype.js/
         // load font async, because Alibaba_PuHuiTi_Regular.json is too large
         loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-            const cubes = Utils.getCubes(scene);
+            const cubes = CommonUtils.getCubes(scene);
             const cubesInBaseLine = Utils.getCubesInBaseLine(scene, baseLineIndex);
             const charWidth = Utils.getCubeWidthByCube(cubes[0]) / keyMaxlength;
             const fontDepth = charWidth / 8;
@@ -180,7 +181,7 @@ export default class Utils {
         const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
         const font = loader.parse(helvetiker_regular);
-        const cubes = Utils.getCubes(scene);
+        const cubes = CommonUtils.getCubes(scene);
         const charWidth = Utils.getCubeWidthByCube(cubes[0]) / valueMaxLength;
         const fontDepth = charWidth / 8;
         const cubesInBaseLine = Utils.getCubesInBaseLine(scene, baseLineIndex);
@@ -196,33 +197,6 @@ export default class Utils {
             text.position.set(...Algorithms.getPositionOfValueByCube(cube));
             scene.add(text);
             cube.valueMeshId = text.id;
-        }
-    };
-
-    /**
-     * @param scene: THREE.Scene
-     * @param camera: THREE.Camera
-     * @param raycaster: THREE.Raycaster
-     * @param pointer: THREE.Vector2
-     */
-    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
-        raycaster.setFromCamera( pointer, camera );
-
-        const cubes = Utils.getCubes(scene);
-        if (cubes.length > 0) {
-            cubes.forEach(cube => {
-                const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
-                cube.material.color.set(defaultColor);
-                Utils.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                Utils.setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
-            });
-            const intersects = raycaster.intersectObjects(cubes, true);
-            if (intersects.length > 0) {
-                const cube = intersects[0].object;
-                cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
-                Utils.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                Utils.setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
-            }
         }
     };
 
@@ -242,15 +216,11 @@ export default class Utils {
             planeWidth = planeMesh.geometry.parameters.width
         } else {
             // when no plane, use max value * value length instead
-            const cubes = Utils.getCubes(scene);
+            const cubes = CommonUtils.getCubes(scene);
             const values = cubes.map(Utils.getValueByCube);
             planeWidth = Math.max(...values) * values.length;
         }
         return planeWidth;
-    };
-
-    static getCubes = (scene) => {
-        return scene.children.filter(child => child.type === 'Mesh' && child.geometry.type === 'BoxGeometry');
     };
 
     /**
@@ -259,7 +229,7 @@ export default class Utils {
      * @return {THREE.Mesh[]}
      */
     static getCubesInBaseLine = (scene, baseLineIndex) => {
-        const cubes = Utils.getCubes(scene);
+        const cubes = CommonUtils.getCubes(scene);
         return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
     };
 
@@ -299,23 +269,5 @@ export default class Utils {
             emissive: Constant.defaultTextColorBlue, // 自发光
             emissiveIntensity: 0.8,
         });
-    };
-
-    /**
-     * @param mesh: THREE.Mesh
-     */
-    static setTextMeshScaleTo2ByBottomCenter = (mesh) => {
-        if (mesh) {
-            mesh.scale.set(2, 2, 2);
-        }
-    };
-
-    /**
-     * @param mesh: THREE.Mesh
-     */
-    static setTextMeshScaleTo1ByBottomCenter = (mesh) => {
-        if (mesh) {
-            mesh.scale.set(1, 1, 1);
-        }
     };
 }
