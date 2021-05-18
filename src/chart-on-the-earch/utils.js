@@ -154,7 +154,7 @@ export default class Utils {
 
         const geometry = new THREE.TubeGeometry( curve, 64, 0.002 * earthRadius, 8, false );
         // 1 using MeshPhongMaterial
-        const material = new THREE.MeshPhongMaterial({
+        const material = new THREE.MeshBasicMaterial({
             map: texture,
             transparent: true,
         });
