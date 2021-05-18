@@ -34,13 +34,7 @@ export const init = (lists, container) => {
         rotate: true,
         maxZoom: Utils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
-
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2(-1, -1);
-    document.addEventListener( 'pointermove', event => {
-        pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    });
+    const updateHighlight = CommonUtils.initHighlightCube(scene, camera);
 
     let cancelId = null;
     const render = () => {
@@ -49,7 +43,7 @@ export const init = (lists, container) => {
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
 
-        CommonUtils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
+        updateHighlight();
 
         renderer.render( scene, camera );
     };

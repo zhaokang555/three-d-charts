@@ -53,28 +53,36 @@ export default class CommonUtils {
     /**
      * @param scene: THREE.Scene
      * @param camera: THREE.Camera
-     * @param raycaster: THREE.Raycaster
-     * @param pointer: THREE.Vector2
+     * @return {function}
      */
-    static highlightCubeInFullWindow = (scene, camera, raycaster, pointer) => {
-        raycaster.setFromCamera( pointer, camera );
-
+    static initHighlightCube = (scene, camera) => {
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2(-1, -1);
+        document.addEventListener( 'pointermove', event => {
+            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
         const cubes = CommonUtils.getCubes(scene);
-        if (cubes.length > 0) {
-            cubes.forEach(cube => {
-                const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
-                cube.material.color.set(defaultColor);
-                CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
-            });
-            const intersects = raycaster.intersectObjects(cubes, true);
-            if (intersects.length > 0) {
-                const cube = intersects[0].object;
-                cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
-                CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+
+        return () => {
+            raycaster.setFromCamera( pointer, camera );
+
+            if (cubes.length > 0) {
+                cubes.forEach(cube => {
+                    const defaultColor = cube.defaultColor || Constant.defaultCubeColorRed;
+                    cube.material.color.set(defaultColor);
+                    CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                    CommonUtils._setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+                });
+                const intersects = raycaster.intersectObjects(cubes, true);
+                if (intersects.length > 0) {
+                    const cube = intersects[0].object;
+                    cube.material.color.set(Constant.defaultCubeHighlightColorWhite);
+                    CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
+                    CommonUtils._setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+                }
             }
-        }
+        };
     };
 
     static getCubes = (scene) => {
