@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Utils from "./utils";
 import CommonUtils from "../common-utils";
-import BarChartAlgorithms from "./bar-chart-algorithms";
+import Algorithms from "./algorithms";
 
 /**
  * @param lists: Array<Array<{
@@ -12,9 +12,9 @@ import BarChartAlgorithms from "./bar-chart-algorithms";
  */
 export const init = (lists, container) => {
     const scene = new THREE.Scene();
-    const cubeWidth = BarChartAlgorithms.getCubeWidthByLists(lists);
-    const [keyMaxlength, valueMaxlength] = BarChartAlgorithms.getKeyAndValueMaxLength(lists);
-    const [maxValue, minValue] = BarChartAlgorithms.getMaxAndMinValueByLists(lists);
+    const cubeWidth = Algorithms.getCubeWidthByLists(lists);
+    const [keyMaxlength, valueMaxlength] = Algorithms.getKeyAndValueMaxLength(lists);
+    const [maxValue, minValue] = Algorithms.getMaxAndMinValueByLists(lists);
 
     lists.forEach((list, i) => {
         const keys = list.map(kv => kv.key);

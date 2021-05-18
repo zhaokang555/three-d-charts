@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import BarChartAlgorithms from  "./bar-chart-algorithms";
+import Algorithms from "./algorithms";
 import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import colormap from "colormap";
@@ -53,7 +53,7 @@ export default class Utils {
      */
     static addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth, maxValue, minValue) => {
         // set default value
-        cubeWidth = cubeWidth || BarChartAlgorithms.getCubeWidthByValues(values);
+        cubeWidth = cubeWidth || Algorithms.getCubeWidthByValues(values);
         maxValue = maxValue || Math.max(...values);
         minValue = minValue || Math.min(...values);
 
@@ -73,7 +73,7 @@ export default class Utils {
             cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
             cube.defaultColor = color; // store default color in cube mesh object
             cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
-            cube.position.set(...BarChartAlgorithms.getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
+            cube.position.set(...Algorithms.getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
             scene.add(cube);
         }
     };
@@ -130,7 +130,7 @@ export default class Utils {
                 const text = new THREE.Mesh( geometry, material );
                 // Chinese font's bottom will go through the plane if no offsetY
                 // text.position means its top left back corner
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
+                text.position.set(...Algorithms.getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
                 scene.add(text);
                 cube.keyMeshId = text.id;
             }
@@ -163,7 +163,7 @@ export default class Utils {
                 const valueMesh = scene.getObjectById(cube.valueMeshId);
                 const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-                text.position.set(...BarChartAlgorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
+                text.position.set(...Algorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
                 scene.add(text);
                 cube.keyMeshId = text.id;
             }
@@ -193,7 +193,7 @@ export default class Utils {
             const material = Utils._createTextMaterial();
             const text = new THREE.Mesh( geometry, material );
 
-            text.position.set(...BarChartAlgorithms.getPositionOfValueByCube(cube));
+            text.position.set(...Algorithms.getPositionOfValueByCube(cube));
             scene.add(text);
             cube.valueMeshId = text.id;
         }

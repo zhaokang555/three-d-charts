@@ -1,6 +1,6 @@
 import Utils from "./utils";
 
-export default class BarChartAlgorithms {
+export default class Algorithms {
     /**
      * @param values: Array<number>
      * @return {number}
