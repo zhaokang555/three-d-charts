@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import BarChartUtils from "./bar-chart-utils";
-import Utils from "../utils";
+import CommonUtils from "../common-utils";
 import BarChartAlgorithms from "./bar-chart-algorithms";
 
 /**
@@ -29,8 +29,8 @@ export const init = (lists, container) => {
 
     BarChartUtils.addLightToScene(scene);
     const camera = BarChartUtils.getOrthographicCamera(scene);
-    const renderer = Utils.getRenderer(container);
-    const controls = Utils.addControlsToCamera(camera, renderer, {
+    const renderer = CommonUtils.getRenderer(container);
+    const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });

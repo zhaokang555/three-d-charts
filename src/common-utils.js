@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
-export default class Utils {
+export default class CommonUtils {
     /**
      * @param container: HTMLElement
      * @return {WebGLRenderer}
