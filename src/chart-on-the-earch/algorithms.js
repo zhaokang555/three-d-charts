@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Constant from "../constant";
 const {earthRadius} = Constant;
 
-export default class BarChartOnTheEarthAlgorithms {
+export default class Algorithms {
     /**
      * @param r: number 到地心的距离
      * @param lon: number 经度
@@ -35,7 +35,7 @@ export default class BarChartOnTheEarthAlgorithms {
      * @return {THREE.Vector3}
      */
     static getControlPointPosition = (scene, fromCoordinates, toCoordinates) => {
-        const getXYZByLonLat = BarChartOnTheEarthAlgorithms.getXYZByLonLat;
+        const getXYZByLonLat = Algorithms.getXYZByLonLat;
         const Vector3 = THREE.Vector3;
 
         const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));

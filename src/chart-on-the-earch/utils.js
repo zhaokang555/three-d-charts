@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
-import BarChartOnTheEarthAlgorithms from "./bar-chart-on-the-earth-algorithms";
+import Algorithms from "./algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
 import earth_nightmap from './BlackMarble_2016_3km.jpg';
@@ -16,7 +16,7 @@ const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 export default class Utils {
     static addLightToScene = (scene, ambientLightIntensity = 0.7) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
-        light.position.set(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(earthRadius, 120, 0)); // 平行光的位置，直射东经120北纬0。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
+        light.position.set(...Algorithms.getXYZByLonLat(earthRadius, 120, 0)); // 平行光的位置，直射东经120北纬0。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, ambientLightIntensity));
@@ -26,7 +26,7 @@ export default class Utils {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
-        camera.position.set(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(rCamera, 120, 0)); // 相机位置东经120北纬0
+        camera.position.set(...Algorithms.getXYZByLonLat(rCamera, 120, 0)); // 相机位置东经120北纬0
         return camera;
     };
 
@@ -133,18 +133,18 @@ export default class Utils {
      * @private
      */
     static _getRouteCurve = (scene, fromCity, toCity) => {
-        const fromVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+        const fromVec = new THREE.Vector3(...Algorithms.getXYZByLonLat(
             earthRadius,
             fromCity.coordinates[0],
             fromCity.coordinates[1]
         ));
-        const toVec = new THREE.Vector3(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(
+        const toVec = new THREE.Vector3(...Algorithms.getXYZByLonLat(
             earthRadius,
             toCity.coordinates[0],
             toCity.coordinates[1]
         ));
 
-        const controlPointVec = BarChartOnTheEarthAlgorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
+        const controlPointVec = Algorithms.getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
 
         return new THREE.CubicBezierCurve3( // 三维三次贝塞尔曲线
             fromVec,
@@ -237,7 +237,7 @@ export default class Utils {
      * @private
      */
     static _addCubeToScene(center, barHeight, r, color, scene) {
-        const centerXYZ = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, center[0], center[1]);
+        const centerXYZ = Algorithms.getXYZByLonLat(r, center[0], center[1]);
         const cubeWidth = earthRadius * 0.025; // set bottom side length
         const cube = new THREE.Mesh(
             new THREE.BoxGeometry(cubeWidth, barHeight, cubeWidth),
@@ -263,7 +263,7 @@ export default class Utils {
     static _addLineToScene(ring, r, scene) {
         const points = [];
         ring.forEach(lonLat => {
-            const [x, y, z] = BarChartOnTheEarthAlgorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
+            const [x, y, z] = Algorithms.getXYZByLonLat(r, lonLat[0], lonLat[1]);
             points.push(new THREE.Vector3(x, y, z));
         });
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
