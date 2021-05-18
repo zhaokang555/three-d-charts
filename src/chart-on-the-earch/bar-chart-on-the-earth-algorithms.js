@@ -16,7 +16,7 @@ export default class BarChartOnTheEarthAlgorithms {
 
         const y = r * sin(latRadian); // 在经线圈平面上, 计算y
 
-        const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面（XY坐标系）上, 计算r的投影距离
+        const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面上, 计算r的投影距离
         const x = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算x
         const z = rOnEquatorialPlane * cos(lonRadian); // 在俯视图中, 计算z
 
