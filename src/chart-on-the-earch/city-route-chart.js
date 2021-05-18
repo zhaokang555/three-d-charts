@@ -18,6 +18,7 @@ export const init = (list, container) => {
 
     Utils.addEarthMeshToScene(scene);
     const updateRoutes = Utils.addRoutesToScene(scene, list);
+    // Utils.addAxesToScene(scene);
 
     Utils.addLightToScene(scene, 1);
 

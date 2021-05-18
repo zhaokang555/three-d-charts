@@ -16,8 +16,7 @@ const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 export default class Utils {
     static addLightToScene = (scene, ambientLightIntensity = 0.7) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
-        const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
-        light.position.set(Math.cos(lonRadianOfUtc8), 0, Math.sin(lonRadianOfUtc8)); // 平行光的位置，直射东八区。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
+        light.position.set(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(earthRadius, 120, 0)); // 平行光的位置，直射东经120北纬0。例如：如果设置为(0, 1, 0), 那么光线将会从上往下照射。
 
         scene.add(light);
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, ambientLightIntensity));
@@ -25,16 +24,30 @@ export default class Utils {
 
     static getPerspectiveCamera = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
-        const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
-        camera.position.set(Math.cos(lonRadianOfUtc8) * rCamera, 0, Math.sin(lonRadianOfUtc8) * rCamera); // 东8区, 纬度0度
+        camera.position.set(...BarChartOnTheEarthAlgorithms.getXYZByLonLat(rCamera, 120, 0)); // 相机位置东经120北纬0
         return camera;
     };
+
+    static addAxesToScene = (scene) => {
+        const axesHelper = new THREE.AxesHelper( earthRadius * 2 );
+        scene.add(axesHelper);
+    };
+
     static addEarthMeshToScene = (scene) => {
         const loader = new THREE.TextureLoader();
         const map = loader.load(earth_nightmap);
+        map.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
+        map.wrapT = THREE.RepeatWrapping;
+        // 默认情况下: 贴图从x轴负方向开始, 沿着逆时针方向到x轴负方向结束. 伦敦位于x轴正方向上
+        // 将贴图顺时针旋转90度后: 贴图从z轴负方向开始, 沿着逆时针方向到z轴负方向结束. 伦敦位于z轴正方向上
+        map.offset.x = 0.25; // why not -0.25 ?
+
         const specularMap = loader.load(earth_specular_map);
+        specularMap.wrapS = THREE.RepeatWrapping;
+        specularMap.wrapT = THREE.RepeatWrapping;
+        specularMap.offset.x = 0.25; // why not -0.25 ?
 
         // const material = new THREE.MeshPhongMaterial({
         //     color: defaultCubeColorRed,
@@ -158,7 +171,7 @@ export default class Utils {
             map: texture,
             transparent: true,
         });
-        // 2 using shader
+        // 2 using shader // TODO
         // const material = new THREE.ShaderMaterial({
         //     uniforms: {
         //         color: { value: new THREE.Vector4(1, 1) }
@@ -192,6 +205,7 @@ export default class Utils {
         ctx.fillStyle = grad;
         ctx.fillRect(0,0,100,1);
         const texture = new THREE.CanvasTexture(canvas, null, THREE.RepeatWrapping, THREE.RepeatWrapping);
+
         return texture;
     };
 

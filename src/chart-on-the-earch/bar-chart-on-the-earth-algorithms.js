@@ -10,7 +10,6 @@ export default class BarChartOnTheEarthAlgorithms {
      * @return {[number, number, number]}
      */
     static getXYZByLonLat = (r, lon, lat) => {
-        lon = -lon; // 在我们的坐标系下, 东经为负数
         const {sin, cos, PI} = Math;
         const lonRadian = lon / 180 * PI;
         const latRadian = lat / 180 * PI;
@@ -18,13 +17,13 @@ export default class BarChartOnTheEarthAlgorithms {
         const y = r * sin(latRadian); // 在经线圈平面上, 计算y
 
         const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面（XY坐标系）上, 计算r的投影距离
-        const x = rOnEquatorialPlane * cos(lonRadian); // 在俯视图中, 计算x
-        const z = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算z
+        const x = rOnEquatorialPlane * sin(lonRadian); // 在俯视图中, 计算x
+        const z = rOnEquatorialPlane * cos(lonRadian); // 在俯视图中, 计算z
 
         /**
-         x = R * cos(lat) * cos(lon)
+         x = R * cos(lat) * sin(lon)
          y = R * sin(lat)
-         z = R * cos(lat) * sin(lon)
+         z = R * cos(lat) * cos(lon)
          */
         return [x, y, z];
     };
