@@ -15,10 +15,10 @@ const {earthRadius} = Constant;
 export const init = (list, container) => {
     const scene = new THREE.Scene();
     const camera = Utils.getPerspectiveCamera(scene);
+    Utils.addAxesToScene(scene);
 
     const updateCloud = Utils.addEarthMeshToScene(scene);
     const updateRoutes = Utils.addRoutesToScene(scene, list);
-    // Utils.addAxesToScene(scene);
 
     Utils.addLightToScene(scene, 1);
 

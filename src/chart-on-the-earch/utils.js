@@ -31,7 +31,9 @@ export default class Utils {
     };
 
     static addAxesToScene = (scene) => {
-        const axesHelper = new THREE.AxesHelper( earthRadius * 2 );
+        const axesHelper = new THREE.AxesHelper( earthRadius * 4 );
+        axesHelper.visible = false;
+        axesHelper.name = 'axesHelper';
         scene.add(axesHelper);
     };
 
@@ -279,12 +281,12 @@ export default class Utils {
     static _addCloudMeshToEarthMesh(earthMesh) {
         const loader = new THREE.TextureLoader();
         const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
-        const material  = new THREE.MeshLambertMaterial({
+        const material  = new THREE.MeshBasicMaterial({
             map: loader.load(earth_clouds),
-            side: THREE.DoubleSide,
+            // side: THREE.DoubleSide,
             opacity: 0.1,
             transparent: true,
-            // emissive: '#333333', // 自发光
+            // emissive: '#ffffff', // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
