@@ -16,7 +16,7 @@ export const init = (list, container) => {
     const scene = new THREE.Scene();
     const camera = Utils.getPerspectiveCamera(scene);
 
-    Utils.addEarthMeshToScene(scene);
+    const updateCloud = Utils.addEarthMeshToScene(scene);
     Utils.addBarsToScene(scene, list);
 
     Utils.addLightToScene(scene);
@@ -36,12 +36,7 @@ export const init = (list, container) => {
         controls.update();
 
         updateHighlight();
-
-        const cloudMesh = scene.getObjectByName('cloudMesh');
-        if (cloudMesh) {
-            cloudMesh.rotateX(-0.0002);
-            cloudMesh.rotateY(0.0004);
-        }
+        updateCloud();
 
         renderer.render( scene, camera );
     };

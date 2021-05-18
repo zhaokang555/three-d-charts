@@ -16,7 +16,7 @@ export const init = (list, container) => {
     const scene = new THREE.Scene();
     const camera = Utils.getPerspectiveCamera(scene);
 
-    Utils.addEarthMeshToScene(scene);
+    const updateCloud = Utils.addEarthMeshToScene(scene);
     const updateRoutes = Utils.addRoutesToScene(scene, list);
     // Utils.addAxesToScene(scene);
 
@@ -36,6 +36,7 @@ export const init = (list, container) => {
         controls.update();
 
         updateRoutes();
+        updateCloud();
 
         renderer.render( scene, camera );
     };

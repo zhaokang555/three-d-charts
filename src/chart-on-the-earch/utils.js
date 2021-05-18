@@ -68,10 +68,13 @@ export default class Utils {
         earthMesh.position.set(0, 0, 0);
         earthMesh.name = 'earthMesh';
         // earthMesh.rotateY(-Math.PI / 2);
-
-        // ChinaProvinceBarChartUtils._addCloudMeshToEarthMesh(earthMesh);
-
+        const cloudMesh = Utils._addCloudMeshToEarthMesh(earthMesh);
         scene.add(earthMesh);
+
+        return () => {
+            cloudMesh.rotateX(-0.0002);
+            cloudMesh.rotateY(0.0004);
+        }
     };
 
     /**
@@ -279,12 +282,13 @@ export default class Utils {
         const material  = new THREE.MeshLambertMaterial({
             map: loader.load(earth_clouds),
             side: THREE.DoubleSide,
-            opacity: 0.5,
+            opacity: 0.1,
             transparent: true,
-            emissive: '#333333', // 自发光
+            // emissive: '#333333', // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
         earthMesh.add(cloudMesh);
+        return cloudMesh;
     }
 }
