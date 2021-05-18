@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import BarChartUtils from "./bar-chart-utils";
+import Utils from "./utils";
 import CommonUtils from "../common-utils";
 
 /**
@@ -16,19 +16,19 @@ export const init = (list, container) => {
     const valueMaxLength = Math.max(...values.map(v => v.toString().length));
 
     const scene = new THREE.Scene();
-    BarChartUtils.addCubesToScene(scene, values);
-    BarChartUtils.addAxesToScene(scene);
-    BarChartUtils.addKeysToScene(scene, keys, keyMaxLength);
-    BarChartUtils.addValuesToScene(scene, values, valueMaxLength);
-    BarChartUtils.addLightToScene(scene);
-    BarChartUtils.addPlaneToScene(scene);
+    Utils.addCubesToScene(scene, values);
+    Utils.addAxesToScene(scene);
+    Utils.addKeysToScene(scene, keys, keyMaxLength);
+    Utils.addValuesToScene(scene, values, valueMaxLength);
+    Utils.addLightToScene(scene);
+    Utils.addPlaneToScene(scene);
 
     // const camera = BarChartUtils.getPerspectiveCamera(scene);
-    const camera = BarChartUtils.getOrthographicCamera(scene);
+    const camera = Utils.getOrthographicCamera(scene);
     const renderer = CommonUtils.getRenderer(container);
     const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         rotate: true,
-        maxZoom: BarChartUtils.getPlaneWidthFromScene(scene) * 2, // FIX ME
+        maxZoom: Utils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2(-1, -1);
@@ -44,7 +44,7 @@ export const init = (list, container) => {
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
 
-        BarChartUtils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
+        Utils.highlightCubeInFullWindow(scene, camera, raycaster, pointer);
 
         renderer.render( scene, camera );
     };

@@ -1,4 +1,4 @@
-import BarChartUtils from "./bar-chart-utils";
+import Utils from "./utils";
 
 export default class BarChartAlgorithms {
     /**
@@ -101,7 +101,7 @@ export default class BarChartAlgorithms {
     static getPositionOfKeyOnTopByCube = (cube, offsetY) => {
         return [
             cube.position.x,
-            BarChartUtils.getValueByCube(cube) + offsetY,
+            Utils.getValueByCube(cube) + offsetY,
             cube.position.z
         ];
     };
@@ -113,7 +113,7 @@ export default class BarChartAlgorithms {
     static getPositionOfValueByCube = (cube) => {
         return [
             cube.position.x,
-            BarChartUtils.getValueByCube(cube),
+            Utils.getValueByCube(cube),
             cube.position.z
         ]
     };
