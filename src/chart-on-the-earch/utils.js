@@ -11,7 +11,7 @@ import routeTexture from './route.png';
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 
-export default class BarChartOnTheEarthUtils {
+export default class Utils {
     static addLightToScene = (scene, ambientLightIntensity = 0.7) => {
         const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 0.7);
         const lonRadianOfUtc8 = -120 / 180 * Math.PI; // XZ坐标系下, 东八区经度对应的弧度
@@ -78,7 +78,7 @@ export default class BarChartOnTheEarthUtils {
             const barHeight = kv.value / maxValue * maxBarHeight;
             const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
             const color = colors[colorIndex];
-            BarChartOnTheEarthUtils._addBarToScene(kv.key, barHeight, color, scene);
+            Utils._addBarToScene(kv.key, barHeight, color, scene);
         });
     }
 
@@ -155,7 +155,7 @@ export default class BarChartOnTheEarthUtils {
         const center = province.properties.center;
         const r = earthRadius + barAltitude;
 
-        BarChartOnTheEarthUtils._addCubeToScene(center, barHeight, r, color, scene);
+        Utils._addCubeToScene(center, barHeight, r, color, scene);
 
         /**
          *  个人理解:
@@ -165,7 +165,7 @@ export default class BarChartOnTheEarthUtils {
          *  Ring: Array<[lan, lat]>
          */
         province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-            polygon.forEach(ring => BarChartOnTheEarthUtils._addLineToScene(ring, r, scene));
+            polygon.forEach(ring => Utils._addLineToScene(ring, r, scene));
         });
     };
 
