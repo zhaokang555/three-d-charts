@@ -189,14 +189,14 @@ export default class Utils {
     };
 
     static _createRouteTexture = () => {
+        // 1. use picture as texture
         // const loader = new THREE.TextureLoader();
         // const texture = loader.load(routeTexture);
         // texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
         // texture.wrapT = THREE.RepeatWrapping;
         // // texture.repeat.x = 2; // 纹理重复几次, 默认1次
 
-        // OR
-
+        // 2. OR use canvas as texture
         const canvas = document.createElement('canvas');
         canvas.width = 100;
         canvas.height = 1;
