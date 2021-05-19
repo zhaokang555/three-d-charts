@@ -6,7 +6,7 @@ import Constant from "../constant";
 import colormap from 'colormap';
 import earth_nightmap from './BlackMarble_2016_3km.jpg';
 import earth_specular_map from './8k_earth_specular_map.png';
-import earth_clouds from './8k_earth_clouds.png';
+import earth_clouds from './8k_earth_clouds.jpeg';
 import routeTexture from './route.png';
 import routeVert from './route.vert';
 import routeFrag from './route.frag';
