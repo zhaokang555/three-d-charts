@@ -51,12 +51,6 @@ export default class Utils {
         specularMap.wrapT = THREE.RepeatWrapping;
         specularMap.offset.x = 0.25; // why not -0.25 ?
 
-        // const material = new THREE.MeshPhongMaterial({
-        //     color: defaultCubeColorRed,
-        //     specular: '#ffffff',
-        //     shininess: 100,
-        //     side: THREE.DoubleSide,
-        // });
         const material = new THREE.MeshPhongMaterial( {
             map,
             specularMap, // 镜面反射贴图
@@ -69,7 +63,6 @@ export default class Utils {
         const earthMesh = new THREE.Mesh(geometry, material);
         earthMesh.position.set(0, 0, 0);
         earthMesh.name = 'earthMesh';
-        // earthMesh.rotateY(-Math.PI / 2);
         const cloudMesh = Utils._addCloudMeshToEarthMesh(earthMesh);
         scene.add(earthMesh);
 
@@ -283,10 +276,8 @@ export default class Utils {
         const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
         const material  = new THREE.MeshBasicMaterial({
             map: loader.load(earth_clouds),
-            // side: THREE.DoubleSide,
             opacity: 0.1,
             transparent: true,
-            // emissive: '#ffffff', // 自发光
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
         cloudMesh.name = 'cloudMesh';
