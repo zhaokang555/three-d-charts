@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import Constant from "./constant";
+import {Vector3} from "three";
 
 export default class CommonUtils {
     /**
@@ -59,8 +60,24 @@ export default class CommonUtils {
         const raycaster = new THREE.Raycaster();
         const pointer = new THREE.Vector2(-1, -1);
         document.addEventListener( 'pointermove', event => {
-            pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            // 1.
+            // pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            // pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // 2. or use matrix
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const translateMatrix = new THREE.Matrix3().set(1, 0, -w / 2,
+                0, 1, -h / 2,
+                0, 0, 1);
+            const scaleMatrix = new THREE.Matrix3().set(2 / w, 0, 0,
+                0, -2 / h, 0,
+                0, 0, 1);
+            pointer.copy(new THREE.Vector2(event.clientX, event.clientY)
+                .applyMatrix3(translateMatrix)
+                .applyMatrix3(scaleMatrix)
+            );
+
         });
         const cubes = CommonUtils.getCubes(scene);
 
