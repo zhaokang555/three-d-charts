@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 /**
  * @return {HTMLInputElement}
  */
-export default (tileWidth = 1000, tileHeight = 1000) => {
+export default (tileWidth = 2000, tileHeight = 2000) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.onchange = (e) => {
@@ -23,10 +23,17 @@ export default (tileWidth = 1000, tileHeight = 1000) => {
 
             for (let lineIdx = 0; lineIdx < lineCount; ++lineIdx) {
                 for (let colIdx = 0; colIdx < colCount; ++colIdx) {
+                    const topLeftX = tileWidth * colIdx;
+                    const topLeftY = tileHeight * lineIdx;
+                    canvas.width = Math.min(tileWidth, img.width - topLeftX);
+                    canvas.height = Math.min(tileHeight, img.height - topLeftY);
+
+                    ctx.fillStyle = 'black';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(img, -tileWidth * colIdx, -tileHeight * lineIdx);
+                    ctx.drawImage(img, -topLeftX, -topLeftY);
+                    const fileName = `tile_${lineIdx}_${colIdx}_${canvas.width}x${canvas.height}.jpeg`;
                     const promise = toBlob(canvas).then(blob => {
-                        zip.file(`tile_${lineIdx}_${colIdx}.jpeg`, blob);
+                        zip.file(fileName, blob);
                     });
                     promises.push(promise);
                 }
