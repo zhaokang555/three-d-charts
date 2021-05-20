@@ -4,9 +4,9 @@ import cities from './cities.json';
 import Algorithms from "./algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
-import earth_nightmap from './BlackMarble_2016_3km.jpg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './8k_earth_clouds.jpeg';
+import {getTextureOfLevel0} from './lod';
 import routeTexture from './route.png';
 import routeVert from './route.vert';
 import routeFrag from './route.frag';
@@ -39,20 +39,13 @@ export default class Utils {
 
     static addEarthMeshToScene = (scene) => {
         const loader = new THREE.TextureLoader();
-        const map = loader.load(earth_nightmap);
-        map.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
-        map.wrapT = THREE.RepeatWrapping;
-        // 默认情况下: 贴图从x轴负方向开始, 沿着逆时针方向到x轴负方向结束. 伦敦位于x轴正方向上
-        // 将贴图顺时针旋转90度后: 贴图从z轴负方向开始, 沿着逆时针方向到z轴负方向结束. 伦敦位于z轴正方向上
-        map.offset.x = 0.25; // why not -0.25 ?
-
         const specularMap = loader.load(earth_specular_map);
         specularMap.wrapS = THREE.RepeatWrapping;
         specularMap.wrapT = THREE.RepeatWrapping;
         specularMap.offset.x = 0.25; // why not -0.25 ?
 
         const material = new THREE.MeshPhongMaterial( {
-            map,
+            map: getTextureOfLevel0(),
             specularMap, // 镜面反射贴图
             specular: '#808080',
             shininess: 22,
