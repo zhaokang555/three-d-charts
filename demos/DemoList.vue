@@ -16,6 +16,9 @@
 
         <h2>Demo 4: City route chart</h2>
         <set-city-route-chart></set-city-route-chart>
+
+        <h2>Demo 5: Tile map tool</h2>
+        <router-link to="/tile-map-tool">Tile map tool</router-link>
     </div>
 </template>
 
