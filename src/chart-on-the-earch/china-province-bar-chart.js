@@ -17,12 +17,12 @@ export const init = (list, container) => {
     const camera = Utils.getPerspectiveCamera(scene);
     Utils.addAxesToScene(scene);
 
-    const updateCloud = Utils.addEarthMeshToScene(scene);
+    const renderer = CommonUtils.getRenderer(container);
+    const updateCloud = Utils.addEarthMeshToScene(scene, renderer);
     Utils.addBarsToScene(scene, list);
 
     Utils.addLightToScene(scene);
 
-    const renderer = CommonUtils.getRenderer(container);
     const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius

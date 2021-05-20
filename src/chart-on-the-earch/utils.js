@@ -27,6 +27,7 @@ export default class Utils {
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
         camera.position.copy(Algorithms.getPositionByLonLat(120, 0, rCamera)); // 相机位置东经120北纬0
+        camera.name = 'camera';
         return camera;
     };
 
@@ -37,7 +38,7 @@ export default class Utils {
         scene.add(axesHelper);
     };
 
-    static addEarthMeshToScene = (scene) => {
+    static addEarthMeshToScene = (scene, renderer) => {
         const loader = new THREE.TextureLoader();
         const specularMap = loader.load(earth_specular_map);
         specularMap.wrapS = THREE.RepeatWrapping;
@@ -45,7 +46,7 @@ export default class Utils {
         specularMap.offset.x = 0.25; // why not -0.25 ?
 
         const material = new THREE.MeshPhongMaterial( {
-            map: getTextureOfLevel0(),
+            map: getTextureOfLevel0(renderer),
             specularMap, // 镜面反射贴图
             specular: '#808080',
             shininess: 22,

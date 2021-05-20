@@ -59,7 +59,7 @@ export default class CommonUtils {
     static initHighlightCube = (scene, camera) => {
         const raycaster = new THREE.Raycaster();
         const pointer = new THREE.Vector2(-1, -1);
-        document.addEventListener( 'pointermove', event => {
+        document.addEventListener('pointermove', event => {
             // 1.
             // pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             // pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -82,7 +82,7 @@ export default class CommonUtils {
         const cubes = CommonUtils.getCubes(scene);
 
         return () => {
-            raycaster.setFromCamera( pointer, camera );
+            raycaster.setFromCamera(pointer, camera);
 
             if (cubes.length > 0) {
                 cubes.forEach(cube => {
