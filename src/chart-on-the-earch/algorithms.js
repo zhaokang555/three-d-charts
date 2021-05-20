@@ -4,12 +4,12 @@ const {earthRadius} = Constant;
 
 export default class Algorithms {
     /**
-     * @param r: number 到地心的距离
      * @param lon: number 经度
      * @param lat: number 纬度
-     * @return {[number, number, number]}
+     * @param r: number 到地心的距离
+     * @return {THREE.Vector3}
      */
-    static getXYZByLonLat = (r, lon, lat) => {
+    static getPositionByLonLat = (lon, lat, r = earthRadius) => {
         const {sin, cos, PI} = Math;
         const lonRadian = lon / 180 * PI;
         const latRadian = lat / 180 * PI;
@@ -25,7 +25,7 @@ export default class Algorithms {
          y = R * sin(lat)
          z = R * cos(lat) * cos(lon)
          */
-        return [x, y, z];
+        return new THREE.Vector3(x, y, z);
     };
 
     /**
@@ -35,11 +35,11 @@ export default class Algorithms {
      * @return {THREE.Vector3}
      */
     static getControlPointPosition = (scene, fromCoordinates, toCoordinates) => {
-        const getXYZByLonLat = Algorithms.getXYZByLonLat;
+        const getPositionByLonLat = Algorithms.getPositionByLonLat;
         const Vector3 = THREE.Vector3;
 
-        const fromPosition = new Vector3(...getXYZByLonLat(earthRadius, ...fromCoordinates));
-        const toPosition = new Vector3(...getXYZByLonLat(earthRadius, ...toCoordinates));
+        const fromPosition = getPositionByLonLat(...fromCoordinates);
+        const toPosition = getPositionByLonLat(...toCoordinates);
 
         // 在经过起始点的大圆上取两个控制点
         const midpointPositionList = [];
@@ -53,7 +53,7 @@ export default class Algorithms {
                 const intersects = raycaster.intersectObject(earthMesh);
                 if (intersects.length > 0) {
                     const midpointPositionOnTheEarth = intersects[0].point;
-                    const distance = fromPosition.distanceTo(toPosition);
+                    const distance = Algorithms.greatCircleDistance(fromPosition, toPosition);
                     const maxDistance = earthRadius * 2;
                     midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance));
                 }
@@ -62,4 +62,14 @@ export default class Algorithms {
 
         return midpointPositionList;
     };
+
+    /**
+     * @param fromPosition: THREE.Vector3
+     * @param toPosition: THREE.Vector3
+     * @param r: number
+     */
+    static greatCircleDistance(fromPosition, toPosition, r = earthRadius) {
+        const angleInRadian = fromPosition.angleTo(toPosition);
+        return angleInRadian * r;
+    }
 }
