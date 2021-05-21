@@ -1,5 +1,13 @@
 3D charts library, using Three.js
 
+# Features
+
+- bar-chart
+- bar-chart-2-args
+- china-province-bar-chart
+- city-route-chart
+- tile-map-tool
+
 ![bar-chart](./readme-pic/bar-chart.png)
 ![bar-chart-2-args](./readme-pic/bar-chart-2-args.png)
 ![china-province-bar-chart](./readme-pic/china-province-bar-chart.png)

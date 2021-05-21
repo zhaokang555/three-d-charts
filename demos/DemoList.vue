@@ -18,7 +18,7 @@
         <set-city-route-chart></set-city-route-chart>
 
         <h2>Demo 5: Tile map tool</h2>
-        <router-link to="/tile-map-tool">Tile map tool</router-link>
+        <set-tile-map-tool></set-tile-map-tool>
     </div>
 </template>
 
@@ -27,6 +27,7 @@
     import SetBarChart2Args from './SetBarChart2Args'
     import SetChinaProvinceBarChart from './SetChinaProvinceBarChart'
     import SetCityRouteChart from "./SetCityRouteChart";
+    import SetTileMapTool from "./SetTileMapTool";
 
     export default {
         name: "DemoList",
@@ -35,6 +36,7 @@
             'set-bar-chart-2-args': SetBarChart2Args,
             'set-china-province-bar-chart': SetChinaProvinceBarChart,
             'set-city-route-chart': SetCityRouteChart,
+            'set-tile-map-tool': SetTileMapTool,
         }
     }
 </script>

@@ -8,7 +8,10 @@
     export default {
         name: "TileMapTool",
         mounted() {
-            const input = tileMapTool(2048, 2048);
+            let {tileWidth, tileHeight} = this.$route.query;
+            tileWidth = parseInt(tileWidth || '1000');
+            tileHeight = parseInt(tileHeight || '1000');
+            const input = tileMapTool(tileWidth, tileHeight);
             this.$el.appendChild(input)
         },
         methods: {
