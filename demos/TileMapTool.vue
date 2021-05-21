@@ -8,7 +8,7 @@
     export default {
         name: "TileMapTool",
         mounted() {
-            const input = tileMapTool(3375, 3375);
+            const input = tileMapTool(2048, 2048);
             this.$el.appendChild(input)
         },
         methods: {
