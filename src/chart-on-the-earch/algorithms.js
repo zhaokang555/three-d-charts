@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import Constant from "../constant";
 const {earthRadius} = Constant;
+const {sin, cos, PI, asin, acos} = Math;
 
 export default class Algorithms {
     /**
@@ -10,7 +11,6 @@ export default class Algorithms {
      * @return {THREE.Vector3}
      */
     static getPositionByLonLat = (lon, lat, r = earthRadius) => {
-        const {sin, cos, PI} = Math;
         const lonRadian = lon / 180 * PI;
         const latRadian = lat / 180 * PI;
 
@@ -26,6 +26,31 @@ export default class Algorithms {
          z = R * cos(lat) * cos(lon)
          */
         return new THREE.Vector3(x, y, z);
+    };
+
+    /**
+     * @param position: THREE.Vector3
+     * @return {[number, number]} [longitude, latitude]
+     */
+    static getLonLatByPosition = (position) => {
+        const {x, y, z} = position;
+        const r = position.length();
+
+        const latRadian = asin(y / r); // 在经线圈平面上, 计算纬度
+
+        const rOnEquatorialPlane = r * cos(latRadian); // 在赤道面上, 计算r的投影距离
+        let lonRadian = 0;
+        if (z >= 0) { // 俯视图中, 点位于下方两个象限或x轴上
+            lonRadian = asin(x / rOnEquatorialPlane);
+        } else if (x >= 0) { // 俯视图中, 点位于右上方象限或者z负半轴上
+            lonRadian = PI / 2 + asin(x / rOnEquatorialPlane);
+        } else { // 俯视图中, 点位于左上方象限
+            lonRadian = -PI / 2 - acos(x / rOnEquatorialPlane);
+        }
+
+        const lat = latRadian / PI * 180;
+        const lon = lonRadian / PI * 180;
+        return [lon, lat];
     };
 
     /**

@@ -1,24 +1,31 @@
 import * as THREE from "three";
 import Constant from '../constant';
+import Algorithms from "./algorithms";
 
 const {earthRadius} = Constant;
 
-export const getLevelByDistance = (scene, camera) => {
+/**
+ * @param scene
+ * @param camera
+ * @return {[number, null]|[number, [number, number]]}
+ */
+export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) => {
     const earthPosition = new THREE.Vector3();
     const distance = camera.position.distanceTo(earthPosition);
     console.log(distance);
     if (distance > 1.5 * earthRadius) {
-        // todo
+        // level 0
+        return [0, null];
     } else {
+        // level 1
         const raycaster = new THREE.Raycaster();
         raycaster.set(camera.position, earthPosition.clone().sub(camera.position).normalize());
         const earthMesh = scene.getObjectByName('earthMesh');
         if (earthMesh) {
             const intersects = raycaster.intersectObject(earthMesh);
             if (intersects[0]) {
-                const {point, uv} = intersects[0];
-                console.log(point, uv);
-                // todo
+                const {point} = intersects[0];
+                return [1, Algorithms.getLonLatByPosition(point)];
             }
         }
     }
