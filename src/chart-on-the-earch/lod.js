@@ -1,51 +1,42 @@
 import * as THREE from "three";
-import earth_nightmap_3600x1800 from "./BlackMarble_2016_01deg_3600x1800.jpeg";
 import Constant from '../constant';
-import UpdatableTexture from '../lib/UpdatableTexture';
-import {Texture} from "three";
 
 const {earthRadius} = Constant;
 
-export const getTextureByDistance = (camera) => {
-    const distance = camera.position.distanceTo(new THREE.Vector3());
+export const getLevelByDistance = (scene, camera) => {
+    const earthPosition = new THREE.Vector3();
+    const distance = camera.position.distanceTo(earthPosition);
     console.log(distance);
     if (distance > 1.5 * earthRadius) {
-        return getTextureOfLevel0();
+        // todo
+    } else {
+        const raycaster = new THREE.Raycaster();
+        raycaster.set(camera.position, earthPosition.clone().sub(camera.position).normalize());
+        const earthMesh = scene.getObjectByName('earthMesh');
+        if (earthMesh) {
+            const intersects = raycaster.intersectObject(earthMesh);
+            if (intersects[0]) {
+                const {point, uv} = intersects[0];
+                console.log(point, uv);
+                // todo
+            }
+        }
     }
 };
 
-/**
- * @return {THREE.Texture}
- */
-export const getTextureOfLevel0 = (renderer) => {
-    const texture = new UpdatableTexture(THREE.RGBFormat);
-    texture.wrapS = THREE.RepeatWrapping; // 纹理将简单地重复到无穷大
-    texture.wrapT = THREE.RepeatWrapping;
-    // 默认情况下: 贴图从x轴负方向开始, 沿着逆时针方向到x轴负方向结束. 伦敦位于x轴正方向上
-    // 将贴图顺时针旋转90度后: 贴图从z轴负方向开始, 沿着逆时针方向到z轴负方向结束. 伦敦位于z轴正方向上
-    texture.offset.x = 0.25; // why not -0.25 ?
-    texture.setRenderer( renderer );
+export const getTilePathOfLevel1ByCoordinates = (lon, lat) => {
+    const scaleMatrix = new THREE.Matrix3().set(4 / 360, 0, 0,
+        0, -2 / 180, 0,
+        0, 0, 1);
+    const translateMatrix = new THREE.Matrix3().set(1, 0, 2,
+        0, 1, 1,
+        0, 0, 1);
+    const tileCoordinates = (new THREE.Vector2(lon, lat))
+        .applyMatrix3(scaleMatrix)
+        .applyMatrix3(translateMatrix);
+    const colIdx = Math.min(Math.floor(tileCoordinates.x), 3);
+    const lineIdx = Math.min(Math.floor(tileCoordinates.y), 2);
 
-    const loader = new THREE.ImageLoader();
-    loader.load(earth_nightmap_3600x1800, image => {
-        texture.setSize( image.width, image.height );
-        texture.update( image, 0, 0 );
-    });
-    window.texture = texture;
-    return texture;
-};
-
-export const updateTextureOfLevel1ByCoordinates = (texture, lon, lat) => {
-    texture.setSize( 13500, 6750 );
-
-    const lineIdx = Math.min(Math.floor((90 - lat) / 90), 2);
-    const colIdx = Math.min(Math.floor((lon + 180) / 90), 3);
     const tilePath = `/tiles_level_1/tile_${lineIdx}_${colIdx}_3375x3375.jpeg`;
-
-    const loader = new THREE.ImageLoader();
-    loader.load(tilePath, image => {
-        texture.update( image, colIdx * image.width, lineIdx * image.height );
-    });
+    return tilePath;
 };
-
-window.updateTextureOfLevel1ByCoordinates = updateTextureOfLevel1ByCoordinates;
