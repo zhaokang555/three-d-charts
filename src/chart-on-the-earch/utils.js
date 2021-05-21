@@ -6,7 +6,7 @@ import Constant from "../constant";
 import colormap from 'colormap';
 import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
-import earth_clouds from './8k_earth_clouds.jpeg';
+import earth_clouds from './2k_earth_clouds.jpeg';
 import routeTexture from './route.png';
 import routeVert from './route.vert';
 import routeFrag from './route.frag';
@@ -268,7 +268,7 @@ export default class Utils {
         const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
         const material  = new THREE.MeshBasicMaterial({
             map: loader.load(earth_clouds),
-            opacity: 0.1,
+            opacity: 0.3,
             transparent: true,
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
