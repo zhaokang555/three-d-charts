@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import CommonUtils from '../common-utils';
 import Utils from './utils';
 import Constant from '../constant';
+import * as LOD from "./lod";
 
 const {earthRadius} = Constant;
 
@@ -26,6 +27,10 @@ export const init = (list, container) => {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
     });
+
+    setInterval(() => {
+        LOD.getLevelAndIntersectCoordinatesByCameraPosition(scene, camera);
+    }, 2000);
 
     let cancelId = null;
     const render = () => {
