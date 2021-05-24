@@ -7,6 +7,7 @@
 - china-province-bar-chart
 - city-route-chart
 - tile-map-tool
+- LOD for Texture
 
 ![bar-chart](./readme-pic/bar-chart.png)
 ![bar-chart-2-args](./readme-pic/bar-chart-2-args.png)
