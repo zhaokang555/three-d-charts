@@ -22,8 +22,8 @@
         },
         data() {
             return {
-                tileWidth: 1000,
-                tileHeight: 1000,
+                tileWidth: 3600,
+                tileHeight: 3600,
             }
         }
     }

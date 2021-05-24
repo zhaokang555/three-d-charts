@@ -3,7 +3,9 @@ import JSZip from 'jszip';
 /**
  * @return {HTMLInputElement}
  */
-export default (tileWidth = 2000, tileHeight = 2000) => {
+export default (tileWidth = 3600, tileHeight = 3600,
+                colIdxOffset = 0, rowIdxOffset = 0
+                ) => {
     const input = document.createElement('input');
     input.type = 'file';
     input.onchange = (e) => {
@@ -17,13 +19,13 @@ export default (tileWidth = 2000, tileHeight = 2000) => {
             canvas.width = tileWidth;
             canvas.height = tileHeight;
             const ctx = canvas.getContext('2d');
-            const lineCount = Math.ceil(img.height / tileHeight);
             const colCount = Math.ceil(img.width / tileWidth);
+            const rowCount = Math.ceil(img.height / tileHeight);
             const zip = new JSZip();
             const promises = [];
 
-            for (let rowIdx = 0; rowIdx < lineCount; ++rowIdx) {
-                for (let colIdx = 0; colIdx < colCount; ++colIdx) {
+            for (let colIdx = 0; colIdx < colCount; ++colIdx) {
+                for (let rowIdx = 0; rowIdx < rowCount; ++rowIdx) {
                     const topLeftX = tileWidth * colIdx;
                     const topLeftY = tileHeight * rowIdx;
                     canvas.width = Math.min(tileWidth, img.width - topLeftX);
@@ -32,7 +34,7 @@ export default (tileWidth = 2000, tileHeight = 2000) => {
                     ctx.fillStyle = 'black';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, -topLeftX, -topLeftY);
-                    const fileName = `tile_${rowIdx}_${colIdx}_${canvas.width}x${canvas.height}.${fileExt}`;
+                    const fileName = `tile_${colIdx + colIdxOffset}_${rowIdx + rowIdxOffset}_${canvas.width}x${canvas.height}.${fileExt}`;
                     const promise = toBlob(canvas, fileExt).then(blob => {
                         zip.file(fileName, blob);
                     });
