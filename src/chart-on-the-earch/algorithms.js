@@ -43,7 +43,7 @@ export default class Algorithms {
         if (z >= 0) { // 俯视图中, 点位于下方两个象限或x轴上
             lonRadian = asin(x / rOnEquatorialPlane);
         } else if (x >= 0) { // 俯视图中, 点位于右上方象限或者z负半轴上
-            lonRadian = PI / 2 + asin(x / rOnEquatorialPlane);
+            lonRadian = PI / 2 + acos(x / rOnEquatorialPlane);
         } else { // 俯视图中, 点位于左上方象限
             lonRadian = -PI / 2 - acos(x / rOnEquatorialPlane);
         }

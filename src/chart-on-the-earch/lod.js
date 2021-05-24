@@ -2,14 +2,21 @@ import * as THREE from "three";
 import Constant from '../constant';
 import Algorithms from "./algorithms";
 import earth_nightmap_0 from './BlackMarble_2016_01deg_3600x1800.jpeg';
-
 const {earthRadius} = Constant;
+
+// level 1:
+// full map size = 86400x43200
+// each tile size = 3600x3600
+const fullMapSize = new THREE.Vector2(86400, 43200);
+const tileSize = new THREE.Vector2(3600, 3600);
+const colCount = 24;
+const rowCount = 12;
 
 /**
  * @param scene
  * @param camera
  */
-export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) => {
+export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera, renderer) => {
     const earthMesh = scene.getObjectByName('earthMesh');
     if (!earthMesh) return;
     const map = earthMesh.material.map;
@@ -24,13 +31,13 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
     } else {
         // level 1
         const raycaster = new THREE.Raycaster();
-        raycaster.set(camera.position, earthPosition.clone().sub(camera.position).normalize());
+        raycaster.set(earthPosition, camera.position.clone().normalize());
         const earthMesh = scene.getObjectByName('earthMesh');
         if (earthMesh) {
             const intersects = raycaster.intersectObject(earthMesh);
             if (intersects[0]) {
                 const {point} = intersects[0];
-                _updateMapToLevel1(map, ...Algorithms.getLonLatByPosition(point));
+                _updateMapToLevel1(map, renderer, ...Algorithms.getLonLatByPosition(point));
             }
         }
     }
@@ -54,31 +61,29 @@ export const updateMapToLevel0 = map => {
 
 /**
  * @param map: THREE.CanvasTexture
+ * @param renderer
  * @param lon: number
  * @param lat: number
  * @private
  */
-const _updateMapToLevel1 = (map, lon, lat) => {
-    // level 1 full map size = 13500x6750
-    // each tile size = 3375x3375
-
+const _updateMapToLevel1 = (map, renderer, lon, lat) => {
     map.currentLevel = 1;
-    const fullMapSize = new THREE.Vector2(13500, 6750);
-    const tileSize = new THREE.Vector2(3375, 3375);
 
     const [colIdx, rowIdx] = _getColAndRowIndexOfLevel1ByCoordinates(lon, lat);
-    const url = `/tiles_level_1/tile_${rowIdx}_${colIdx}_3375x3375.jpeg`;
+    const url = `/tiles_level_1/tile_${colIdx}_${rowIdx}_${tileSize.x}x${tileSize.y}.jpeg`;
     if (map.currentUrl === url) return;
 
     map.currentUrl = url;
     _loadImages([earth_nightmap_0, url])
         .then(([imageOfLevel0, imageOfLevel1]) => {
             const canvas = map.image;
-            canvas.width = fullMapSize.x;
-            canvas.height = fullMapSize.y;
+            const scale = fullMapSize.x / renderer.capabilities.maxTextureSize;
+            canvas.width = fullMapSize.x / scale;
+            canvas.height = fullMapSize.y / scale;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(imageOfLevel0, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(imageOfLevel1, colIdx * tileSize.x, rowIdx * tileSize.y);
+            ctx.drawImage(imageOfLevel1, colIdx * tileSize.x / scale, rowIdx * tileSize.y / scale,
+                tileSize.x / scale, tileSize.y / scale);
             map.needsUpdate = true;
         });
 };
@@ -86,20 +91,22 @@ const _updateMapToLevel1 = (map, lon, lat) => {
 /**
  * @param lon
  * @param lat
- * @return {[number, number]} colIdx = 0, 1, 2, 3; rowIdx = 0, 1;
+ * @return {[number, number]} colIdx = 0, 1, 2, ..., 23; rowIdx = 0, 1, 2, ..., 11;
  */
 const _getColAndRowIndexOfLevel1ByCoordinates = (lon, lat) => {
-    const scaleMatrix = new THREE.Matrix3().set(4 / 360, 0, 0,
-        0, -2 / 180, 0,
+    console.log(lon, lat);
+    const scaleMatrix = new THREE.Matrix3().set(colCount / 360, 0, 0,
+        0, -rowCount / 180, 0,
         0, 0, 1);
-    const translateMatrix = new THREE.Matrix3().set(1, 0, 2,
-        0, 1, 1,
+    const translateMatrix = new THREE.Matrix3().set(1, 0, colCount / 2,
+        0, 1, rowCount / 2,
         0, 0, 1);
     const tileCoordinates = (new THREE.Vector2(lon, lat))
         .applyMatrix3(scaleMatrix)
         .applyMatrix3(translateMatrix);
-    const colIdx = Math.min(Math.floor(tileCoordinates.x), 3);
-    const rowIdx = Math.min(Math.floor(tileCoordinates.y), 2);
+    console.log(tileCoordinates);
+    const colIdx = Math.min(Math.floor(tileCoordinates.x), colCount - 1);
+    const rowIdx = Math.min(Math.floor(tileCoordinates.y), rowCount - 1);
 
     return [colIdx, rowIdx];
 };

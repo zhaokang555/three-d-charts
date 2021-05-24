@@ -29,7 +29,7 @@ export const init = (list, container) => {
     });
 
     setInterval(() => {
-        LOD.getLevelAndIntersectCoordinatesByCameraPosition(scene, camera);
+        LOD.getLevelAndIntersectCoordinatesByCameraPosition(scene, camera, renderer);
     }, 2000); // can be smaller when in prod
 
     let cancelId = null;
