@@ -1,5 +1,3 @@
-// TODO: this file is NOT used yet
-
 import * as THREE from "three";
 import Constant from '../constant';
 import Algorithms from "./algorithms";
@@ -26,8 +24,6 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
         updateMapToLevel0(map);
     } else {
         // level 1
-        if (map.currentLevel === 1) return;
-
         const raycaster = new THREE.Raycaster();
         raycaster.set(camera.position, earthPosition.clone().sub(camera.position).normalize());
         const earthMesh = scene.getObjectByName('earthMesh');
@@ -49,8 +45,6 @@ export const updateMapToLevel0 = map => {
         canvas.width = image.width;
         canvas.height = image.height;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(image, 0, 0);
         map.needsUpdate = true;
     });
@@ -69,16 +63,16 @@ const _updateMapToLevel1 = (map, lon, lat) => {
     if (map.currentUrl === url) return;
 
     map.currentUrl = url;
-    new THREE.ImageLoader().load(url, image => {
-        const canvas = map.image;
-        canvas.width = fullMapSize.x;
-        canvas.height = fullMapSize.y;
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(image, colIdx * tileSize.x, rowIdx * tileSize.y);
-        map.needsUpdate = true;
-    });
+    _loadImages([earth_nightmap_0, url])
+        .then(([imageOfLevel0, imageOfLevel1]) => {
+            const canvas = map.image;
+            canvas.width = fullMapSize.x;
+            canvas.height = fullMapSize.y;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(imageOfLevel0, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(imageOfLevel1, colIdx * tileSize.x, rowIdx * tileSize.y);
+            map.needsUpdate = true;
+        });
 };
 
 const _getTileMeshOfLevel1ByCoordinates = (lon, lat) => {
@@ -94,7 +88,7 @@ const _getTileMeshOfLevel1ByCoordinates = (lon, lat) => {
     const loader = new THREE.TextureLoader();
     const map = loader.load(`/tiles_level_1/tile_${rowIdx}_${colIdx}_3375x3375.jpeg`);
     const specularMap = loader.load(`/tiles_specular_level_1/tile_${rowIdx}_${colIdx}_2048x2048.jpeg`);
-    const material = new THREE.MeshPhongMaterial( {
+    const material = new THREE.MeshPhongMaterial({
         map,
         specularMap, // 镜面反射贴图
         specular: '#808080',
@@ -124,4 +118,16 @@ const _getColAndRowIndexOfLevel1ByCoordinates = (lon, lat) => {
     const rowIdx = Math.min(Math.floor(tileCoordinates.y), 2);
 
     return [colIdx, rowIdx];
+};
+
+/**
+ * @param urls: Array<string>
+ */
+const _loadImages = (urls) => {
+    const promises = urls.map(url => {
+        return new Promise(resolve => {
+            new THREE.ImageLoader().load(url, image => resolve(image));
+        });
+    });
+    return Promise.all(promises);
 };

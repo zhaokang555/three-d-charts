@@ -4,14 +4,12 @@ import cities from './cities.json';
 import Algorithms from "./algorithms";
 import Constant from "../constant";
 import colormap from 'colormap';
-import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
-import earth_nightmap_0 from './BlackMarble_2016_01deg_3600x1800.jpeg';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
+import * as LOD from "./lod";
 import routeTexture from './route.png';
 import routeVert from './route.vert';
 import routeFrag from './route.frag';
-import * as LOD from "./lod";
 
 const {earthRadius, defaultCubeColorRed, barAltitude, cloudAltitude} = Constant;
 

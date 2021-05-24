@@ -30,7 +30,7 @@ export const init = (list, container) => {
 
     setInterval(() => {
         LOD.getLevelAndIntersectCoordinatesByCameraPosition(scene, camera);
-    }, 2000);
+    }, 2000); // can be smaller when in prod
 
     let cancelId = null;
     const render = () => {
