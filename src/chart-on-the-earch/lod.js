@@ -8,7 +8,6 @@ const {earthRadius} = Constant;
 /**
  * @param scene
  * @param camera
- * @return {[number, null]|[number, [number, number]]}
  */
 export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) => {
     const earthMesh = scene.getObjectByName('earthMesh');
@@ -37,6 +36,9 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
     }
 };
 
+/**
+ * @param map: THREE.CanvasTexture
+ */
 export const updateMapToLevel0 = map => {
     map.currentLevel = 0;
     map.currentUrl = earth_nightmap_0;
@@ -50,6 +52,12 @@ export const updateMapToLevel0 = map => {
     });
 };
 
+/**
+ * @param map: THREE.CanvasTexture
+ * @param lon: number
+ * @param lat: number
+ * @private
+ */
 const _updateMapToLevel1 = (map, lon, lat) => {
     // level 1 full map size = 13500x6750
     // each tile size = 3375x3375
@@ -73,30 +81,6 @@ const _updateMapToLevel1 = (map, lon, lat) => {
             ctx.drawImage(imageOfLevel1, colIdx * tileSize.x, rowIdx * tileSize.y);
             map.needsUpdate = true;
         });
-};
-
-const _getTileMeshOfLevel1ByCoordinates = (lon, lat) => {
-    const [colIdx, rowIdx] = _getColAndRowIndexOfLevel1ByCoordinates(lon, lat);
-    const phiLength = Math.PI / 2;
-    const thetaLength = Math.PI / 2;
-    const phiStart = -Math.PI / 2 + phiLength * colIdx;
-    const thetaStart = thetaLength * rowIdx;
-
-    const geometry = new THREE.SphereGeometry(earthRadius, 32, 32,
-        phiStart, phiLength, thetaStart, thetaLength);
-
-    const loader = new THREE.TextureLoader();
-    const map = loader.load(`/tiles_level_1/tile_${rowIdx}_${colIdx}_3375x3375.jpeg`);
-    const specularMap = loader.load(`/tiles_specular_level_1/tile_${rowIdx}_${colIdx}_2048x2048.jpeg`);
-    const material = new THREE.MeshPhongMaterial({
-        map,
-        specularMap, // 镜面反射贴图
-        specular: '#808080',
-        shininess: 22,
-        side: THREE.DoubleSide,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    return mesh;
 };
 
 /**
