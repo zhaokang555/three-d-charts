@@ -19,13 +19,15 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
 
     const earthPosition = new THREE.Vector3();
     const distance = camera.position.distanceTo(earthPosition);
-    console.log(distance);
     if (distance > 1.5 * earthRadius) {
         // level 0
-        console.log([0, null]);
+        if (map.currentLevel === 0) return;
+
         updateMapToLevel0(map);
     } else {
         // level 1
+        if (map.currentLevel === 1) return;
+
         const raycaster = new THREE.Raycaster();
         raycaster.set(camera.position, earthPosition.clone().sub(camera.position).normalize());
         const earthMesh = scene.getObjectByName('earthMesh');
@@ -33,7 +35,6 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
             const intersects = raycaster.intersectObject(earthMesh);
             if (intersects[0]) {
                 const {point} = intersects[0];
-                console.log([1, Algorithms.getLonLatByPosition(point)]);
                 _updateMapToLevel1(map, ...Algorithms.getLonLatByPosition(point));
             }
         }
@@ -41,6 +42,8 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera) =
 };
 
 export const updateMapToLevel0 = map => {
+    map.currentLevel = 0;
+    map.currentUrl = earth_nightmap_0;
     new THREE.ImageLoader().load(earth_nightmap_0, image => {
         const canvas = map.image;
         canvas.width = image.width;
@@ -57,11 +60,15 @@ const _updateMapToLevel1 = (map, lon, lat) => {
     // level 1 full map size = 13500x6750
     // each tile size = 3375x3375
 
+    map.currentLevel = 1;
     const fullMapSize = new THREE.Vector2(13500, 6750);
     const tileSize = new THREE.Vector2(3375, 3375);
 
     const [colIdx, rowIdx] = _getColAndRowIndexOfLevel1ByCoordinates(lon, lat);
     const url = `/tiles_level_1/tile_${rowIdx}_${colIdx}_3375x3375.jpeg`;
+    if (map.currentUrl === url) return;
+
+    map.currentUrl = url;
     new THREE.ImageLoader().load(url, image => {
         const canvas = map.image;
         canvas.width = fullMapSize.x;
