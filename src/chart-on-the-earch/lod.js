@@ -69,21 +69,26 @@ export const updateMapToLevel0 = map => {
 const _updateMapToLevel1 = (map, renderer, lon, lat) => {
     map.currentLevel = 1;
 
-    const [colIdx, rowIdx] = _getColAndRowIndexOfLevel1ByCoordinates(lon, lat);
-    const url = `/tiles_level_1/tile_${colIdx}_${rowIdx}_${tileSize.x}x${tileSize.y}.jpeg`;
-    if (map.currentUrl === url) return;
+    const colAndRowIndexList = _getColAndRowIndexListOfLevel1ByCoordinates(lon, lat);
+    const urls = colAndRowIndexList.map(([colIdx, rowIdx]) => {
+        return `/tiles_level_1/tile_${colIdx}_${rowIdx}_${tileSize.x}x${tileSize.y}.jpeg`;
+    });
+    if (map.currentUrl === urls[4]) return;
 
-    map.currentUrl = url;
-    _loadImages([earth_nightmap_0, url])
-        .then(([imageOfLevel0, imageOfLevel1]) => {
+    map.currentUrl = urls[4];
+    _loadImages([earth_nightmap_0, ...urls])
+        .then(([imageOfLevel0, ...imagesOfLevel1]) => {
             const canvas = map.image;
             const scale = fullMapSize.x / renderer.capabilities.maxTextureSize;
             canvas.width = fullMapSize.x / scale;
             canvas.height = fullMapSize.y / scale;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(imageOfLevel0, 0, 0, canvas.width, canvas.height);
-            ctx.drawImage(imageOfLevel1, colIdx * tileSize.x / scale, rowIdx * tileSize.y / scale,
-                tileSize.x / scale, tileSize.y / scale);
+            imagesOfLevel1.forEach((imageOfLevel1, i) => {
+                const [colIdx, rowIdx] = colAndRowIndexList[i];
+                ctx.drawImage(imageOfLevel1, colIdx * tileSize.x / scale, rowIdx * tileSize.y / scale,
+                    tileSize.x / scale, tileSize.y / scale);
+            });
             map.needsUpdate = true;
         });
 };
@@ -91,10 +96,9 @@ const _updateMapToLevel1 = (map, renderer, lon, lat) => {
 /**
  * @param lon
  * @param lat
- * @return {[number, number]} colIdx = 0, 1, 2, ..., 23; rowIdx = 0, 1, 2, ..., 11;
+ * @return {Array<[number, number]>}
  */
-const _getColAndRowIndexOfLevel1ByCoordinates = (lon, lat) => {
-    console.log(lon, lat);
+const _getColAndRowIndexListOfLevel1ByCoordinates = (lon, lat) => {
     const scaleMatrix = new THREE.Matrix3().set(colCount / 360, 0, 0,
         0, -rowCount / 180, 0,
         0, 0, 1);
@@ -104,11 +108,24 @@ const _getColAndRowIndexOfLevel1ByCoordinates = (lon, lat) => {
     const tileCoordinates = (new THREE.Vector2(lon, lat))
         .applyMatrix3(scaleMatrix)
         .applyMatrix3(translateMatrix);
-    console.log(tileCoordinates);
     const colIdx = Math.min(Math.floor(tileCoordinates.x), colCount - 1);
     const rowIdx = Math.min(Math.floor(tileCoordinates.y), rowCount - 1);
+    const colIdxLeft = (colIdx + colCount - 1) % colCount;
+    const colIdxRight = (colIdx + 1) % colCount;
+    const rowIdxTop = (rowIdx + rowCount - 1) % rowCount;
+    const rowIdxBottom = (rowIdx + 1) % rowCount;
 
-    return [colIdx, rowIdx];
+    return [
+        [colIdxLeft, rowIdxTop],
+        [colIdxLeft, rowIdx],
+        [colIdxLeft, rowIdxBottom],
+        [colIdx, rowIdxTop],
+        [colIdx, rowIdx], // center tile
+        [colIdx, rowIdxBottom],
+        [colIdxRight, rowIdxTop],
+        [colIdxRight, rowIdx],
+        [colIdxRight, rowIdxBottom],
+    ];
 };
 
 /**
