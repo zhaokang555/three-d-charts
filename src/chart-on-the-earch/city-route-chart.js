@@ -28,13 +28,13 @@ export const init = (list, container) => {
         maxDistance: 10 * earthRadius
     });
 
-    setInterval(() => {
+    const intervalId = setInterval(() => {
         LOD.getLevelAndIntersectCoordinatesByCameraPosition(scene, camera, renderer);
     }, 2000); // can be smaller when in prod
 
-    let cancelId = null;
+    let animationFrameId = null;
     const render = () => {
-        cancelId = requestAnimationFrame(render);
+        animationFrameId = requestAnimationFrame(render);
 
         // required if controls.enableDamping or controls.autoRotate are set to true
         controls.update();
@@ -44,7 +44,10 @@ export const init = (list, container) => {
 
         renderer.render( scene, camera );
     };
-    cancelId = requestAnimationFrame(render);
+    animationFrameId = requestAnimationFrame(render);
 
-    return () => cancelAnimationFrame(cancelId);
+    return () => {
+        cancelAnimationFrame(animationFrameId);
+        clearInterval(intervalId);
+    };
 };
