@@ -3,7 +3,7 @@ import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
 import Algorithms from "./algorithms";
 import Constant from "../constant";
-import colormap from 'colormap';
+import {colormap} from '../common-algorithms';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
 import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
@@ -85,8 +85,7 @@ export default class Utils {
         const maxValue = Math.max(...values);
         const maxBarHeight = 0.5 * earthRadius;
 
-        // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 140}).slice(40); // do not use color which is too dark
+        const colors = colormap(100);
 
         list.forEach(kv => {
             const barHeight = kv.value / maxValue * maxBarHeight;

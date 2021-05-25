@@ -2,7 +2,7 @@ import * as THREE from "three";
 import Algorithms from "./algorithms";
 import Constant from "../constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
-import colormap from "colormap";
+import {colormap} from "../common-algorithms";
 import CommonUtils from "../common-utils";
 
 export default class Utils {
@@ -11,7 +11,7 @@ export default class Utils {
         light.position.set(1, 1, 2); // 平行光从右上前方射过来
 
         scene.add(light);
-        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.55)); // 环境光
+        scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.5)); // 环境光
     };
 
     static addPlaneToScene = (scene) => {
@@ -58,9 +58,7 @@ export default class Utils {
         maxValue = maxValue || Math.max(...values);
         minValue = minValue || Math.min(...values);
 
-        // bigger value has a darker color, see: https://github.com/bpostlethwaite/colormap
-        const colors = colormap({colormap: 'hot', nshades: 140}).slice(20, 120); // do not use color which is too light or too dark
-
+        const colors = colormap(100);
         for (let i = 0; i < values.length; ++i) {
             const value = values[i];
             const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99

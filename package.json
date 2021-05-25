@@ -19,7 +19,6 @@
     "vue-template-compiler": "^2.6.12"
   },
   "dependencies": {
-    "colormap": "^2.3.2",
     "jszip": "^3.6.0",
     "three": "^0.126.0",
     "vue": "^2.6.12",
