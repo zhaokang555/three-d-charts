@@ -1,9 +1,9 @@
 import * as THREE from "three";
 
-export const colormap = (size) => {
-    const begin = new THREE.Color('#1E9600');
-    const middle = new THREE.Color('#FFF200');
-    const end = new THREE.Color('#FF0000');
+export const colormap = (size, options = {}) => {
+    const begin = options.begin || new THREE.Color('#1E9600');
+    const middle = options.middle || new THREE.Color('#FFF200');
+    const end = options.end || new THREE.Color('#FF0000');
 
     const colors = [];
     const span = size - 1;
