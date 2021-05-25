@@ -22,8 +22,8 @@ export default class Utils {
         scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, ambientLightIntensity));
     };
 
-    static getPerspectiveCamera = () => {
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001 * earthRadius, 20 * earthRadius);
+    static getPerspectiveCamera = (container) => {
+        const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.001 * earthRadius, 20 * earthRadius);
         const rCamera = 2 * earthRadius; // 相机到地心距离
 
         camera.position.copy(Algorithms.getPositionByLonLat(120, 0, rCamera)); // 相机位置东经120北纬0

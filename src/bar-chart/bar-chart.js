@@ -23,9 +23,8 @@ export const init = (list, container) => {
     Utils.addLightToScene(scene);
     Utils.addPlaneToScene(scene);
 
-    // const camera = BarChartUtils.getPerspectiveCamera(scene);
-    const camera = Utils.getOrthographicCamera(scene);
-    const renderer = CommonUtils.getRenderer(container);
+    const camera = Utils.getOrthographicCamera(scene, container);
+    const renderer = CommonUtils.getRenderer(container, camera);
     const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: Utils.getPlaneWidthFromScene(scene) * 2, // FIX ME

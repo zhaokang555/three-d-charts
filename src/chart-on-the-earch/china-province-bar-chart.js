@@ -15,14 +15,14 @@ const {earthRadius} = Constant;
 export const init = (list, container) => {
     const scene = new THREE.Scene();
     Utils.addAxesToScene(scene);
-    const camera = Utils.getPerspectiveCamera(scene);
+    const camera = Utils.getPerspectiveCamera(container);
 
     const updateCloud = Utils.addEarthMeshToScene(scene, camera);
     Utils.addBarsToScene(scene, list);
     Utils.addLightToScene(scene);
     const updateHighlight = CommonUtils.initHighlightCube(scene, camera);
 
-    const renderer = CommonUtils.getRenderer(container);
+    const renderer = CommonUtils.getRenderer(container, camera);
     const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius

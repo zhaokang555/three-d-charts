@@ -5,12 +5,22 @@ import Constant from "./constant";
 export default class CommonUtils {
     /**
      * @param container: HTMLElement
+     * @param camera
      * @return {THREE.WebGLRenderer}
      */
-    static getRenderer = (container) => {
+    static getRenderer = (container, camera) => {
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(container.offsetWidth, container.offsetHeight); // 将输出canvas的大小调整为container的大小
         container.appendChild(renderer.domElement); // 将生成的canvas挂在container上
+
+        window.addEventListener('resize', () => {
+            setTimeout(() => {
+                camera.aspect = container.offsetWidth / container.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.offsetWidth, container.offsetHeight);
+            }, 500); // for scroll bar
+        });
+
         return renderer;
     };
 

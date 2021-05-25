@@ -77,8 +77,8 @@ export default class Utils {
         }
     };
 
-    static getOrthographicCamera = (scene) => {
-        const ratio = window.innerWidth / window.innerHeight;
+    static getOrthographicCamera = (scene, container) => {
+        const ratio = container.offsetWidth / container.offsetHeight;
 
         const planeWidth = Utils.getPlaneWidthFromScene(scene);
         const x = planeWidth / 2 * 1.415;
@@ -90,11 +90,11 @@ export default class Utils {
         return camera;
     };
 
-    static getPerspectiveCamera = (scene) => {
+    static getPerspectiveCamera = (scene, container) => {
         const planeWidth = Utils.getPlaneWidthFromScene(scene);
         const x = planeWidth / 2 * 1.732;
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, planeWidth * 4);
+        const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, planeWidth * 4);
         camera.position.set(x, x, x);
         camera.lookAt(0, 0, 0);
         return camera;
