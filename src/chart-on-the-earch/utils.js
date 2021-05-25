@@ -69,8 +69,12 @@ export default class Utils {
 
         return () => {
             const distance = camera.position.length();
-            cloudMesh.visible = true;
+            cloudMesh.material.visible = true;
             cloudMesh.material.opacity = Math.min((distance - earthRadius) / earthRadius * 0.2, 0.4);
+            if (cloudMesh.material.opacity < 0.05) {
+                cloudMesh.material.visible = false;
+                return;
+            }
             cloudMesh.rotateX(-0.0002);
             cloudMesh.rotateY(0.0004);
         }
