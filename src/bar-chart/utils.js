@@ -176,7 +176,6 @@ export default class Utils {
      * @param baseLineIndex
      */
     static addValuesToScene = (scene, values, valueMaxLength, baseLineIndex = 0) => {
-        const valueTextList = values.map(v => v.toString());
         const loader = new THREE.FontLoader();
         const font = loader.parse(helvetiker_regular);
         const cubes = CommonUtils.getCubes(scene);
@@ -185,16 +184,16 @@ export default class Utils {
         const cubesInBaseLine = Utils.getCubesInBaseLine(scene, baseLineIndex);
 
         for (let i = 0; i < values.length; ++i) {
-            const valueText = valueTextList[i];
+            const valueText = values[i].toString();
             const cube = cubesInBaseLine[i];
 
             const geometry = Utils._createTextGeometry(valueText, font, charWidth, fontDepth);
             const material = Utils._createTextMaterial();
-            const text = new THREE.Mesh( geometry, material );
+            const textMesh = new THREE.Mesh(geometry, material);
 
-            text.position.set(...Algorithms.getPositionOfValueByCube(cube));
-            scene.add(text);
-            cube.valueMeshId = text.id;
+            textMesh.position.set(...Algorithms.getPositionOfValueByCube(cube));
+            scene.add(textMesh);
+            cube.valueMeshId = textMesh.id;
         }
     };
 

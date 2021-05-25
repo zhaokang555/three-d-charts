@@ -36,15 +36,13 @@ export default class Algorithms {
     static getKeyAndValueMaxLength = (lists) => {
         let keyMaxlength = 0;
         let valueMaxlength = 0;
-        lists.forEach(list => {
-            list.forEach(kv => {
-                const keyLen = kv.key.length;
-                const valueLen = kv.value.toString().length;
+        lists.forEach(list => list.forEach(kv => {
+            const keyLen = kv.key.length;
+            const valueLen = kv.value.toString().length;
 
-                keyMaxlength = Math.max(keyMaxlength, keyLen);
-                valueMaxlength = Math.max(valueMaxlength, valueLen);
-            });
-        });
+            keyMaxlength = Math.max(keyMaxlength, keyLen);
+            valueMaxlength = Math.max(valueMaxlength, valueLen);
+        }));
 
         return [keyMaxlength, valueMaxlength];
     };
@@ -74,12 +72,12 @@ export default class Algorithms {
      * @return {[number, number, number]}
      */
     static getPositionOfNthBar = (n, value, cubeWidth, baseLineIndex = 0) => {
-        const cubeGap = cubeWidth * 0.4;
-        const baseLine = 0 - (cubeWidth + cubeGap) * baseLineIndex - (cubeWidth / 2);
+        const cubeGap = cubeWidth * 0.4; // 柱子之间的间隔距离
+
         return [
             n * cubeGap + cubeWidth * (2 * n + 1) / 2,
-            value / 2,
-            baseLine,
+            value / 2, // 柱子y坐标 = 柱子高度/2
+            -(cubeWidth + cubeGap) * baseLineIndex - (cubeWidth / 2), // 这排柱子的z坐标 = 0 - 排距*第几排 - 柱宽/2
         ]
     };
 

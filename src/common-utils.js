@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import Constant from "./constant";
-import {Vector3} from "three";
 
 export default class CommonUtils {
     /**

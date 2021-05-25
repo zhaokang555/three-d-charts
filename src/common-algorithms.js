@@ -1,5 +1,10 @@
 import * as THREE from "three";
 
+/**
+ * @param size: number
+ * @param options
+ * @return {[]}
+ */
 export const colormap = (size, options = {}) => {
     const begin = options.begin || new THREE.Color('#1E9600');
     const middle = options.middle || new THREE.Color('#FFF200');
