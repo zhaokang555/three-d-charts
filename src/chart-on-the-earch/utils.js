@@ -109,15 +109,20 @@ export default class Utils {
      *     to: string;
      *     weight: number;
      * }>
+     * @param extraCities: Array<{
+     *     name: string;
+     *     coordinates: [number, number];
+     * }>
      * @return {function}
      */
-    static addRoutesToScene(scene, list) {
+    static addRoutesToScene(scene, list, extraCities) {
         const maxWeight = Math.max(...list.map(line => line.weight));
         const textureAndSpeedList = [];
+        const mergedCities = [...cities, ...extraCities];
 
         list.forEach(({from, to, weight}) => {
-            const fromCity = cities.find(item => item.name === from);
-            const toCity = cities.find(item => item.name === to);
+            const fromCity = mergedCities.find(item => item.name === from);
+            const toCity = mergedCities.find(item => item.name === to);
             if (fromCity && toCity) {
                 const curve = Utils._getRouteCurve(scene, fromCity, toCity);
                 const route = Utils._getRouteMeshOfTube(curve, weight, maxWeight, textureAndSpeedList);

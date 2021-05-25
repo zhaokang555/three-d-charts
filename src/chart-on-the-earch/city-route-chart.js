@@ -11,14 +11,18 @@ const {earthRadius} = Constant;
  *     value: string;
  * }>
  * @param container: HTMLElement
+ * @param extraCities: Array<{
+ *     name: string;
+ *     coordinates: [number, number];
+ * }>
  */
-export const init = (list, container) => {
+export const init = (list, container, extraCities = []) => {
     const scene = new THREE.Scene();
     Utils.addAxesToScene(scene);
     const camera = Utils.getPerspectiveCamera(container);
 
     const updateCloud = Utils.addEarthMeshToScene(scene, camera);
-    const updateRoutes = Utils.addRoutesToScene(scene, list);
+    const updateRoutes = Utils.addRoutesToScene(scene, list, extraCities);
     Utils.addLightToScene(scene, 1);
 
     const renderer = CommonUtils.getRenderer(container, camera);
