@@ -17,7 +17,7 @@ export const init = (list, container) => {
     Utils.addAxesToScene(scene);
     const camera = Utils.getPerspectiveCamera(scene);
 
-    const updateCloud = Utils.addEarthMeshToScene(scene);
+    const updateCloud = Utils.addEarthMeshToScene(scene, camera);
     const updateRoutes = Utils.addRoutesToScene(scene, list);
     Utils.addLightToScene(scene, 1);
 

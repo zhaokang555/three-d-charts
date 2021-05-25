@@ -38,7 +38,7 @@ export default class Utils {
         scene.add(axesHelper);
     };
 
-    static addEarthMeshToScene = (scene) => {
+    static addEarthMeshToScene = (scene, camera) => {
         const map = new THREE.TextureLoader().load(earth_nightmap);
         map.wrapS = THREE.RepeatWrapping;// 纹理将简单地重复到无穷大
         map.wrapT = THREE.RepeatWrapping;
@@ -68,6 +68,9 @@ export default class Utils {
         scene.add(earthMesh);
 
         return () => {
+            const distance = camera.position.length();
+            cloudMesh.visible = true;
+            cloudMesh.material.opacity = Math.min((distance - earthRadius) / earthRadius * 0.2, 0.4);
             cloudMesh.rotateX(-0.0002);
             cloudMesh.rotateY(0.0004);
         }
@@ -266,7 +269,7 @@ export default class Utils {
         const geometry = new THREE.SphereGeometry(earthRadius + cloudAltitude, 64, 64);
         const material  = new THREE.MeshBasicMaterial({
             map: loader.load(earth_clouds),
-            opacity: 0.3,
+            opacity: 0.2,
             transparent: true,
         });
         const cloudMesh = new THREE.Mesh(geometry, material);
