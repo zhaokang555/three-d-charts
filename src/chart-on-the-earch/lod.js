@@ -21,7 +21,7 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera, r
     if (!earthMesh) return;
     const map = earthMesh.material.map;
 
-    const earthPosition = new THREE.Vector3();
+    const earthPosition = earthMesh.position;
     const distance = camera.position.distanceTo(earthPosition);
     if (distance > 1.5 * earthRadius) {
         // level 0
