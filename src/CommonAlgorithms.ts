@@ -1,14 +1,14 @@
-import * as THREE from "three";
+import { Color } from 'three';
 
-/**
- * @param size: number
- * @param options
- * @return {[]}
- */
-export const colormap = (size, options = {}) => {
-    const begin = options.begin || new THREE.Color('#1E9600');
-    const middle = options.middle || new THREE.Color('#FFF200');
-    const end = options.end || new THREE.Color('#FF0000');
+type IOptions = {
+    begin?: Color;
+    middle?: Color;
+    end?: Color;
+};
+export const colormap = (size: number, options: IOptions = {}): Array<Color> => {
+    const begin = options.begin || new Color('#1E9600');
+    const middle = options.middle || new Color('#FFF200');
+    const end = options.end || new Color('#FF0000');
 
     const colors = [];
     const span = size - 1;

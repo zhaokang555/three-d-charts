@@ -7,10 +7,10 @@ export default (tileWidth = 3600, tileHeight = 3600,
                 colIdxOffset = 0, rowIdxOffset = 0,
                 console
                 ) => {
-    const input = document.createElement('input');
+    const input = document.createElement<'input'>('input');
     input.type = 'file';
     input.onchange = (e) => {
-        const file = e.target.files[0];
+        const file = (e.target as HTMLInputElement).files[0];
         const fileExt = file.name.split('.').reverse()[0];
 
         const img = new Image();

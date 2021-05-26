@@ -1,29 +1,21 @@
-import * as THREE from 'three';
-import * as CommonUtils from '../CommonUtils';
-import * as Utils from './Utils';
-import * as Constant from '../Constant';
+import { Scene } from 'three';
+import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUtils';
+import { addAxesToScene, addBarsToScene, addEarthMeshToScene, addLightToScene, getPerspectiveCamera } from './Utils';
+import { earthRadius } from '../Constant';
+import IList from '../type/IList';
 
-const {earthRadius} = Constant;
+export const init = (list: IList, container: HTMLElement): () => void => {
+    const scene = new Scene();
+    addAxesToScene(scene);
+    const camera = getPerspectiveCamera(container);
 
-/**
- * @param list: Array<{
- *     key: string;
- *     value: string;
- * }>
- * @param container: HTMLElement
- */
-export const init = (list, container) => {
-    const scene = new THREE.Scene();
-    Utils.addAxesToScene(scene);
-    const camera = Utils.getPerspectiveCamera(container);
+    const updateCloud = addEarthMeshToScene(scene, camera);
+    addBarsToScene(scene, list);
+    addLightToScene(scene);
+    const updateHighlight = initHighlightCube(scene, camera);
 
-    const updateCloud = Utils.addEarthMeshToScene(scene, camera);
-    Utils.addBarsToScene(scene, list);
-    Utils.addLightToScene(scene);
-    const updateHighlight = CommonUtils.initHighlightCube(scene, camera);
-
-    const [renderer, cleanRenderer] = CommonUtils.getRenderer(container, camera);
-    const [controls, cleanControls] = CommonUtils.addControlsToCamera(camera, renderer, {
+    const [renderer, cleanRenderer] = getRenderer(container, camera);
+    const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
     });

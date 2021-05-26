@@ -1,21 +1,16 @@
-import * as THREE from "three";
-import * as Constant from '../Constant';
-import * as Algorithms from "./Algorithms";
+import { getLonLatByPosition } from "./Algorithms";
 import earth_nightmap_0 from './BlackMarble_2016_01deg_3600x1800.jpeg';
-const {earthRadius} = Constant;
+import { ImageLoader, Matrix3, Raycaster, Vector2 } from 'three';
+import { earthRadius } from '../Constant';
 
 // level 1:
 // full map size = 86400x43200
 // each tile size = 3600x3600
-const fullMapSize = new THREE.Vector2(86400, 43200);
-const tileSize = new THREE.Vector2(3600, 3600);
+const fullMapSize = new Vector2(86400, 43200);
+const tileSize = new Vector2(3600, 3600);
 const colCount = 24;
 const rowCount = 12;
 
-/**
- * @param scene
- * @param camera
- */
 export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera, renderer) => {
     const earthMesh = scene.getObjectByName('earthMesh');
     if (!earthMesh) return;
@@ -30,26 +25,26 @@ export const getLevelAndIntersectCoordinatesByCameraPosition = (scene, camera, r
         updateMapToLevel0(map);
     } else {
         // level 1
-        const raycaster = new THREE.Raycaster();
+        const raycaster = new Raycaster();
         raycaster.set(earthPosition, camera.position.clone().normalize());
         const earthMesh = scene.getObjectByName('earthMesh');
         if (earthMesh) {
             const intersects = raycaster.intersectObject(earthMesh);
             if (intersects[0]) {
                 const {point} = intersects[0];
-                _updateMapToLevel1(map, renderer, ...Algorithms.getLonLatByPosition(point));
+                _updateMapToLevel1(map, renderer, ...getLonLatByPosition(point));
             }
         }
     }
 };
 
 /**
- * @param map: THREE.CanvasTexture
+ * @param map: CanvasTexture
  */
 export const updateMapToLevel0 = map => {
     map.currentLevel = 0;
     map.currentUrl = earth_nightmap_0;
-    new THREE.ImageLoader().load(earth_nightmap_0, image => {
+    new ImageLoader().load(earth_nightmap_0, image => {
         const canvas = map.image;
         canvas.width = image.width;
         canvas.height = image.height;
@@ -60,7 +55,7 @@ export const updateMapToLevel0 = map => {
 };
 
 /**
- * @param map: THREE.CanvasTexture
+ * @param map: CanvasTexture
  * @param renderer
  * @param lon: number
  * @param lat: number
@@ -99,13 +94,13 @@ const _updateMapToLevel1 = (map, renderer, lon, lat) => {
  * @return {Array<[number, number]>}
  */
 const _getColAndRowIndexListOfLevel1ByCoordinates = (lon, lat) => {
-    const scaleMatrix = new THREE.Matrix3().set(colCount / 360, 0, 0,
+    const scaleMatrix = new Matrix3().set(colCount / 360, 0, 0,
         0, -rowCount / 180, 0,
         0, 0, 1);
-    const translateMatrix = new THREE.Matrix3().set(1, 0, colCount / 2,
+    const translateMatrix = new Matrix3().set(1, 0, colCount / 2,
         0, 1, rowCount / 2,
         0, 0, 1);
-    const tileCoordinates = (new THREE.Vector2(lon, lat))
+    const tileCoordinates = (new Vector2(lon, lat))
         .applyMatrix3(scaleMatrix)
         .applyMatrix3(translateMatrix);
     const colIdx = Math.min(Math.floor(tileCoordinates.x), colCount - 1);
@@ -134,7 +129,7 @@ const _getColAndRowIndexListOfLevel1ByCoordinates = (lon, lat) => {
 const _loadImages = (urls) => {
     const promises = urls.map(url => {
         return new Promise(resolve => {
-            new THREE.ImageLoader().load(url, image => resolve(image));
+            new ImageLoader().load(url, image => resolve(image));
         });
     });
     return Promise.all(promises);

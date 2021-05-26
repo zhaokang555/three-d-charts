@@ -1,21 +1,44 @@
-import * as THREE from "three";
-import * as Algorithms from "./Algorithms";
-import * as Constant from "../Constant";
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
-import {colormap} from "../CommonAlgorithms";
-import * as CommonUtils from "../CommonUtils";
+import { colormap } from "../CommonAlgorithms";
+import ICube from '../type/ICube';
+import {
+    AmbientLight,
+    AxesHelper,
+    BoxGeometry,
+    DirectionalLight,
+    DoubleSide,
+    Font,
+    FontLoader,
+    Mesh,
+    MeshLambertMaterial,
+    MeshPhongMaterial,
+    OrthographicCamera,
+    PlaneGeometry,
+    Scene,
+    TextGeometry,
+    Vector3
+} from 'three';
+import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
+import { getCubes } from '../CommonUtils';
+import {
+    getCubeWidthByValues,
+    getPositionOfKeyByCube,
+    getPositionOfKeyOnTopByCube,
+    getPositionOfNthBar,
+    getPositionOfValueByCube
+} from './Algorithms';
 
-export const addLightToScene = (scene) => {
-    const light = new THREE.DirectionalLight(Constant.defaultLightColorWhite, 1);
+export const addLightToScene = (scene: Scene) => {
+    const light = new DirectionalLight(defaultLightColorWhite, 1);
     light.position.set(1, 1, 2); // 平行光从右上前方射过来
 
     scene.add(light);
-    scene.add(new THREE.AmbientLight(Constant.defaultLightColorWhite, 0.5)); // 环境光
+    scene.add(new AmbientLight(defaultLightColorWhite, 0.5)); // 环境光
 };
 
-export const addPlaneToScene = (scene) => {
+export const addPlaneToScene = (scene: Scene) => {
     let planeWidth = 100;
-    const cubes = CommonUtils.getCubes(scene);
+    const cubes = getCubes(scene);
     const cubePositions = cubes.map(cube => cube.position);
     if (cubePositions.length > 0) {
         // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
@@ -30,30 +53,23 @@ export const addPlaneToScene = (scene) => {
             planeWidth = maxY;
         }
     }
-    const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(planeWidth, planeWidth),
-        new THREE.MeshLambertMaterial({
-            color: Constant.defaultPlaneColorGray,
-            side: THREE.DoubleSide,
+    const plane = new Mesh(
+        new PlaneGeometry(planeWidth, planeWidth),
+        new MeshLambertMaterial({
+            color: defaultPlaneColorGray,
+            side: DoubleSide,
         })
     );
     // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
-    plane.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
+    plane.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
     plane.name = 'planeMesh'; // for find plane mesh in scene;
     scene.add(plane);
 };
 
-/**
- * @param scene: THREE.Scene
- * @param values: Array<number>
- * @param baseLineIndex: number 第几排柱子
- * @param cubeWidth: number
- * @param maxValue: number
- * @param minValue: number
- */
-export const addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth = null, maxValue = null, minValue = null) => {
+export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0,
+                                cubeWidth: number = null, maxValue: number = null, minValue: number = null) => {
     // set default value
-    cubeWidth = cubeWidth || Algorithms.getCubeWidthByValues(values);
+    cubeWidth = cubeWidth || getCubeWidthByValues(values);
     maxValue = maxValue || Math.max(...values);
     minValue = minValue || Math.min(...values);
 
@@ -63,45 +79,39 @@ export const addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth = nu
         const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
         const color = colors[colorIndex];
 
-        const cube = new THREE.Mesh(
-            new THREE.BoxGeometry(cubeWidth, value, cubeWidth),
-            new THREE.MeshPhongMaterial({color, side: THREE.DoubleSide}),
-        );
+        const cube = new Mesh(
+            new BoxGeometry(cubeWidth, value, cubeWidth),
+            new MeshPhongMaterial({color, side: DoubleSide}),
+        ) as ICube;
         cube.name = 'cubeMesh-' + value;
         cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
         cube.defaultColor = color; // store default color in cube mesh object
         cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
-        cube.position.set(...Algorithms.getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
+        cube.position.set(...getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
         scene.add(cube);
     }
 };
 
-export const getOrthographicCamera = (scene, container) => {
+export const getOrthographicCamera = (scene: Scene, container: HTMLElement) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
 
     const planeWidth = getPlaneWidthFromScene(scene);
     const x = planeWidth / 2 * 1.415;
     const y = x / aspectRatio;
-    const camera = new THREE.OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
+    const camera = new OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
 
     camera.position.set(-x / 2, x / 2, x); // see from left-front-top position
     // camera.lookAt(0, 0, 0);
     return camera;
 };
 
-export const addAxesToScene = (scene) => {
-    const axesHelper = new THREE.AxesHelper(1);
+export const addAxesToScene = (scene: Scene) => {
+    const axesHelper = new AxesHelper(1);
     scene.add(axesHelper);
 };
 
-/**
- * @param scene: THREE.Scene
- * @param keys: Array<string>
- * @param keyMaxlength
- * @param baseLineIndex
- */
-export const addKeysToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => {
-    const loader = new THREE.FontLoader();
+export const addKeysToScene = (scene: Scene, keys: Array<string>, keyMaxlength: number, baseLineIndex = 0) => {
+    const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
@@ -115,28 +125,22 @@ export const addKeysToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => 
             const cube = cubesInBaseLine[i];
             const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
             const material = _createTextMaterial();
-            const text = new THREE.Mesh(geometry, material);
+            const text = new Mesh(geometry, material);
             // Chinese font's bottom will go through the plane if no offsetY
             // text.position means its top left back corner
-            text.position.set(...Algorithms.getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
+            text.position.set(...getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
             scene.add(text);
             cube.keyMeshId = text.id;
         }
     });
 };
 
-/**
- * @param scene
- * @param keys: Array<string>
- * @param keyMaxlength: number
- * @param baseLineIndex: number
- */
-export const addKeysOnTopToScene = (scene, keys, keyMaxlength, baseLineIndex = 0) => {
-    const loader = new THREE.FontLoader();
+export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxlength: number, baseLineIndex = 0) => {
+    const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-        const cubes = CommonUtils.getCubes(scene);
+        const cubes = getCubes(scene);
         const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
         const charWidth = getCubeWidthByCube(cubes[0]) / keyMaxlength;
         const fontDepth = charWidth / 8;
@@ -146,28 +150,22 @@ export const addKeysOnTopToScene = (scene, keys, keyMaxlength, baseLineIndex = 0
             const cube = cubesInBaseLine[i];
             const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
             const material = _createTextMaterial();
-            const text = new THREE.Mesh(geometry, material);
+            const text = new Mesh(geometry, material);
 
-            const valueMesh = scene.getObjectById(cube.valueMeshId);
+            const valueMesh = scene.getObjectById(cube.valueMeshId) as Mesh<TextGeometry, MeshPhongMaterial>;
             const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-            text.position.set(...Algorithms.getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
+            text.position.set(...getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
             scene.add(text);
             cube.keyMeshId = text.id;
         }
     });
 };
 
-/**
- * @param scene: THREE.Scene
- * @param values: Array<number>
- * @param valueMaxLength
- * @param baseLineIndex
- */
-export const addValuesToScene = (scene, values, valueMaxLength, baseLineIndex = 0) => {
-    const loader = new THREE.FontLoader();
+export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number, baseLineIndex = 0) => {
+    const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
-    const cubes = CommonUtils.getCubes(scene);
+    const cubes = getCubes(scene);
     const charWidth = getCubeWidthByCube(cubes[0]) / valueMaxLength;
     const fontDepth = charWidth / 8;
     const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
@@ -178,65 +176,45 @@ export const addValuesToScene = (scene, values, valueMaxLength, baseLineIndex = 
 
         const geometry = _createTextGeometry(valueText, font, charWidth, fontDepth);
         const material = _createTextMaterial();
-        const textMesh = new THREE.Mesh(geometry, material);
+        const textMesh = new Mesh(geometry, material);
 
-        textMesh.position.set(...Algorithms.getPositionOfValueByCube(cube));
+        textMesh.position.set(...getPositionOfValueByCube(cube));
         scene.add(textMesh);
         cube.valueMeshId = textMesh.id;
     }
 };
 
-export const getCubeWidthByCube = (cube) => {
+export const getCubeWidthByCube = (cube: ICube): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.x - boundingBox.min.x;
 };
 
-/**
- * @param scene
- * @return {number}
- */
-export const getPlaneWidthFromScene = (scene) => {
+export const getPlaneWidthFromScene = (scene: Scene): number => {
     let planeWidth = 100;
-    const planeMesh = scene.getObjectByName('planeMesh');
+    const planeMesh = scene.getObjectByName('planeMesh') as Mesh<PlaneGeometry, MeshLambertMaterial>;
     if (planeMesh) {
         planeWidth = planeMesh.geometry.parameters.width
     } else {
         // when no plane, use max value * value length instead
-        const cubes = CommonUtils.getCubes(scene);
+        const cubes = getCubes(scene);
         const values = cubes.map(getValueByCube);
         planeWidth = Math.max(...values) * values.length;
     }
     return planeWidth;
 };
 
-/**
- * @param scene
- * @param baseLineIndex: number 第几排柱子
- * @return {THREE.Mesh[]}
- */
-export const getCubesInBaseLine = (scene, baseLineIndex) => {
-    const cubes = CommonUtils.getCubes(scene);
+export const getCubesInBaseLine = (scene: Scene, baseLineIndex: number): Array<ICube> => {
+    const cubes = getCubes(scene);
     return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
 };
 
-/**
- * @param cube: THREE.Mesh
- * @return {number}
- */
-export const getValueByCube = (cube) => {
+export const getValueByCube = (cube: ICube): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.y - boundingBox.min.y; // value = cube height
 };
 
-/**
- * @param text: string
- * @param font: THREE.Font
- * @param size: number
- * @param fontDepth: number
- * @return {TextGeometry}
- */
-const _createTextGeometry = (text, font, size, fontDepth) => {
-    const geometry = new THREE.TextGeometry(text, {
+const _createTextGeometry = (text: string, font: Font, size: number, fontDepth: number): TextGeometry => {
+    const geometry = new TextGeometry(text, {
         font,
         size,
         height: fontDepth,
@@ -249,10 +227,10 @@ const _createTextGeometry = (text, font, size, fontDepth) => {
 };
 
 const _createTextMaterial = () => {
-    return new THREE.MeshPhongMaterial({
-        color: Constant.defaultTextColorBlue,
-        // specular: Constant.defaultTextColorBlue, // 高光颜色
-        emissive: Constant.defaultTextColorBlue, // 自发光
+    return new MeshPhongMaterial({
+        color: defaultTextColorBlue,
+        // specular: defaultTextColorBlue, // 高光颜色
+        emissive: defaultTextColorBlue, // 自发光
         emissiveIntensity: 0.8,
     });
 };

@@ -1,32 +1,21 @@
-import * as THREE from 'three';
-import * as CommonUtils from '../CommonUtils';
-import * as Utils from './Utils';
-import * as Constant from '../Constant';
+import { Scene } from 'three';
+import { addControlsToCamera, getRenderer } from '../CommonUtils';
+import { addAxesToScene, addEarthMeshToScene, addLightToScene, addRoutesToScene, getPerspectiveCamera } from './Utils';
+import { earthRadius } from '../Constant';
+import IRoute from '../type/IRoute';
+import ICity from '../type/ICity';
 
-const {earthRadius} = Constant;
+export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []): () => void => {
+    const scene = new Scene();
+    addAxesToScene(scene);
+    const camera = getPerspectiveCamera(container);
 
-/**
- * @param list: Array<{
- *     key: string;
- *     value: string;
- * }>
- * @param container: HTMLElement
- * @param extraCities: Array<{
- *     name: string;
- *     coordinates: [number, number];
- * }>
- */
-export const init = (list, container, extraCities = []) => {
-    const scene = new THREE.Scene();
-    Utils.addAxesToScene(scene);
-    const camera = Utils.getPerspectiveCamera(container);
+    const updateCloud = addEarthMeshToScene(scene, camera);
+    const updateRoutes = addRoutesToScene(scene, list, extraCities);
+    addLightToScene(scene, 1);
 
-    const updateCloud = Utils.addEarthMeshToScene(scene, camera);
-    const updateRoutes = Utils.addRoutesToScene(scene, list, extraCities);
-    Utils.addLightToScene(scene, 1);
-
-    const [renderer, cleanRenderer] = CommonUtils.getRenderer(container, camera);
-    const [controls, cleanControls] = CommonUtils.addControlsToCamera(camera, renderer, {
+    const [renderer, cleanRenderer] = getRenderer(container, camera);
+    const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
     });
@@ -41,7 +30,7 @@ export const init = (list, container, extraCities = []) => {
         updateRoutes();
         updateCloud();
 
-        renderer.render( scene, camera );
+        renderer.render(scene, camera);
     };
     animationFrameId = requestAnimationFrame(render);
 
