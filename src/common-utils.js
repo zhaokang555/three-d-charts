@@ -73,6 +73,8 @@ export default class CommonUtils {
             controls.autoRotateSpeed = 0.5;
         }
 
+        controls.listenToKeyEvents(window);
+
         const onKeydown = (evt) => {
             switch (evt.code.toLowerCase()) {
                 case 'pageup':
