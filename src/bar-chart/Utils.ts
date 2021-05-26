@@ -51,7 +51,7 @@ export const addPlaneToScene = (scene) => {
  * @param maxValue: number
  * @param minValue: number
  */
-export const addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth, maxValue, minValue) => {
+export const addCubesToScene = (scene, values, baseLineIndex = 0, cubeWidth = null, maxValue = null, minValue = null) => {
     // set default value
     cubeWidth = cubeWidth || Algorithms.getCubeWidthByValues(values);
     maxValue = maxValue || Math.max(...values);
