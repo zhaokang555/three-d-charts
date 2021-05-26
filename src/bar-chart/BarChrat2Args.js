@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import Utils from "./utils";
-import CommonUtils from "../common-utils";
-import Algorithms from "./algorithms";
+import * as Utils from "./Utils";
+import * as CommonUtils from "../CommonUtils";
+import * as Algorithms from "./Algorithms";
 
 /**
  * @param lists: Array<Array<{

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import CommonUtils from '../common-utils';
-import Utils from './utils';
-import Constant from '../constant';
+import * as CommonUtils from '../CommonUtils';
+import * as Utils from './Utils';
+import * as Constant from '../Constant';
 
 const {earthRadius} = Constant;
 

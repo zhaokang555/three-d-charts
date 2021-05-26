@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import Constant from '../constant';
-import Algorithms from "./algorithms";
+import * as Constant from '../Constant';
+import * as Algorithms from "./Algorithms";
 import earth_nightmap_0 from './BlackMarble_2016_01deg_3600x1800.jpeg';
 const {earthRadius} = Constant;
 

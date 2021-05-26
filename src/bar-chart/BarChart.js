@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import Utils from "./utils";
-import CommonUtils from "../common-utils";
+import * as Utils from "./Utils";
+import * as CommonUtils from "../CommonUtils";
 
 /**
  * @param list: Array<{
