@@ -13,15 +13,32 @@ export default class CommonUtils {
         renderer.setSize(container.offsetWidth, container.offsetHeight); // 将输出canvas的大小调整为container的大小
         container.appendChild(renderer.domElement); // 将生成的canvas挂在container上
 
-        window.addEventListener('resize', () => {
-            setTimeout(() => {
-                camera.aspect = container.offsetWidth / container.offsetHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.offsetWidth, container.offsetHeight);
-            }, 500); // for scroll bar
-        });
+        const onWindowResize = () => {
+            console.log('onWindowResize');
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            // 1. 当缩小window宽度时, 因为container宽度>window宽度, window内会出现横向滚动条, 导致container高度(w1)<window高度.
+            // 这时执行renderer.setSize, canvas宽度为w1
+            // setSize之后, 横向滚动条消失container高度变为w2(w2>w1).
+            // 所以需要再次setSize
+            // 2. 当缩小window高度时同理
+            // 3. 或者使用container overflow hidden
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
 
-        return renderer;
+            const aspectRatio = container.offsetWidth / container.offsetHeight;
+            if (camera.type === "PerspectiveCamera") {
+                camera.aspect = aspectRatio;
+            } else if (camera.type === "OrthographicCamera") {
+                const halfW = camera.right;
+                camera.top = halfW / aspectRatio;
+                camera.bottom = -halfW / aspectRatio;
+            }
+
+            camera.updateProjectionMatrix();
+        };
+
+        window.addEventListener('resize', onWindowResize);
+
+        return [renderer, () => window.removeEventListener('resize', onWindowResize)];
     };
 
     /**

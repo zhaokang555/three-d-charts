@@ -25,7 +25,7 @@ export const init = (list, container, extraCities = []) => {
     const updateRoutes = Utils.addRoutesToScene(scene, list, extraCities);
     Utils.addLightToScene(scene, 1);
 
-    const renderer = CommonUtils.getRenderer(container, camera);
+    const [renderer, cleanRenderer] = CommonUtils.getRenderer(container, camera);
     const controls = CommonUtils.addControlsToCamera(camera, renderer, {
         minDistance: 1.05 * earthRadius,
         maxDistance: 10 * earthRadius
@@ -47,5 +47,6 @@ export const init = (list, container, extraCities = []) => {
 
     return () => {
         cancelAnimationFrame(animationFrameId);
+        cleanRenderer();
     };
 };
