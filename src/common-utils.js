@@ -14,7 +14,6 @@ export default class CommonUtils {
         container.appendChild(renderer.domElement); // 将生成的canvas挂在container上
 
         const onWindowResize = () => {
-            console.log('onWindowResize');
             renderer.setSize(container.offsetWidth, container.offsetHeight);
             // 1. 当缩小window宽度时, 因为container宽度>window宽度, window内会出现横向滚动条, 导致container高度(w1)<window高度.
             // 这时执行renderer.setSize, canvas宽度为w1
@@ -51,7 +50,7 @@ export default class CommonUtils {
      *     minZoom?: number;
      *     maxZoom?: number;
      * }
-     * @return {OrbitControls}
+     * @return {[OrbitControls, Function]}
      */
     static addControlsToCamera = (camera, renderer, options = {}) => {
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -74,7 +73,26 @@ export default class CommonUtils {
             controls.autoRotateSpeed = 0.5;
         }
 
-        return controls;
+        const onKeydown = (evt) => {
+            switch (evt.code.toLowerCase()) {
+                case 'pageup':
+                case 'equal':
+                case 'keyw':
+                case 'home':
+                    renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: -1}));
+                    break;
+                case 'pagedown':
+                case 'minus':
+                case 'keys':
+                case 'end':
+                    renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: 1}));
+                    break;
+
+            }
+        };
+        window.addEventListener('keydown', onKeydown);
+
+        return [controls, () => window.removeEventListener('keydown', onKeydown)];
     };
 
     /**

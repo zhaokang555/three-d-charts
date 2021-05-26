@@ -25,7 +25,7 @@ export const init = (list, container) => {
 
     const camera = Utils.getOrthographicCamera(scene, container);
     const [renderer, cleanRenderer] = CommonUtils.getRenderer(container, camera);
-    const controls = CommonUtils.addControlsToCamera(camera, renderer, {
+    const [controls, cleanControls] = CommonUtils.addControlsToCamera(camera, renderer, {
         rotate: true,
         maxZoom: Utils.getPlaneWidthFromScene(scene) * 2, // FIX ME
     });
@@ -47,5 +47,6 @@ export const init = (list, container) => {
     return () => {
         cancelAnimationFrame(cancelId);
         cleanRenderer();
+        cleanControls();
     };
 };
