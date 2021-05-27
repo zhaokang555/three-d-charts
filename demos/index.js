@@ -6,7 +6,7 @@ import BarChartDisplay from "./BarChartDisplay";
 import BarChart2ArgsDisplay from "./BarChart2ArgsDisplay";
 import ChinaProvinceBarChartDisplay from "./ChinaProvinceBarChartDisplay";
 import CityRouteChartDisplay from './CityRouteChartDisplay';
-import TileMapTool from './TileMapTool';
+import TileMapToolDisplay from './TileMapToolDisplay';
 
 Vue.use(VueRouter);
 
@@ -17,7 +17,7 @@ const router = new VueRouter({
         {path: '/bar-chart-2-args-display', component: BarChart2ArgsDisplay},
         {path: '/china-province-bar-chart-display', component: ChinaProvinceBarChartDisplay},
         {path: '/city-route-chart-display', component: CityRouteChartDisplay},
-        {path: '/tile-map-tool', component: TileMapTool},
+        {path: '/tile-map-tool-display', component: TileMapToolDisplay},
     ]
 });
 

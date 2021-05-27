@@ -1,12 +1,7 @@
 import JSZip from 'jszip';
 
-/**
- * @return {HTMLInputElement}
- */
 export default (tileWidth = 3600, tileHeight = 3600,
-                colIdxOffset = 0, rowIdxOffset = 0,
-                console
-                ) => {
+                colIdxOffset = 0, rowIdxOffset = 0) => {
     const input = document.createElement<'input'>('input');
     input.type = 'file';
     input.onchange = (e) => {
@@ -36,7 +31,7 @@ export default (tileWidth = 3600, tileHeight = 3600,
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(img, -topLeftX, -topLeftY);
                     const fileName = `tile_${colIdx + colIdxOffset}_${rowIdx + rowIdxOffset}_${canvas.width}x${canvas.height}.${fileExt}`;
-                    console && console.log('processing:', fileName);
+                    console.log('processing:', fileName);
                     const promise = toBlob(canvas, fileExt).then(blob => {
                         zip.file(fileName, blob);
                     });

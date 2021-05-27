@@ -12,7 +12,7 @@
         computed: {
           to() {
               return {
-                  path: '/tile-map-tool',
+                  path: '/tile-map-tool-display',
                   query: {
                       tileWidth: this.tileWidth,
                       tileHeight: this.tileHeight,
