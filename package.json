@@ -1,14 +1,14 @@
 {
-  "name": "3d-charts",
+  "name": "three-d-charts",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "3D charts library, using Three.js",
+  "main": "index.ts",
   "scripts": {
     "dev": "parcel ./demos/index.html",
     "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./",
     "build": "parcel build src/index.ts"
   },
-  "author": "",
+  "author": "forzhaokang@gmail",
   "license": "ISC",
   "devDependencies": {
     "@types/three": "^0.126.0",
@@ -18,14 +18,14 @@
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "typescript": "^4.2.4",
-    "vue-template-compiler": "^2.6.12"
-  },
-  "dependencies": {
     "jszip": "^3.6.0",
-    "three": "^0.126.0",
+    "vue-template-compiler": "^2.6.12",
     "vue": "^2.6.12",
     "vue-hot-reload-api": "^2.3.4",
     "vue-router": "^3.5.1"
+  },
+  "dependencies": {
+    "three": "^0.126.0"
   },
   "staticFiles": {
     "staticPath": "static",
