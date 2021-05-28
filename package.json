@@ -2,14 +2,14 @@
   "name": "three-d-charts",
   "version": "1.0.0",
   "description": "3D charts library, using Three.js",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "parcel ./demos/index.html",
     "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./",
     "build": "parcel build src/index.ts --global ThreeDCharts"
   },
-  "author": "forzhaokang@gmail",
-  "license": "ISC",
+  "author": "forzhaokang@gmail.com",
+  "license": "MIT",
   "devDependencies": {
     "@types/three": "^0.126.0",
     "@vue/component-compiler-utils": "^3.2.0",
