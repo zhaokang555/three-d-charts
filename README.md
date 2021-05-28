@@ -42,7 +42,29 @@ console.log(window.ThreeDCharts)
 </script>
 ```
 
-# Local run
+# API
+
+```ts
+ThreeDCharts.initBarChart: (list: IList, container: HTMLElement): () => void
+ThreeDCharts.initBarChart2Args: (lists: Array<IList>, container: HTMLElement): () => void
+ThreeDCharts.initChinaProvinceBarChart: (list: IList, container: HTMLElement): () => void
+ThreeDCharts.initCityRouteChart: (list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []): () => void
+ThreeDCharts.tileMapTool: (tileWidth = 3600, tileHeight = 3600,
+                                          colIdxOffset = 0, rowIdxOffset = 0) => HTMLInputElement
+
+type IList = Array<{
+  key: string;
+  value: number;
+}>;
+
+interface IRoute {
+    from: string;
+    to: string;
+    weight: number;
+}
+```
+
+# Local run demos
 
 - `npm i`
 - `npm run dev`
