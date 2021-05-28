@@ -62,6 +62,13 @@ interface IRoute {
     to: string;
     weight: number;
 }
+
+interface ICity {
+    name: string;
+    coordinates: ICoordinates;
+}
+
+type ICoordinates = [number, number];
 ```
 
 # Local run demos
