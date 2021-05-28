@@ -1,0 +1,5 @@
+/three-d-charts-demos/
+/.cache/
+/dist/
+/.idea
+/node_modules

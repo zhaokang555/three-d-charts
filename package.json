@@ -1,6 +1,6 @@
 {
   "name": "three-d-charts",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "3D charts library, using Three.js",
   "main": "dist/index.js",
   "scripts": {
