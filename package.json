@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "parcel ./demos/index.html",
     "build:demos": "parcel build ./demos/index.html --out-dir three-d-charts-demos --public-url ./",
-    "build": "parcel build src/index.ts"
+    "build": "parcel build src/index.ts --global ThreeDCharts"
   },
   "author": "forzhaokang@gmail",
   "license": "ISC",
