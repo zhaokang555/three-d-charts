@@ -17,6 +17,31 @@
 
 https://zhaokang555.github.io/three-d-charts-demos
 
+# Install
+
+## Use npm
+
+`npm i three-d-charts --save`
+
+```js
+const ThreeDCharts = require('three-d-charts');
+```
+
+or 
+
+```js
+import ThreeDCharts from 'three-d-charts';
+```
+
+## Global import in browser
+
+```html
+<script src="path/to/three-d-charts"></script>
+<script>
+console.log(window.ThreeDCharts)
+</script>
+```
+
 # Local run
 
 - `npm i`
