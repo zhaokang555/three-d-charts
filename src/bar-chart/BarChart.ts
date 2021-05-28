@@ -1,9 +1,9 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUtils';
+import { addControlsToCamera, getRenderer, initHighlightCube, makeTextMeshesLookAtCamera } from '../CommonUtils';
 import {
     addAxesToScene,
     addCubesToScene,
-    addKeysToScene,
+    addKeysOnTopToScene,
     addLightToScene,
     addPlaneToScene,
     addValuesToScene,
@@ -21,7 +21,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const scene = new Scene();
     addCubesToScene(scene, values);
     addAxesToScene(scene);
-    addKeysToScene(scene, keys, keyMaxLength);
+    addKeysOnTopToScene(scene, keys, keyMaxLength);
     addValuesToScene(scene, values, valueMaxLength);
     addLightToScene(scene);
     addPlaneToScene(scene);
@@ -42,6 +42,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         controls.update();
 
         updateHighlight();
+        makeTextMeshesLookAtCamera(scene, camera);
 
         renderer.render(scene, camera);
     };

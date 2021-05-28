@@ -1,5 +1,5 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUtils';
+import { addControlsToCamera, getRenderer, initHighlightCube, makeTextMeshesLookAtCamera } from '../CommonUtils';
 import {
     addAxesToScene,
     addCubesToScene,
@@ -16,7 +16,7 @@ import IList from '../type/IList';
 export const init = (lists: Array<IList>, container: HTMLElement): () => void => {
     const scene = new Scene();
     const cubeWidth = getCubeWidthByLists(lists);
-    const [keyMaxlength, valueMaxlength] = getKeyAndValueMaxLength(lists);
+    const [keyMaxLength, valueMaxLength] = getKeyAndValueMaxLength(lists);
     const [maxValue, minValue] = getMaxAndMinValueByLists(lists);
 
     lists.forEach((list, i) => {
@@ -25,8 +25,8 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
 
         addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
         addAxesToScene(scene);
-        addValuesToScene(scene, values, valueMaxlength, i);
-        addKeysOnTopToScene(scene, keys, keyMaxlength, i);
+        addValuesToScene(scene, values, valueMaxLength, i);
+        addKeysOnTopToScene(scene, keys, keyMaxLength, i);
         addPlaneToScene(scene);
     });
 
@@ -47,6 +47,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         controls.update();
 
         updateHighlight();
+        makeTextMeshesLookAtCamera(scene, camera);
 
         renderer.render(scene, camera);
     };

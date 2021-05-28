@@ -2,11 +2,13 @@ import {
     BoxGeometry,
     Matrix3,
     Mesh,
+    MeshPhongMaterial,
     Object3D,
     OrthographicCamera,
     PerspectiveCamera,
     Raycaster,
     Scene,
+    TextGeometry,
     Vector2,
     WebGLRenderer
 } from "three";
@@ -55,49 +57,49 @@ type IOptions = {
     maxZoom?: number;
 }
 export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, options: IOptions = {}): [OrbitControls, () => void] => {
-        const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
 
-        controls.enableDamping = true; // 是否有惯性
-        controls.enableZoom = true; // 是否可以缩放
-        controls.zoomSpeed = 0.5;
-        if (camera.type === "PerspectiveCamera") {
-            controls.minDistance = options.minDistance || 1; // 设置相机距离原点的最近距离
-            controls.maxDistance = options.maxDistance || 1000; // 设置相机距离原点的最远距离
-        } else if (camera.type === "OrthographicCamera") {
-            controls.minZoom = options.minZoom || 0;
-            controls.maxZoom = options.maxZoom || Infinity;
+    controls.enableDamping = true; // 是否有惯性
+    controls.enableZoom = true; // 是否可以缩放
+    controls.zoomSpeed = 0.5;
+    if (camera.type === "PerspectiveCamera") {
+        controls.minDistance = options.minDistance || 1; // 设置相机距离原点的最近距离
+        controls.maxDistance = options.maxDistance || 1000; // 设置相机距离原点的最远距离
+    } else if (camera.type === "OrthographicCamera") {
+        controls.minZoom = options.minZoom || 0;
+        controls.maxZoom = options.maxZoom || Infinity;
+    }
+
+    controls.enablePan = true; // 是否开启右键拖拽
+
+    if (options.rotate) { //是否自动旋转
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+    }
+
+    controls.listenToKeyEvents(window as any as HTMLElement);
+
+    const onKeydown = (evt) => {
+        switch (evt.code.toLowerCase()) {
+            case 'pageup':
+            case 'equal':
+            case 'keyw':
+            case 'home':
+                renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: -1}));
+                break;
+            case 'pagedown':
+            case 'minus':
+            case 'keys':
+            case 'end':
+                renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: 1}));
+                break;
+
         }
-
-        controls.enablePan = true; // 是否开启右键拖拽
-
-        if (options.rotate) { //是否自动旋转
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 0.5;
-        }
-
-        controls.listenToKeyEvents(window as any as HTMLElement);
-
-        const onKeydown = (evt) => {
-            switch (evt.code.toLowerCase()) {
-                case 'pageup':
-                case 'equal':
-                case 'keyw':
-                case 'home':
-                    renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: -1}));
-                    break;
-                case 'pagedown':
-                case 'minus':
-                case 'keys':
-                case 'end':
-                    renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: 1}));
-                    break;
-
-            }
-        };
-        window.addEventListener('keydown', onKeydown);
-
-        return [controls, () => window.removeEventListener('keydown', onKeydown)];
     };
+    window.addEventListener('keydown', onKeydown);
+
+    return [controls, () => window.removeEventListener('keydown', onKeydown)];
+};
 
 export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => {
     const raycaster = new Raycaster();
@@ -146,16 +148,29 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
 };
 
 export const getCubes = (scene: Scene): Array<ICube> => {
-    return scene.children.filter(child => child instanceof Mesh && child.geometry instanceof BoxGeometry) as any as Array<ICube>;
+    return scene.children.filter(
+        child => child instanceof Mesh && child.geometry instanceof BoxGeometry
+    ) as any as Array<ICube>;
 };
 
-export const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
+export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
+    const textMeshes = _getTextMeshes(scene);
+    textMeshes.forEach(t => t.lookAt(camera.position.clone().setY(0).multiplyScalar(1000)));
+};
+
+const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {
+    return scene.children.filter(
+        child => child instanceof Mesh && child.geometry instanceof TextGeometry
+    ) as any as Array<Mesh<TextGeometry, MeshPhongMaterial>>;
+};
+
+const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
     if (mesh) {
         mesh.scale.set(2, 2, 2);
     }
 };
 
-export const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
+const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     if (mesh) {
         mesh.scale.set(1, 1, 1);
     }

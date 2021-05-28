@@ -110,14 +110,14 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addKeysToScene = (scene: Scene, keys: Array<string>, keyMaxlength: number, baseLineIndex = 0) => {
+export const addKeysToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, baseLineIndex = 0) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
         const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
         const cubeWidth = getCubeWidthByCube(cubesInBaseLine[0]);
-        const charWidth = cubeWidth / keyMaxlength;
+        const charWidth = cubeWidth / keyMaxLength;
         const fontDepth = charWidth / 8; // 3D font thickness
 
         for (let i = 0; i < keys.length; ++i) {
@@ -135,14 +135,14 @@ export const addKeysToScene = (scene: Scene, keys: Array<string>, keyMaxlength: 
     });
 };
 
-export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxlength: number, baseLineIndex = 0) => {
+export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, baseLineIndex = 0) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
         const cubes = getCubes(scene);
         const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
-        const charWidth = getCubeWidthByCube(cubes[0]) / keyMaxlength;
+        const charWidth = getCubeWidthByCube(cubes[0]) / keyMaxLength;
         const fontDepth = charWidth / 8;
 
         for (let i = 0; i < keys.length; ++i) {
