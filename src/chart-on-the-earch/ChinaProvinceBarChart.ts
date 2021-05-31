@@ -3,7 +3,6 @@ import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUt
 import {
     addAxesToScene,
     addBarsToScene,
-    addCloudMeshToScene,
     addEarthMeshToScene,
     addLightToScene,
     getPerspectiveCamera
@@ -17,7 +16,6 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const camera = getPerspectiveCamera(container);
 
     addEarthMeshToScene(scene);
-    const updateCloud = addCloudMeshToScene(scene, camera);
     addBarsToScene(scene, list);
     addLightToScene(scene);
     const updateHighlight = initHighlightCube(scene, camera);
@@ -32,12 +30,8 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const render = () => {
         animationFrameId = requestAnimationFrame(render);
 
-        // required if controls.enableDamping or controls.autoRotate are set to true
-        controls.update();
-
+        controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
         updateHighlight();
-        updateCloud();
-
         renderer.render( scene, camera );
     };
     animationFrameId = requestAnimationFrame(render);

@@ -2,7 +2,6 @@ import { Scene } from 'three';
 import { addControlsToCamera, getRenderer } from '../CommonUtils';
 import {
     addAxesToScene,
-    addCloudMeshToScene,
     addEarthMeshToScene,
     addLightToScene,
     addRoutesToScene,
@@ -18,8 +17,6 @@ export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: A
     const camera = getPerspectiveCamera(container);
 
     addEarthMeshToScene(scene);
-    const updateCloud = addCloudMeshToScene(scene, camera);
-    const updateRoutes = addRoutesToScene(scene, list, extraCities);
     addLightToScene(scene, 1);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
@@ -32,12 +29,7 @@ export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: A
     const render = () => {
         animationFrameId = requestAnimationFrame(render);
 
-        // required if controls.enableDamping or controls.autoRotate are set to true
-        controls.update();
-
-        updateRoutes();
-        updateCloud();
-
+        controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
         renderer.render(scene, camera);
     };
     animationFrameId = requestAnimationFrame(render);
