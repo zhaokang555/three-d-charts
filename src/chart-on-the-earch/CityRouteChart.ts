@@ -1,6 +1,13 @@
 import { Scene } from 'three';
 import { addControlsToCamera, getRenderer } from '../CommonUtils';
-import { addAxesToScene, addEarthMeshToScene, addLightToScene, addRoutesToScene, getPerspectiveCamera } from './Utils';
+import {
+    addAxesToScene,
+    addCloudMeshToScene,
+    addEarthMeshToScene,
+    addLightToScene,
+    addRoutesToScene,
+    getPerspectiveCamera
+} from './Utils';
 import { earthRadius } from '../Constant';
 import IRoute from '../type/IRoute';
 import ICity from '../type/ICity';
@@ -10,7 +17,8 @@ export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: A
     addAxesToScene(scene);
     const camera = getPerspectiveCamera(container);
 
-    const updateCloud = addEarthMeshToScene(scene, camera);
+    addEarthMeshToScene(scene);
+    const updateCloud = addCloudMeshToScene(scene, camera);
     const updateRoutes = addRoutesToScene(scene, list, extraCities);
     addLightToScene(scene, 1);
 

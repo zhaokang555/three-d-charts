@@ -63,7 +63,7 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addEarthMeshToScene = (scene: Scene, camera: ICamera): () => void => {
+export const addEarthMeshToScene = (scene: Scene) => {
     const map = new TextureLoader().load(earth_nightmap);
     map.wrapS = RepeatWrapping;// 纹理将简单地重复到无穷大
     map.wrapT = RepeatWrapping;
@@ -87,22 +87,8 @@ export const addEarthMeshToScene = (scene: Scene, camera: ICamera): () => void =
 
     const geometry = new SphereGeometry(earthRadius, 64, 64);
     const earthMesh = new Mesh(geometry, material);
-    earthMesh.position.set(0, 0, 0);
     earthMesh.name = 'earthMesh';
-    const cloudMesh = _addCloudMeshToEarthMesh(earthMesh);
     scene.add(earthMesh);
-
-    return () => {
-        const distance = camera.position.length();
-        cloudMesh.material.visible = true;
-        cloudMesh.material.opacity = Math.min((distance - earthRadius) / earthRadius * 0.2, 0.4);
-        if (cloudMesh.material.opacity < 0.05) {
-            cloudMesh.material.visible = false;
-            return;
-        }
-        cloudMesh.rotateX(-0.0002);
-        cloudMesh.rotateY(0.0004);
-    }
 };
 
 export const addBarsToScene = (scene: Scene, list: IList) => {
@@ -139,7 +125,32 @@ export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities:
     return () => updateRouteMeshList.forEach(cb => cb());
 };
 
-export const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
+export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void => {
+    const loader = new TextureLoader();
+    const geometry = new SphereGeometry(earthRadius + cloudAltitude, 64, 64);
+    const material = new MeshBasicMaterial({
+        map: loader.load(earth_clouds),
+        opacity: 0.2,
+        transparent: true,
+    });
+    const cloudMesh = new Mesh(geometry, material);
+    cloudMesh.name = 'cloudMesh';
+    scene.add(cloudMesh);
+
+    return () => {
+        const distance = camera.position.length();
+        cloudMesh.material.visible = true;
+        cloudMesh.material.opacity = Math.min((distance - earthRadius) / earthRadius * 0.2, 0.4);
+        if (cloudMesh.material.opacity < 0.05) {
+            cloudMesh.material.visible = false;
+            return;
+        }
+        cloudMesh.rotateX(-0.0002);
+        cloudMesh.rotateY(0.0004);
+    }
+};
+
+const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
     const fromVec = getPositionByLonLat(...fromCity.coordinates);
     const toVec = getPositionByLonLat(...toCity.coordinates);
 
@@ -152,7 +163,7 @@ export const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => 
     );
 };
 
-export const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWeight: number): [Mesh, () => void] => {
+const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWeight: number): [Mesh, () => void] => {
     const geometry = new TubeGeometry(curve, 64, 0.002 * earthRadius, 8, false);
     // 1 using MeshPhongMaterial
     const texture = _createRouteTexture();
@@ -165,7 +176,7 @@ export const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWe
     return [new Mesh(geometry, material), () => texture.offset.x -= speed];
 };
 
-export const _createRouteTexture = () => {
+const _createRouteTexture = () => {
     // 1. use picture as texture
     // const loader = new TextureLoader();
     // const texture = loader.load(routeTexture);
@@ -191,7 +202,7 @@ export const _createRouteTexture = () => {
     return texture;
 };
 
-export const _addBarToScene = (provinceName: string, barHeight: number, color: Color, scene: Scene) => {
+const _addBarToScene = (provinceName: string, barHeight: number, color: Color, scene: Scene) => {
     const province = china_geo_json.features.find(f => f.properties.name === provinceName);
     const center = province.properties.center;
     const r = earthRadius + barAltitude;
@@ -210,7 +221,7 @@ export const _addBarToScene = (provinceName: string, barHeight: number, color: C
     });
 };
 
-export const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, color: Color, scene: Scene) => {
+const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, color: Color, scene: Scene) => {
     const centerPosition = getPositionByLonLat(...center, r);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
     const cube = new Mesh(
@@ -237,18 +248,4 @@ const _addLineToScene = (ring: IRing, r: number, scene: Scene) => {
     const material = new LineBasicMaterial({color: defaultCubeColorRed});
     const line = new Line(geometry, material);
     scene.add(line);
-};
-
-const _addCloudMeshToEarthMesh = (earthMesh: Mesh): Mesh<SphereGeometry, MeshBasicMaterial> => {
-    const loader = new TextureLoader();
-    const geometry = new SphereGeometry(earthRadius + cloudAltitude, 64, 64);
-    const material = new MeshBasicMaterial({
-        map: loader.load(earth_clouds),
-        opacity: 0.2,
-        transparent: true,
-    });
-    const cloudMesh = new Mesh(geometry, material);
-    cloudMesh.name = 'cloudMesh';
-    earthMesh.add(cloudMesh);
-    return cloudMesh;
 };

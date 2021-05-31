@@ -1,6 +1,13 @@
 import { Scene } from 'three';
 import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUtils';
-import { addAxesToScene, addBarsToScene, addEarthMeshToScene, addLightToScene, getPerspectiveCamera } from './Utils';
+import {
+    addAxesToScene,
+    addBarsToScene,
+    addCloudMeshToScene,
+    addEarthMeshToScene,
+    addLightToScene,
+    getPerspectiveCamera
+} from './Utils';
 import { earthRadius } from '../Constant';
 import IList from '../type/IList';
 
@@ -9,7 +16,8 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     addAxesToScene(scene);
     const camera = getPerspectiveCamera(container);
 
-    const updateCloud = addEarthMeshToScene(scene, camera);
+    addEarthMeshToScene(scene);
+    const updateCloud = addCloudMeshToScene(scene, camera);
     addBarsToScene(scene, list);
     addLightToScene(scene);
     const updateHighlight = initHighlightCube(scene, camera);
