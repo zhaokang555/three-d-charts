@@ -62,6 +62,7 @@ export const addPlaneToScene = (scene: Scene) => {
     );
     // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
     plane.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
+    plane.position.y = -planeWidth / 10000;
     plane.name = 'planeMesh'; // for find plane mesh in scene;
     scene.add(plane);
 };
@@ -106,7 +107,9 @@ export const getOrthographicCamera = (scene: Scene, container: HTMLElement) => {
 };
 
 export const addAxesToScene = (scene: Scene) => {
-    const axesHelper = new AxesHelper(1);
+    const axesHelper = new AxesHelper(1000000);
+    axesHelper.visible = false;
+    axesHelper.name = 'axesHelper';
     scene.add(axesHelper);
 };
 
