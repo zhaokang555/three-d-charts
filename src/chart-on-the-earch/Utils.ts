@@ -228,7 +228,7 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const textMaterial = _createTextMaterial(key, value, color);
     const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
     const materials = (new Array(6)).fill(colorMaterial);
-    materials[2] = textMaterial;
+    materials[2] = textMaterial; // [right, left, top, bottom, front, back]
     const cube = new Mesh(
         new BoxGeometry(cubeWidth, barHeight, cubeWidth),
         materials,
@@ -243,15 +243,17 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
 
 const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     const canvas = document.createElement('canvas');
-    canvas.width = 100;
-    canvas.height = 100;
+    const size = 100;
+    canvas.width = size;
+    canvas.height = size;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#' + bgColor.getHexString();
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = `${30}px sans-serif`;
+    ctx.fillRect(0, 0, size, size);
+    ctx.font = `${size / Math.max(key.length, value.toString().length / 2)}px sans-serif`;
+    console.log(ctx.font);
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(key, 0, canvas.height / 2);
-    ctx.fillText(value.toString(), 0, canvas.height);
+    ctx.fillText(key, 0, size / 2, size);
+    ctx.fillText(value.toString(), 0, size, size);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
     map.rotation = Math.PI / 2;
