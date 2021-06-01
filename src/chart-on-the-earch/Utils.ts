@@ -243,7 +243,7 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
 
 const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     const canvas = document.createElement('canvas');
-    const size = 100;
+    const size = 200;
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d');

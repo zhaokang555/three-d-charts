@@ -1,5 +1,5 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightCube } from '../CommonUtils';
+import { addControlsToCamera, getRenderer } from '../CommonUtils';
 import {
     addAxesToScene,
     addBarsToScene,
@@ -18,7 +18,6 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     addEarthMeshToScene(scene);
     addBarsToScene(scene, list);
     addLightToScene(scene);
-    const updateHighlight = initHighlightCube(scene, camera);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
@@ -31,7 +30,6 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         animationFrameId = requestAnimationFrame(render);
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
-        updateHighlight();
         renderer.render( scene, camera );
     };
     animationFrameId = requestAnimationFrame(render);
