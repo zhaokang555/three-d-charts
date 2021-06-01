@@ -8,7 +8,6 @@ import {
     addPlaneToScene,
     addValuesToScene,
     getOrthographicCamera,
-    getPlaneWidthFromScene
 } from './Utils';
 import IList from '../type/IList';
 
@@ -23,14 +22,14 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     addAxesToScene(scene);
     addKeysOnTopToScene(scene, keys, keyMaxLength);
     addValuesToScene(scene, values, valueMaxLength);
-    addLightToScene(scene);
-    addPlaneToScene(scene);
+    const planeWidth = addPlaneToScene(scene);
+    addLightToScene(scene, planeWidth);
 
-    const camera = getOrthographicCamera(scene, container);
+    const camera = getOrthographicCamera(scene, container, planeWidth);
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
         rotate: true,
-        maxZoom: getPlaneWidthFromScene(scene) * 2, // FIX ME
+        maxZoom: planeWidth * 2, // FIX ME
     });
     const updateHighlight = initHighlightCube(scene, camera);
 
@@ -42,7 +41,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         controls.update();
 
         updateHighlight();
-        makeTextMeshesLookAtCamera(scene, camera);
+        makeTextMeshesLookAtCamera(scene, camera, planeWidth);
 
         renderer.render(scene, camera);
     };

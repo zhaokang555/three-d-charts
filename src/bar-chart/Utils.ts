@@ -5,7 +5,6 @@ import {
     AmbientLight,
     AxesHelper,
     BoxGeometry,
-    DirectionalLight,
     DoubleSide,
     Font,
     FontLoader,
@@ -14,6 +13,7 @@ import {
     MeshPhongMaterial,
     OrthographicCamera,
     PlaneGeometry,
+    PointLight,
     Scene,
     TextGeometry,
     Vector3
@@ -28,15 +28,15 @@ import {
     getPositionOfValueByCube
 } from './Algorithms';
 
-export const addLightToScene = (scene: Scene) => {
-    const light = new DirectionalLight(defaultLightColorWhite, 1);
-    light.position.set(0, 10, -10); // 平行光从后上方射过来
+export const addLightToScene = (scene: Scene, planeWidth: number) => {
+    const light = new PointLight();
+    light.position.set(0, planeWidth, 0);
     scene.add(light);
 
     scene.add(new AmbientLight(defaultLightColorWhite, 0.5)); // 环境光
 };
 
-export const addPlaneToScene = (scene: Scene) => {
+export const addPlaneToScene = (scene: Scene): number => {
     let planeWidth = 100;
     const cubes = getCubes(scene);
     const cubePositions = cubes.map(cube => cube.position);
@@ -53,7 +53,7 @@ export const addPlaneToScene = (scene: Scene) => {
     } else {
         planeWidth = maxY;
     }
-    const plane = new Mesh(
+    const planeMesh = new Mesh(
         new PlaneGeometry(planeWidth, planeWidth),
         new MeshLambertMaterial({
             color: defaultPlaneColorGray,
@@ -61,10 +61,12 @@ export const addPlaneToScene = (scene: Scene) => {
         })
     );
     // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
-    plane.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
-    plane.position.y = -planeWidth / 10000;
-    plane.name = 'planeMesh'; // for find plane mesh in scene;
-    scene.add(plane);
+    planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
+    planeMesh.position.y = -planeWidth / 10000;
+    planeMesh.name = 'planeMesh'; // for find plane mesh in scene;
+    scene.add(planeMesh);
+
+    return planeWidth;
 };
 
 export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0,
@@ -93,10 +95,9 @@ export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineInd
     }
 };
 
-export const getOrthographicCamera = (scene: Scene, container: HTMLElement) => {
+export const getOrthographicCamera = (scene: Scene, container: HTMLElement, planeWidth: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
 
-    const planeWidth = getPlaneWidthFromScene(scene);
     const x = planeWidth / 2 * 1.415;
     const y = x / aspectRatio;
     const camera = new OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
@@ -190,20 +191,6 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
 export const getCubeWidthByCube = (cube: ICube): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.x - boundingBox.min.x;
-};
-
-export const getPlaneWidthFromScene = (scene: Scene): number => {
-    let planeWidth = 100;
-    const planeMesh = scene.getObjectByName('planeMesh') as Mesh<PlaneGeometry, MeshLambertMaterial>;
-    if (planeMesh) {
-        planeWidth = planeMesh.geometry.parameters.width
-    } else {
-        // when no plane, use max value * value length instead
-        const cubes = getCubes(scene);
-        const values = cubes.map(getValueByCube);
-        planeWidth = Math.max(...values) * values.length;
-    }
-    return planeWidth;
 };
 
 export const getCubesInBaseLine = (scene: Scene, baseLineIndex: number): Array<ICube> => {

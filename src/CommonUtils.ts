@@ -16,7 +16,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite } from './Constant';
-import { getPlaneWidthFromScene } from './bar-chart/Utils';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
@@ -156,10 +155,10 @@ export const getCubes = (scene: Scene): Array<ICube> => {
     ) as any as Array<ICube>;
 };
 
-export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
+export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number) => {
     const textMeshes = _getTextMeshes(scene);
     const lookAtPosition = camera.position.clone().setY(0);
-    const minLength = getPlaneWidthFromScene(scene) * 100;
+    const minLength = planeWidth * 100;
     const scale = minLength / lookAtPosition.length();
     if (scale > 1) {
         lookAtPosition.multiplyScalar(scale);
