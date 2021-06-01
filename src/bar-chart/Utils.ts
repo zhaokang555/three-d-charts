@@ -114,31 +114,6 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addKeysToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, baseLineIndex = 0) => {
-    const loader = new FontLoader();
-    // ttf to json, see: https://gero3.github.io/facetype.js/
-    // load font async, because Alibaba_PuHuiTi_Regular.json is too large
-    loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-        const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
-        const cubeWidth = getCubeWidthByCube(cubesInBaseLine[0]);
-        const charWidth = cubeWidth / keyMaxLength;
-        const fontDepth = charWidth / 8; // 3D font thickness
-
-        for (let i = 0; i < keys.length; ++i) {
-            const key = keys[i];
-            const cube = cubesInBaseLine[i];
-            const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
-            const material = _createTextMaterial();
-            const text = new Mesh(geometry, material);
-            // Chinese font's bottom will go through the plane if no offsetY
-            // text.position means its top left back corner
-            text.position.set(...getPositionOfKeyByCube(cube, cubeWidth, charWidth / 8, fontDepth));
-            scene.add(text);
-            cube.keyMeshId = text.id;
-        }
-    });
-};
-
 export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, baseLineIndex = 0) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
