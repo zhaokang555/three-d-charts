@@ -30,9 +30,9 @@ import {
 
 export const addLightToScene = (scene: Scene) => {
     const light = new DirectionalLight(defaultLightColorWhite, 1);
-    light.position.set(1, 1, 2); // 平行光从右上前方射过来
-
+    light.position.set(0, 10, -10); // 平行光从后上方射过来
     scene.add(light);
+
     scene.add(new AmbientLight(defaultLightColorWhite, 0.5)); // 环境光
 };
 
