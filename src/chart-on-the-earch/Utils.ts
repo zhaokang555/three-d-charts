@@ -1,6 +1,6 @@
 import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
-import { colormap } from '../CommonAlgorithms';
+import { colormap, getTextColorByBackgroundColor } from '../CommonAlgorithms';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
 import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
@@ -250,8 +250,7 @@ const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     ctx.fillStyle = '#' + bgColor.getHexString();
     ctx.fillRect(0, 0, size, size);
     ctx.font = `${size / Math.max(key.length, value.toString().length / 2)}px sans-serif`;
-    console.log(ctx.font);
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = getTextColorByBackgroundColor(bgColor);
     ctx.fillText(key, 0, size / 2, size);
     ctx.fillText(value.toString(), 0, size, size);
     const map = new CanvasTexture(canvas);

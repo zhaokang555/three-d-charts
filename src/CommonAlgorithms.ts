@@ -23,3 +23,13 @@ export const colormap = (size: number, options: IOptions = {}): Array<Color> => 
 
     return colors;
 };
+
+export const getTextColorByBackgroundColor = (color: Color) => {
+    const {r, g, b} = color;
+
+    // see: https://zh.wikipedia.org/wiki/YIQ
+    // https://www.w3.org/TR/AERT/#color-contrast
+    const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
+
+    return brightness > 0.49 ? 'black' : 'white'; // 0.49 = 125 / 255
+};
