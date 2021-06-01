@@ -33,7 +33,7 @@ export const getKeyAndValueMaxLength = (lists: Array<IList>): [number, number] =
 
 export const getMaxAndMinValueByLists = (lists: Array<IList>): [number, number] => {
     let maxValue = 0;
-    let minValue = 0;
+    let minValue = Infinity;
     lists.forEach(list => list.forEach(kv => {
         maxValue = Math.max(maxValue, kv.value);
         minValue = Math.min(minValue, kv.value);
