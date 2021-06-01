@@ -102,7 +102,7 @@ export const addBarsToScene = (scene: Scene, list: IList) => {
         const barHeight = kv.value / maxValue * maxBarHeight;
         const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
         const color = colors[colorIndex];
-        _addBarToScene(kv.key, barHeight, color, scene);
+        _addProvinceToScene(kv.key, kv.value, barHeight, color, scene);
     });
 };
 
@@ -202,12 +202,12 @@ const _createRouteTexture = () => {
     return texture;
 };
 
-const _addBarToScene = (provinceName: string, barHeight: number, color: Color, scene: Scene) => {
-    const province = china_geo_json.features.find(f => f.properties.name === provinceName);
+const _addProvinceToScene = (key: string, value: number, barHeight: number, color: Color, scene: Scene) => {
+    const province = china_geo_json.features.find(f => f.properties.name === key);
     const center = province.properties.center;
     const r = earthRadius + barAltitude;
 
-    _addCubeToScene(center, barHeight, r, color, scene);
+    _addCubeToScene(center, barHeight, r, color, scene, key, value);
 
     /**
      *  个人理解:
@@ -221,15 +221,18 @@ const _addBarToScene = (provinceName: string, barHeight: number, color: Color, s
     });
 };
 
-const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, color: Color, scene: Scene) => {
+const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, color: Color, scene: Scene,
+                         key: string, value: number) => {
     const centerPosition = getPositionByLonLat(...center, r);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
+
+    const textMaterial = _createTextMaterial(key, value, color);
+    const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
+    const materials = (new Array(6)).fill(colorMaterial);
+    materials[2] = textMaterial;
     const cube = new Mesh(
         new BoxGeometry(cubeWidth, barHeight, cubeWidth),
-        new MeshPhongMaterial({
-            color,
-            side: DoubleSide,
-        }),
+        materials,
     ) as ICube;
     cube.position.copy(centerPosition);
     const up = cube.up.clone().normalize();
@@ -237,6 +240,23 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, col
     cube.translateY(barHeight / 2);
     cube.defaultColor = color; // store default color in cube mesh object
     scene.add(cube);
+};
+
+const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 100;
+    canvas.height = 100;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#' + bgColor.getHexString();
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = `${30}px sans-serif`;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(key, 0, canvas.height / 2);
+    ctx.fillText(value.toString(), 0, canvas.height);
+    const map = new CanvasTexture(canvas);
+    map.center.set(0.5, 0.5);
+    map.rotation = Math.PI / 2;
+    return new MeshPhongMaterial({map, side: DoubleSide});
 };
 
 const _addLineToScene = (ring: IRing, r: number, scene: Scene) => {
