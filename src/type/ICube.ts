@@ -1,10 +1,10 @@
-import * as THREE from 'three';
+import { BoxGeometry, Color, Mesh, MeshPhongMaterial } from 'three';
 
-interface ICube extends THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhongMaterial> {
+interface ICube extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshPhongMaterial>> {
     keyMeshId: number;
     valueMeshId: number;
     baseLineIndex: number;
-    defaultColor: THREE.Color;
+    defaultColor: Color;
 }
 
 export default ICube;

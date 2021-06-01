@@ -1,5 +1,5 @@
 import {
-    BoxGeometry,
+    BoxGeometry, Color, Material,
     Matrix3,
     Mesh,
     MeshPhongMaterial,
@@ -133,15 +133,14 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
 
         if (cubes.length > 0) {
             cubes.forEach(cube => {
-                const defaultColor = cube.defaultColor || defaultCubeColorRed;
-                cube.material.color.set(defaultColor);
+                _changeCubeColor(cube, cube.defaultColor || defaultCubeColorRed);
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
                 const cube = intersects[0].object as ICube;
-                cube.material.color.set(defaultCubeHighlightColorWhite);
+                _changeCubeColor(cube, defaultCubeHighlightColorWhite);
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
             }
@@ -181,5 +180,11 @@ const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
 const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     if (mesh) {
         mesh.scale.set(1, 1, 1);
+    }
+};
+
+const _changeCubeColor = (cube: ICube, color: Color | string | number) => {
+    if (cube.material instanceof Material) {
+        cube.material.color.set(color);
     }
 };
