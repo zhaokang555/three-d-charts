@@ -40,18 +40,18 @@ export const addPlaneToScene = (scene: Scene) => {
     let planeWidth = 100;
     const cubes = getCubes(scene);
     const cubePositions = cubes.map(cube => cube.position);
-    if (cubePositions.length > 0) {
-        // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
-        const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
-        const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
-        const maxXZ = Math.max(maxX, maxZ);
-        const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-        const planeWidthByMaxXZ = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
-        if (planeWidthByMaxXZ > maxY) {
-            planeWidth = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
-        } else {
-            planeWidth = maxY;
-        }
+    if (cubePositions.length === 0) return;
+
+    // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
+    const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
+    const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+    const maxXZ = Math.max(maxX, maxZ);
+    const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
+    const planeWidthByMaxXZ = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
+    if (planeWidthByMaxXZ > maxY) {
+        planeWidth = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
+    } else {
+        planeWidth = maxY;
     }
     const plane = new Mesh(
         new PlaneGeometry(planeWidth, planeWidth),

@@ -24,12 +24,12 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         const values = list.map(kv => kv.value);
 
         addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
-        addAxesToScene(scene);
         addValuesToScene(scene, values, valueMaxLength, i);
         addKeysOnTopToScene(scene, keys, keyMaxLength, i);
-        addPlaneToScene(scene);
     });
 
+    addAxesToScene(scene);
+    addPlaneToScene(scene);
     addLightToScene(scene);
     const camera = getOrthographicCamera(scene, container);
     const [renderer, cleanRenderer] = getRenderer(container, camera);
