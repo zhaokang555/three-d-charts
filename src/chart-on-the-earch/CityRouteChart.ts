@@ -17,6 +17,7 @@ export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: A
     const camera = getPerspectiveCamera(container);
 
     addEarthMeshToScene(scene);
+    const updateRoutes = addRoutesToScene(scene, list, extraCities);
     addLightToScene(scene, 1);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
@@ -30,6 +31,7 @@ export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: A
         animationFrameId = requestAnimationFrame(render);
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
+        updateRoutes();
         renderer.render(scene, camera);
     };
     animationFrameId = requestAnimationFrame(render);
