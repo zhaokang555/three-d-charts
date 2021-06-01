@@ -52,10 +52,9 @@ export const getControlPointPosition = (scene: Scene, fromCoordinates: ICoordina
     const fromPosition = getPositionByLonLat(...fromCoordinates);
     const toPosition = getPositionByLonLat(...toCoordinates);
 
-    // 在经过起始点的大圆上取两个控制点
     const midpointPositionList = [
-        fromPosition.clone().lerp(toPosition, 0.49), // 插值
-        fromPosition.clone().lerp(toPosition, 0.51)
+        fromPosition.clone().lerp(toPosition, 0.48), // 插值
+        fromPosition.clone().lerp(toPosition, 0.52)
     ] as [Vector3, Vector3];
 
     const earthMesh = scene.getObjectByName('earthMesh');
@@ -64,10 +63,10 @@ export const getControlPointPosition = (scene: Scene, fromCoordinates: ICoordina
             const raycaster = new Raycaster(new Vector3(), midpointPosition.clone().normalize()); // 从地心向中点的方向发射射线
             const intersects = raycaster.intersectObject(earthMesh);
             if (intersects.length > 0) {
-                const midpointPositionOnTheEarth = intersects[0].point;
+                const midpointPositionOnTheEarth = intersects[0].point; // 在经过起始点的大圆上取两个控制点
                 const distance = greatCircleDistance(fromPosition, toPosition);
                 const maxDistance = earthRadius * 2;
-                midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 2 * distance / maxDistance));
+                midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 0.6 * distance / maxDistance));
             }
         });
     }

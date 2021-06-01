@@ -164,7 +164,7 @@ const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
 };
 
 const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWeight: number): [Mesh, () => void] => {
-    const geometry = new TubeGeometry(curve, 64, 0.002 * earthRadius, 8, false);
+    const geometry = new TubeGeometry(curve, 64, 0.004 * earthRadius, 8, false);
     // 1 using MeshPhongMaterial
     const texture = _createRouteTexture();
     const material = new MeshBasicMaterial({
@@ -190,10 +190,9 @@ const _createRouteTexture = () => {
     canvas.height = 1;
     const ctx = canvas.getContext('2d');
     const grad = ctx.createLinearGradient(0, 0, 100, 0);
-    grad.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
-    grad.addColorStop(0.9, 'rgba(255, 255, 255, 0.1)');
-    grad.addColorStop(0.98, 'rgba(255, 255, 255, 0.9)');
-    grad.addColorStop(0.99, 'rgba(255, 255, 255, 1)');
+    grad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+    grad.addColorStop(0.8, 'rgba(255, 255, 255, 0.2)');
+    grad.addColorStop(0.98, 'rgba(255, 255, 255, 1)');
     grad.addColorStop(1, 'rgba(255, 255, 255, 1)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 100, 1);
