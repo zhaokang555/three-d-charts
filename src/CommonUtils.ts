@@ -94,7 +94,9 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
             case 'end':
                 renderer.domElement.dispatchEvent(new WheelEvent('wheel', {deltaY: 1}));
                 break;
-
+            case 'space':
+                controls.autoRotate = !controls.autoRotate;
+                break;
         }
     };
     window.addEventListener('keydown', onKeydown);
