@@ -205,9 +205,8 @@ const _createRouteTexture = () => {
 const _addProvinceToScene = (key: string, value: number, barHeight: number, color: Color, scene: Scene) => {
     const province = china_geo_json.features.find(f => f.properties.name === key);
     const center = province.properties.center;
-    const r = earthRadius + barAltitude;
 
-    _addCubeToScene(center, barHeight, r, color, scene, key, value);
+    _addCubeToScene(center, barHeight, color, scene, key, value);
 
     /**
      *  个人理解:
@@ -217,13 +216,13 @@ const _addProvinceToScene = (key: string, value: number, barHeight: number, colo
      *  Ring: Array<[lan, lat]>
      */
     province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-        polygon.forEach(ring => _addLineToScene(ring, r, scene));
+        polygon.forEach(ring => _addLineToScene(ring, scene));
     });
 };
 
-const _addCubeToScene = (center: ICoordinates, barHeight: number, r: number, color: Color, scene: Scene,
+const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, scene: Scene,
                          key: string, value: number) => {
-    const centerPosition = getPositionByLonLat(...center, r);
+    const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
 
     const textMaterial = _createTextMaterial(key, value, color);
@@ -259,10 +258,10 @@ const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     return new MeshPhongMaterial({map, side: DoubleSide});
 };
 
-const _addLineToScene = (ring: IRing, r: number, scene: Scene) => {
+const _addLineToScene = (ring: IRing, scene: Scene) => {
     const points = [];
     ring.forEach(lonLat => {
-        points.push(getPositionByLonLat(...lonLat, r));
+        points.push(getPositionByLonLat(...lonLat, earthRadius + barAltitude));
     });
     const geometry = new BufferGeometry().setFromPoints(points);
     const material = new LineBasicMaterial({color: defaultCubeColorRed});
