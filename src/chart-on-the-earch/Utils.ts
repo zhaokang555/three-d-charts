@@ -249,7 +249,12 @@ const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#' + bgColor.getHexString();
     ctx.fillRect(0, 0, size, size);
-    ctx.font = `${size / Math.max(key.length, value.toString().length / 2)}px sans-serif`;
+    const defaultFontSize = 10;
+    ctx.font = `${defaultFontSize}px sans-serif`;
+    const keyWidth = ctx.measureText(key).width;
+    const valueWidth = ctx.measureText(value.toString()).width;
+    const scale = size / Math.max(keyWidth, valueWidth);
+    ctx.font = `${defaultFontSize * scale}px sans-serif`;
     ctx.fillStyle = getTextColorByBackgroundColor(bgColor);
     ctx.fillText(key, 0, size / 2, size);
     ctx.fillText(value.toString(), 0, size, size);
