@@ -69,14 +69,15 @@ export const addPlaneToScene = (scene: Scene): number => {
     return planeWidth;
 };
 
-export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0,
-                                cubeWidth: number = null, maxValue: number = null, minValue: number = null) => {
+export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, cubeWidth: number = null,
+                                maxValue: number = null, minValue: number = null): Array<ICube> => {
     // set default value
     cubeWidth = cubeWidth || getCubeWidthByValues(values);
     maxValue = maxValue || Math.max(...values);
     minValue = minValue || Math.min(...values);
 
     const colors = colormap(100);
+    const cubes = [];
     for (let i = 0; i < values.length; ++i) {
         const value = values[i];
         const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
@@ -92,7 +93,10 @@ export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineInd
         cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
         cube.position.set(...getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
         scene.add(cube);
+        cubes.push(cube);
     }
+
+    return cubes;
 };
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, planeWidth: number) => {
@@ -114,19 +118,17 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, baseLineIndex = 0) => {
+export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, cubes: Array<ICube>) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-        const cubes = getCubes(scene);
-        const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
         const charWidth = getCubeWidthByCube(cubes[0]) / keyMaxLength;
         const fontDepth = charWidth / 8;
 
         for (let i = 0; i < keys.length; ++i) {
             const key = keys[i];
-            const cube = cubesInBaseLine[i];
+            const cube = cubes[i];
             const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
             const material = _createTextMaterial();
             const text = new Mesh(geometry, material);
@@ -141,17 +143,15 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
     });
 };
 
-export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number, baseLineIndex = 0) => {
+export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, cubes: Array<ICube>) => {
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
-    const cubes = getCubes(scene);
     const charWidth = getCubeWidthByCube(cubes[0]) / valueMaxLength;
     const fontDepth = charWidth / 8;
-    const cubesInBaseLine = getCubesInBaseLine(scene, baseLineIndex);
 
     for (let i = 0; i < values.length; ++i) {
         const valueText = values[i].toString();
-        const cube = cubesInBaseLine[i];
+        const cube = cubes[i];
 
         const geometry = _createTextGeometry(valueText, font, charWidth, fontDepth);
         const material = _createTextMaterial();
@@ -166,11 +166,6 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
 export const getCubeWidthByCube = (cube: ICube): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.x - boundingBox.min.x;
-};
-
-export const getCubesInBaseLine = (scene: Scene, baseLineIndex: number): Array<ICube> => {
-    const cubes = getCubes(scene);
-    return cubes.filter(cube => cube.baseLineIndex === baseLineIndex);
 };
 
 export const getValueByCube = (cube: ICube): number => {

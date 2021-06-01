@@ -18,10 +18,10 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const valueMaxLength = Math.max(...values.map(v => v.toString().length));
 
     const scene = new Scene();
-    addCubesToScene(scene, values);
+    const cubes = addCubesToScene(scene, values);
     addAxesToScene(scene);
-    addKeysOnTopToScene(scene, keys, keyMaxLength);
-    addValuesToScene(scene, values, valueMaxLength);
+    addKeysOnTopToScene(scene, keys, keyMaxLength, cubes);
+    addValuesToScene(scene, values, valueMaxLength, cubes);
     const planeWidth = addPlaneToScene(scene);
     addLightToScene(scene, planeWidth);
 

@@ -22,9 +22,9 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
-        addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
-        addValuesToScene(scene, values, valueMaxLength, i);
-        addKeysOnTopToScene(scene, keys, keyMaxLength, i);
+        const cubes = addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
+        addValuesToScene(scene, values, valueMaxLength, cubes);
+        addKeysOnTopToScene(scene, keys, keyMaxLength, cubes);
     });
 
     addAxesToScene(scene);
