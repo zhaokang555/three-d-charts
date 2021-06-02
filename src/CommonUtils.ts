@@ -1,7 +1,7 @@
 import {
-    BoxGeometry, Color, Material,
+    BoxGeometry, CanvasTexture, Color, DoubleSide, Material,
     Matrix3,
-    Mesh,
+    Mesh, MeshLambertMaterial,
     MeshPhongMaterial,
     Object3D,
     OrthographicCamera,
@@ -16,6 +16,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite } from './Constant';
+import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
@@ -163,6 +164,31 @@ export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeW
         lookAtPosition.multiplyScalar(scale);
     }
     textMeshes.forEach(t => t.lookAt(lookAtPosition));
+};
+
+export const createTextMaterial = (key: string, value: number, bgColor: Color, textColor?: string) => {
+    const canvas = document.createElement('canvas');
+    const size = 200;
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#' + bgColor.getHexString();
+    ctx.fillRect(0, 0, size, size);
+    const defaultFontSize = 10;
+    ctx.font = `${defaultFontSize}px sans-serif`;
+    const keyWidth = ctx.measureText(key).width;
+    const valueWidth = ctx.measureText(value.toString()).width;
+    const scale = size / Math.max(keyWidth, valueWidth);
+    ctx.font = `${defaultFontSize * scale}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = textColor || getTextColorByBackgroundColor(bgColor);
+    ctx.fillText(key, size / 2, size * 0.25, size);
+    ctx.fillText(value.toString(), size / 2, size * 0.75, size);
+    const map = new CanvasTexture(canvas);
+    map.center.set(0.5, 0.5);
+    map.rotation = Math.PI / 2;
+    return new MeshLambertMaterial({map, side: DoubleSide});
 };
 
 const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {

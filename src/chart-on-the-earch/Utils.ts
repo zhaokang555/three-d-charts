@@ -37,6 +37,7 @@ import ICamera from '../type/ICamera';
 import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
+import { createTextMaterial } from '../CommonUtils';
 
 
 export const addLightToScene = (scene: Scene, ambientLightIntensity = 0.7) => {
@@ -224,7 +225,7 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
 
-    const textMaterial = _createTextMaterial(key, value, color);
+    const textMaterial = createTextMaterial(key, value, color);
     const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
     const materials = (new Array(6)).fill(colorMaterial);
     materials[2] = textMaterial; // [right, left, top, bottom, front, back]
@@ -238,31 +239,6 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     cube.translateY(barHeight / 2);
     cube.defaultColor = color; // store default color in cube mesh object
     scene.add(cube);
-};
-
-const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
-    const canvas = document.createElement('canvas');
-    const size = 200;
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#' + bgColor.getHexString();
-    ctx.fillRect(0, 0, size, size);
-    const defaultFontSize = 10;
-    ctx.font = `${defaultFontSize}px sans-serif`;
-    const keyWidth = ctx.measureText(key).width;
-    const valueWidth = ctx.measureText(value.toString()).width;
-    const scale = size / Math.max(keyWidth, valueWidth);
-    ctx.font = `${defaultFontSize * scale}px sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = getTextColorByBackgroundColor(bgColor);
-    ctx.fillText(key, size / 2, size * 0.25, size);
-    ctx.fillText(value.toString(), size / 2, size * 0.75, size);
-    const map = new CanvasTexture(canvas);
-    map.center.set(0.5, 0.5);
-    map.rotation = Math.PI / 2;
-    return new MeshLambertMaterial({map, side: DoubleSide});
 };
 
 const _addLineToScene = (ring: IRing, scene: Scene) => {
