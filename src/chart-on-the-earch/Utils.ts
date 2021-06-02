@@ -107,16 +107,14 @@ export const addProvincesToScene = (scene: Scene, list: IList) => {
 
 export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities: Array<ICity>): () => void => {
     const maxWeight = Math.max(...list.map(line => line.weight));
-    const mergedCities = [...cities, ...extraCities];
+    const mergedCities = [...cities, ...extraCities] as Array<ICity>;
 
     const updateRouteMeshList = [];
     list.forEach(({from, to, weight}) => {
         const fromCity = mergedCities.find(item => item.name === from);
         const toCity = mergedCities.find(item => item.name === to);
         if (fromCity && toCity) {
-            const curve = _getRouteCurve(scene, fromCity, toCity);
-            const [routeMesh, updateRouteMesh] = _getRouteMeshOfTube(curve, weight, maxWeight);
-            scene.add(routeMesh);
+            const updateRouteMesh = _addRouteMeshToScene(scene, fromCity, toCity, weight, maxWeight);
             updateRouteMeshList.push(updateRouteMesh);
         }
     });
@@ -149,6 +147,14 @@ export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void =
     }
 };
 
+const _addRouteMeshToScene = (scene: Scene, fromCity: ICity, toCity: ICity,
+                              weight: number, maxWeight: number): () => void => {
+    const curve = _getRouteCurve(scene, fromCity, toCity);
+    const [routeMesh, updateRouteMesh] = _getRouteMeshOfTube(curve, weight, maxWeight);
+    scene.add(routeMesh);
+    return updateRouteMesh;
+};
+
 const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
     const fromVec = getPositionByLonLat(...fromCity.coordinates);
     const toVec = getPositionByLonLat(...toCity.coordinates);
@@ -164,7 +170,6 @@ const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
 
 const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWeight: number): [Mesh, () => void] => {
     const geometry = new TubeGeometry(curve, 64, 0.004 * earthRadius, 8, false);
-    // 1 using MeshPhongMaterial
     const texture = _createRouteTexture();
     const material = new MeshBasicMaterial({
         map: texture,
