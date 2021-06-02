@@ -13,11 +13,11 @@ import {
     WebGLRenderer
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
 import { getLookAtPosition, getTextColorByBackgroundColor } from './CommonAlgorithms';
 import InfoPanelMesh from './components/InfoPanelMesh';
+import { BarMesh } from './components/BarMesh';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
@@ -141,7 +141,7 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
             });
             const intersects = raycaster.intersectObjects(cubes, true);
             if (intersects.length > 0) {
-                const cube = intersects[0].object as ICube;
+                const cube = intersects[0].object as BarMesh;
                 _changeCubeColor(cube, defaultCubeHighlightColorWhite);
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
@@ -150,10 +150,10 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
     };
 };
 
-export const getCubes = (scene: Scene): Array<ICube> => {
+export const getCubes = (scene: Scene): Array<BarMesh> => {
     return scene.children.filter(
         child => child instanceof Mesh && child.geometry instanceof BoxGeometry
-    ) as any as Array<ICube>;
+    ) as any as Array<BarMesh>;
 };
 
 export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number) => {
@@ -253,7 +253,7 @@ const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     }
 };
 
-const _changeCubeColor = (cube: ICube, color: Color | string | number) => {
+const _changeCubeColor = (cube: BarMesh, color: Color | string | number) => {
     if (cube.material instanceof Material) {
         cube.material.color.set(color);
     }

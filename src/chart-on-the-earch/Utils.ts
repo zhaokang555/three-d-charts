@@ -1,18 +1,16 @@
 import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
-import { colormap, getTextColorByBackgroundColor } from '../CommonAlgorithms';
+import { colormap } from '../CommonAlgorithms';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
 import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
 import ICity from '../type/ICity';
 import IRoute from '../type/IRoute';
-import ICube from '../type/ICube';
 import IRing from '../type/IRing';
 import ICoordinates from '../type/ICoordinates';
 import {
     AmbientLight,
     AxesHelper,
-    BoxGeometry,
     BufferGeometry,
     CanvasTexture,
     Color,
@@ -22,7 +20,7 @@ import {
     Line,
     LineBasicMaterial,
     Mesh,
-    MeshBasicMaterial, MeshLambertMaterial,
+    MeshBasicMaterial,
     MeshPhongMaterial,
     PerspectiveCamera,
     RepeatWrapping,
@@ -37,7 +35,6 @@ import ICamera from '../type/ICamera';
 import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
-import { createTextCanvasTexture } from '../CommonUtils';
 import {BarMesh} from '../components/BarMesh';
 
 

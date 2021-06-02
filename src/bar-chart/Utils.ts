@@ -1,10 +1,8 @@
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import { colormap } from "../CommonAlgorithms";
-import ICube from '../type/ICube';
 import {
     AmbientLight,
     AxesHelper,
-    BoxGeometry,
     DoubleSide,
     Font,
     FontLoader,
@@ -71,7 +69,7 @@ export const addPlaneToScene = (scene: Scene): number => {
 };
 
 export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, cubeWidth: number = null,
-                                maxValue: number = null, minValue: number = null): Array<ICube> => {
+                                maxValue: number = null, minValue: number = null): Array<BarMesh> => {
     // set default value
     cubeWidth = cubeWidth || getCubeWidthByValues(values);
     maxValue = maxValue || Math.max(...values);
@@ -113,7 +111,7 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, cubes: Array<ICube>) => {
+export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, cubes: Array<BarMesh>) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
@@ -138,7 +136,7 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
     });
 };
 
-export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, cubes: Array<ICube>) => {
+export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, cubes: Array<BarMesh>) => {
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
     const charWidth = getCubeWidthByCube(cubes[0]) / valueMaxLength;
@@ -158,17 +156,17 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
     }
 };
 
-export const getCubeWidthByCube = (cube: ICube): number => {
+export const getCubeWidthByCube = (cube: BarMesh): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.x - boundingBox.min.x;
 };
 
-export const getValueByCube = (cube: ICube): number => {
+export const getValueByCube = (cube: BarMesh): number => {
     const boundingBox = cube.geometry.boundingBox;
     return boundingBox.max.y - boundingBox.min.y; // value = cube height
 };
 
-export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: ICube) => {
+export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: BarMesh) => {
     const cubeWidth = getCubeWidthByCube(cube);
     const {x, z} = cube.position;
     const infoPanelSize = cubeWidth * 0.7;

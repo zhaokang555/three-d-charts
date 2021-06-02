@@ -1,7 +1,7 @@
 import IList from '../type/IList';
 import IPosition from '../type/IPosition';
-import ICube from '../type/ICube';
 import { getValueByCube } from './Utils';
+import { BarMesh } from '../components/BarMesh';
 
 export const getCubeWidthByValues = (values: Array<number>): number => values.reduce((sum, val) => sum + val, 0) / values.length;
 
@@ -57,7 +57,7 @@ export const getPositionOfNthBar = (n: number, value: number, cubeWidth: number,
     ]
 };
 
-export const getPositionOfKeyOnTopByCube = (cube: ICube, offsetY: number): IPosition => {
+export const getPositionOfKeyOnTopByCube = (cube: BarMesh, offsetY: number): IPosition => {
     return [
         cube.position.x,
         getValueByCube(cube) + offsetY,
@@ -65,7 +65,7 @@ export const getPositionOfKeyOnTopByCube = (cube: ICube, offsetY: number): IPosi
     ];
 };
 
-export const getPositionOfValueByCube = (cube: ICube): IPosition => {
+export const getPositionOfValueByCube = (cube: BarMesh): IPosition => {
     return [
         cube.position.x,
         getValueByCube(cube),
