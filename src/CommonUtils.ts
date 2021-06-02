@@ -14,7 +14,7 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
-import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
+import { defaultBarColorRed, defaultBarHighlightColorWhite, infoPanelTextColor } from './Constant';
 import { getLookAtPosition, getTextColorByBackgroundColor } from './CommonAlgorithms';
 import InfoPanelMesh from './components/InfoPanelMesh';
 import { BarMesh } from './components/BarMesh';
@@ -105,7 +105,7 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
     return [controls, () => window.removeEventListener('keydown', onKeydown)];
 };
 
-export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => {
+export const initHighlightBar = (scene: Scene, camera: ICamera): () => void => {
     const raycaster = new Raycaster();
     const pointer = new Vector2(-1, -1);
     document.addEventListener('pointermove', event => {
@@ -128,21 +128,21 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
         );
 
     });
-    const bars = getCubes(scene);
+    const bars = getBars(scene);
 
     return () => {
         raycaster.setFromCamera(pointer, camera);
 
         if (bars.length > 0) {
             bars.forEach(bar => {
-                _changeCubeColor(bar, bar.defaultColor || defaultCubeColorRed);
+                _changeBarColor(bar, bar.defaultColor || defaultBarColorRed);
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.keyMeshId));
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             });
             const intersects = raycaster.intersectObjects(bars, true);
             if (intersects.length > 0) {
                 const bar = intersects[0].object as BarMesh;
-                _changeCubeColor(bar, defaultCubeHighlightColorWhite);
+                _changeBarColor(bar, defaultBarHighlightColorWhite);
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.keyMeshId));
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             }
@@ -150,7 +150,7 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
     };
 };
 
-export const getCubes = (scene: Scene): Array<BarMesh> => {
+export const getBars = (scene: Scene): Array<BarMesh> => {
     return scene.children.filter(
         child => child instanceof Mesh && child.geometry instanceof BoxGeometry
     ) as any as Array<BarMesh>;
@@ -253,7 +253,7 @@ const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     }
 };
 
-const _changeCubeColor = (bar: BarMesh, color: Color | string | number) => {
+const _changeBarColor = (bar: BarMesh, color: Color | string | number) => {
     if (bar.material instanceof Material) {
         bar.material.color.set(color);
     }

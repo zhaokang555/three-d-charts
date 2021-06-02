@@ -17,12 +17,12 @@ import {
     Vector3
 } from 'three';
 import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
-import { getCubes } from '../CommonUtils';
+import { getBars } from '../CommonUtils';
 import {
     getBarWidthByValues,
-    getPositionOfKeyOnTopByCube,
+    getPositionOfKeyOnTopByBar,
     getPositionOfNthBar,
-    getPositionOfValueByCube
+    getPositionOfValueByBar
 } from './Algorithms';
 import InfoPanelMesh from '../components/InfoPanelMesh';
 import {BarMesh} from '../components/BarMesh';
@@ -37,7 +37,7 @@ export const addLightToScene = (scene: Scene, planeWidth: number) => {
 
 export const addPlaneToScene = (scene: Scene): number => {
     let planeWidth = 100;
-    const bars = getCubes(scene);
+    const bars = getBars(scene);
     const barPositions = bars.map(bar => bar.position);
     if (barPositions.length === 0) return;
 
@@ -68,7 +68,7 @@ export const addPlaneToScene = (scene: Scene): number => {
     return planeWidth;
 };
 
-export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, barWidth: number = null,
+export const addBarsToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, barWidth: number = null,
                                 maxValue: number = null, minValue: number = null): Array<BarMesh> => {
     // set default value
     barWidth = barWidth || getBarWidthByValues(values);
@@ -129,7 +129,7 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
             const valueMesh = scene.getObjectById(bar.valueMeshId) as Mesh<TextGeometry, MeshPhongMaterial>;
             const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-            text.position.set(...getPositionOfKeyOnTopByCube(bar, valueMeshHeight * 2));
+            text.position.set(...getPositionOfKeyOnTopByBar(bar, valueMeshHeight * 2));
             scene.add(text);
             bar.keyMeshId = text.id;
         }
@@ -150,7 +150,7 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
         const material = _createTextMaterial();
         const textMesh = new Mesh(geometry, material);
 
-        textMesh.position.set(...getPositionOfValueByCube(bar));
+        textMesh.position.set(...getPositionOfValueByBar(bar));
         scene.add(textMesh);
         bar.valueMeshId = textMesh.id;
     }

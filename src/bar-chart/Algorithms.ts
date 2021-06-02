@@ -56,7 +56,7 @@ export const getPositionOfNthBar = (n: number, value: number, barWidth: number, 
     ]
 };
 
-export const getPositionOfKeyOnTopByCube = (bar: BarMesh, offsetY: number): IPosition => {
+export const getPositionOfKeyOnTopByBar = (bar: BarMesh, offsetY: number): IPosition => {
     return [
         bar.position.x,
         bar.height + offsetY,
@@ -64,7 +64,7 @@ export const getPositionOfKeyOnTopByCube = (bar: BarMesh, offsetY: number): IPos
     ];
 };
 
-export const getPositionOfValueByCube = (bar: BarMesh): IPosition => {
+export const getPositionOfValueByBar = (bar: BarMesh): IPosition => {
     return [
         bar.position.x,
         bar.height,

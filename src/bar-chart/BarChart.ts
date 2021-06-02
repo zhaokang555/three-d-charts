@@ -1,8 +1,8 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightCube, makeTextMeshesLookAtCamera } from '../CommonUtils';
+import { addControlsToCamera, getRenderer, initHighlightBar, makeTextMeshesLookAtCamera } from '../CommonUtils';
 import {
     addAxesToScene,
-    addCubesToScene,
+    addBarsToScene,
     addKeysOnTopToScene,
     addLightToScene,
     addPlaneToScene,
@@ -19,7 +19,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
 
     const scene = new Scene();
     addAxesToScene(scene);
-    const bars = addCubesToScene(scene, values);
+    const bars = addBarsToScene(scene, values);
     addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
     addValuesToScene(scene, values, valueMaxLength, bars);
     const planeWidth = addPlaneToScene(scene);
@@ -31,7 +31,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         rotate: true,
         maxZoom: planeWidth * 2, // FIX ME
     });
-    const updateHighlight = initHighlightCube(scene, camera);
+    const updateHighlight = initHighlightBar(scene, camera);
 
     let cancelId = null;
     const render = () => {

@@ -30,7 +30,7 @@ import {
     TubeGeometry
 } from 'three';
 import { getControlPointPosition, getPositionByLonLat } from './Algorithms';
-import { barAltitude, cloudAltitude, defaultCubeColorRed, defaultLightColorWhite, earthRadius } from '../Constant';
+import { barAltitude, cloudAltitude, defaultBarColorRed, defaultLightColorWhite, earthRadius } from '../Constant';
 import ICamera from '../type/ICamera';
 import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
@@ -204,7 +204,7 @@ const _addProvinceToScene = (key: string, value: number, barHeight: number, colo
     const province = china_geo_json.features.find(f => f.properties.name === key);
     const center = province.properties.center;
 
-    _addCubeToScene(center, barHeight, color, scene, key, value);
+    _addBarToScene(center, barHeight, color, scene, key, value);
 
     /**
      *  个人理解:
@@ -218,7 +218,7 @@ const _addProvinceToScene = (key: string, value: number, barHeight: number, colo
     });
 };
 
-const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, scene: Scene,
+const _addBarToScene = (center: ICoordinates, barHeight: number, color: Color, scene: Scene,
                          key: string, value: number) => {
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const barWidth = earthRadius * 0.025; // set bottom side length
@@ -237,7 +237,7 @@ const _addLineToScene = (ring: IRing, scene: Scene) => {
         points.push(getPositionByLonLat(...lonLat, earthRadius + barAltitude));
     });
     const geometry = new BufferGeometry().setFromPoints(points);
-    const material = new LineBasicMaterial({color: defaultCubeColorRed});
+    const material = new LineBasicMaterial({color: defaultBarColorRed});
     const line = new Line(geometry, material);
     scene.add(line);
 };

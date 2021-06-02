@@ -1,8 +1,8 @@
 export const defaultTextColorBlue = '#156289';
 export const defaultTextHighlightColorRed = '#ff0000';
 export const defaultPlaneColorGray = '#aaaaaa';
-export const defaultCubeColorRed = '#ff0000';
-export const defaultCubeHighlightColorWhite = '#ffffff';
+export const defaultBarColorRed = '#ff0000';
+export const defaultBarHighlightColorWhite = '#ffffff';
 export const defaultLightColorWhite = '#ffffff';
 export const infoPanelTextColor = '#000000';
 

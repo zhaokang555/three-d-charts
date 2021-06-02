@@ -2,12 +2,12 @@ import { Scene } from 'three';
 import {
     addControlsToCamera,
     getRenderer,
-    initHighlightCube,
+    initHighlightBar,
     makeInfoPanelLookAtCamera,
 } from '../CommonUtils';
 import {
     addAxesToScene,
-    addCubesToScene, addInfoPanelToScene,
+    addBarsToScene, addInfoPanelToScene,
     addLightToScene,
     addPlaneToScene,
     getOrthographicCamera,
@@ -25,7 +25,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
-        const bars = addCubesToScene(scene, values, i, barWidth, maxValue, minValue);
+        const bars = addBarsToScene(scene, values, i, barWidth, maxValue, minValue);
         bars.forEach((bar, i) => {
             const infoPanel = addInfoPanelToScene(scene, keys[i], values[i], bar);
             infoPanels.push(infoPanel);
@@ -41,7 +41,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         rotate: true,
         maxZoom: planeWidth * 2, // FIX ME
     });
-    const updateHighlight = initHighlightCube(scene, camera);
+    const updateHighlight = initHighlightBar(scene, camera);
 
     let cancelId = null;
     const render = () => {
