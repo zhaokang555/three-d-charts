@@ -46,9 +46,9 @@ export const addPlaneToScene = (scene: Scene): number => {
     const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
     const maxXZ = Math.max(maxX, maxZ);
     const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-    const planeWidthByMaxXZ = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
+    const planeWidthByMaxXZ = maxXZ * 2 + cubes[0].width;
     if (planeWidthByMaxXZ > maxY) {
-        planeWidth = maxXZ * 2 + getCubeWidthByCube(cubes[0]);
+        planeWidth = maxXZ * 2 + cubes[0].width;
     } else {
         planeWidth = maxY;
     }
@@ -116,7 +116,7 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-        const charWidth = getCubeWidthByCube(cubes[0]) / keyMaxLength;
+        const charWidth = cubes[0].width / keyMaxLength;
         const fontDepth = charWidth / 8;
 
         for (let i = 0; i < keys.length; ++i) {
@@ -139,7 +139,7 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
 export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, cubes: Array<BarMesh>) => {
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
-    const charWidth = getCubeWidthByCube(cubes[0]) / valueMaxLength;
+    const charWidth = cubes[0].width / valueMaxLength;
     const fontDepth = charWidth / 8;
 
     for (let i = 0; i < values.length; ++i) {
@@ -156,15 +156,9 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
     }
 };
 
-export const getCubeWidthByCube = (cube: BarMesh): number => {
-    const boundingBox = cube.geometry.boundingBox;
-    return boundingBox.max.x - boundingBox.min.x;
-};
-
 export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: BarMesh) => {
-    const cubeWidth = getCubeWidthByCube(cube);
     const {x, z} = cube.position;
-    const infoPanelSize = cubeWidth * 0.7;
+    const infoPanelSize = cube.width * 0.7;
     const infoPanelMesh = new InfoPanelMesh(infoPanelSize, key, value);
     infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
