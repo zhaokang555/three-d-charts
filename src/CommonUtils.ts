@@ -16,7 +16,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
-import { getTextColorByBackgroundColor } from './CommonAlgorithms';
+import { getLookAtPosition, getTextColorByBackgroundColor } from './CommonAlgorithms';
 import IInfoPanel from './type/IInfoPanel';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
@@ -157,23 +157,13 @@ export const getCubes = (scene: Scene): Array<ICube> => {
 };
 
 export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number) => {
+    const lookAtPosition = getLookAtPosition(camera, planeWidth * 100);
     const textMeshes = _getTextMeshes(scene);
-    const lookAtPosition = camera.position.clone().setY(0);
-    const minLength = planeWidth * 100;
-    const scale = minLength / lookAtPosition.length();
-    if (scale > 1) {
-        lookAtPosition.multiplyScalar(scale);
-    }
     textMeshes.forEach(t => t.lookAt(lookAtPosition));
 };
 
 export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<IInfoPanel>) => {
-    const lookAtPosition = camera.position.clone().setY(0);
-    const minLength = planeWidth * 100;
-    const scale = minLength / lookAtPosition.length();
-    if (scale > 1) {
-        lookAtPosition.multiplyScalar(scale);
-    }
+    const lookAtPosition = getLookAtPosition(camera, planeWidth * 100);
     infoPanels.forEach(info => info.lookAt(lookAtPosition));
 };
 

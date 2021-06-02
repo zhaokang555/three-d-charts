@@ -1,4 +1,5 @@
 import { Color } from 'three';
+import ICamera from './type/ICamera';
 
 type IOptions = {
     begin?: Color;
@@ -32,4 +33,13 @@ export const getTextColorByBackgroundColor = (color: Color) => {
     const brightness = 0.299 * r + 0.587 * g + 0.114 * b;
 
     return brightness > 0.49 ? 'black' : 'white'; // 0.49 = 125 / 255
+};
+
+export const getLookAtPosition = (camera: ICamera, minLength: number) => {
+    const lookAtPosition = camera.position.clone().setY(0);
+    const scale = minLength / lookAtPosition.length();
+    if (scale > 1) {
+        lookAtPosition.multiplyScalar(scale);
+    }
+    return lookAtPosition;
 };
