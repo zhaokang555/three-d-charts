@@ -177,9 +177,16 @@ export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWi
     infoPanels.forEach(info => info.lookAt(lookAtPosition));
 };
 
-export const createTextCanvasTexture = (key: string, value: number, bgColor: Color, textColor?: string) => {
+type ITextCanvasTextureOptions = {
+    textColor?: string;
+    padding?: number; // 0~1
+};
+export const createTextCanvasTexture = (key: string, value: number, bgColor: Color,
+                                        options: ITextCanvasTextureOptions = {}) => {
     const canvas = document.createElement('canvas');
     const size = 200;
+    const padding = size * (options.padding || 0.1);
+    const contentSize = size - padding * 2;
     canvas.width = canvas.height = size;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#' + bgColor.getHexString();
@@ -190,28 +197,32 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     ctx.font = `${defaultFontSize}px sans-serif`;
     const keyWidth = ctx.measureText(key).width;
     const valueWidth = ctx.measureText(value.toString()).width;
-    const scale = size / Math.max(keyWidth, valueWidth);
+    const scale = contentSize / Math.max(keyWidth, valueWidth);
+    const font = `${defaultFontSize * scale}px sans-serif`;
 
-    ctx.font = `${defaultFontSize * scale}px sans-serif`;
+    const line1Position: [number, number] = [size / 2, padding + contentSize * 0.25];
+    const line2Position: [number, number] = [size / 2, padding + contentSize * 0.75];
+
+    ctx.font = font;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = textColor || getTextColorByBackgroundColor(bgColor);
-    ctx.fillText(key, size / 2, size * 0.25, size);
-    ctx.fillText(value.toString(), size / 2, size * 0.75, size);
+    ctx.fillStyle = options.textColor || getTextColorByBackgroundColor(bgColor);
+    ctx.fillText(key, ...line1Position, size);
+    ctx.fillText(value.toString(), ...line2Position, size);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
 
     const canvasAlphaMap = document.createElement('canvas');
     canvasAlphaMap.width = canvasAlphaMap.height = size;
     const ctxAlphaMap = canvasAlphaMap.getContext('2d');
-    ctxAlphaMap.fillStyle = '#aaaaaa';
+    ctxAlphaMap.fillStyle = '#bbbbbb';
     ctxAlphaMap.fillRect(0, 0, size, size);
-    ctxAlphaMap.font = `${defaultFontSize * scale}px sans-serif`;
+    ctxAlphaMap.font = font;
     ctxAlphaMap.textAlign = 'center';
     ctxAlphaMap.textBaseline = 'middle';
     ctxAlphaMap.fillStyle = '#ffffff';
-    ctxAlphaMap.fillText(key, size / 2, size * 0.25, size);
-    ctxAlphaMap.fillText(value.toString(), size / 2, size * 0.75, size);
+    ctxAlphaMap.fillText(key, ...line1Position, size);
+    ctxAlphaMap.fillText(value.toString(), ...line2Position, size);
     const alphaMap = new CanvasTexture(canvasAlphaMap);
     alphaMap.center.set(0.5, 0.5);
 
@@ -219,7 +230,9 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
 };
 
 export const createInfoPanelMesh = (size: number, key: string, value: number) => {
-    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'), infoPanelTextColor);
+    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'), {
+        textColor: infoPanelTextColor,
+    });
     const material = new MeshLambertMaterial({
         map,
         alphaMap,
