@@ -4,7 +4,7 @@ export const defaultPlaneColorGray = '#aaaaaa';
 export const defaultCubeColorRed = '#ff0000';
 export const defaultCubeHighlightColorWhite = '#ffffff';
 export const defaultLightColorWhite = '#ffffff';
-export const infoPanelTextColor = '#79f84f';
+export const infoPanelTextColor = '#000000';
 
 // china-province-bar-chart
 export const earthRadius = 1;

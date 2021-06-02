@@ -175,8 +175,9 @@ export const getValueByCube = (cube: ICube): number => {
 export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: ICube) => {
     const cubeWidth = getCubeWidthByCube(cube);
     const {x, z} = cube.position;
-    const infoPanelMesh = createInfoPanelMesh(cubeWidth * 0.6, key, value);
-    infoPanelMesh.position.set(x, value + cubeWidth * 0.5, z);
+    const infoPanelSize = cubeWidth * 0.7;
+    const infoPanelMesh = createInfoPanelMesh(infoPanelSize, key, value);
+    infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
     return infoPanelMesh;
 };

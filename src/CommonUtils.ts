@@ -215,12 +215,12 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     const canvasAlphaMap = document.createElement('canvas');
     canvasAlphaMap.width = canvasAlphaMap.height = size;
     const ctxAlphaMap = canvasAlphaMap.getContext('2d');
-    ctxAlphaMap.fillStyle = '#bbbbbb';
+    ctxAlphaMap.fillStyle = 'rgb(0, 190, 0)';
     ctxAlphaMap.fillRect(0, 0, size, size);
     ctxAlphaMap.font = font;
     ctxAlphaMap.textAlign = 'center';
     ctxAlphaMap.textBaseline = 'middle';
-    ctxAlphaMap.fillStyle = '#ffffff';
+    ctxAlphaMap.fillStyle = '#00ff00';
     ctxAlphaMap.fillText(key, ...line1Position, size);
     ctxAlphaMap.fillText(value.toString(), ...line2Position, size);
     const alphaMap = new CanvasTexture(canvasAlphaMap);
@@ -230,15 +230,12 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
 };
 
 export const createInfoPanelMesh = (size: number, key: string, value: number) => {
-    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'), {
-        textColor: infoPanelTextColor,
-    });
+    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('white'));
     const material = new MeshLambertMaterial({
         map,
         alphaMap,
         side: DoubleSide,
         transparent: true,
-        // opacity: .8,
     });
     const geometry = new PlaneGeometry(size, size);
     const infoPanelMesh = new Mesh(geometry, material);
