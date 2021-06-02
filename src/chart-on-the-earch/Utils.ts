@@ -223,7 +223,7 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
 
-    const cube = new BarMesh(cubeWidth, barHeight, color, key, value);
+    const cube = new BarMesh(cubeWidth, value, color, key, barHeight);
     cube.position.copy(centerPosition);
     const up = cube.up.clone().normalize();
     cube.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());

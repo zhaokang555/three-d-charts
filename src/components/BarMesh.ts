@@ -2,15 +2,17 @@ import { BoxGeometry, Color, DoubleSide, Mesh, MeshLambertMaterial, MeshPhongMat
 import { createTextCanvasTexture } from '../CommonUtils';
 
 export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLambertMaterial>> {
-    constructor(width: number, height: number, color: Color, key?: string, value?: number) {
-        const geometry = new BoxGeometry(width, height, width);
-
+    constructor(width: number, value: number, color: Color, key?: string, height?: number) {
         if (key == null) {
+            const geometry = new BoxGeometry(width, value, width);
             const material = new MeshPhongMaterial({color, side: DoubleSide});
 
             super(geometry, material);
-            this.name = 'cubeMesh-' + height;
+            this.name = 'cubeMesh-' + value;
+            this.height = value;
         } else {
+            const geometry = new BoxGeometry(width, height, width);
+
             const [map] = createTextCanvasTexture(key, value, color, {padding: 0.05});
             map.rotation = Math.PI / 2;
             const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
@@ -19,15 +21,20 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLam
 
             super(geometry, materials);
             this.name = 'cubeMesh-' + key;
+            this.height = height;
         }
 
         this.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
         this.defaultColor = color; // store default color in cube mesh object
-
+        this.width = width;
+        this.value = value;
     }
 
     keyMeshId: number;
     valueMeshId: number;
     baseLineIndex: number;
+    width: number;
+    value: number;
+    height: number;
     defaultColor: Color;
 }

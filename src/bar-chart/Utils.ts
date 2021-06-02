@@ -161,11 +161,6 @@ export const getCubeWidthByCube = (cube: BarMesh): number => {
     return boundingBox.max.x - boundingBox.min.x;
 };
 
-export const getValueByCube = (cube: BarMesh): number => {
-    const boundingBox = cube.geometry.boundingBox;
-    return boundingBox.max.y - boundingBox.min.y; // value = cube height
-};
-
 export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: BarMesh) => {
     const cubeWidth = getCubeWidthByCube(cube);
     const {x, z} = cube.position;
