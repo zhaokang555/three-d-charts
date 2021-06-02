@@ -35,8 +35,11 @@ export const getTextColorByBackgroundColor = (color: Color) => {
     return brightness > 0.49 ? 'black' : 'white'; // 0.49 = 125 / 255
 };
 
-export const getLookAtPosition = (camera: ICamera, minLength: number) => {
-    const lookAtPosition = camera.position.clone().setY(0);
+export const getLookAtPosition = (camera: ICamera, minLength: number, lockY = true) => {
+    const lookAtPosition = camera.position.clone();
+    if (lockY) {
+        lookAtPosition.setY(0)
+    }
     const scale = minLength / lookAtPosition.length();
     if (scale > 1) {
         lookAtPosition.multiplyScalar(scale);

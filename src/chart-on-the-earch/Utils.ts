@@ -1,6 +1,6 @@
 import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
-import { colormap } from '../CommonAlgorithms';
+import { colormap, getLookAtPosition } from '../CommonAlgorithms';
 import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
 import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
@@ -36,6 +36,7 @@ import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
 import {BarMesh} from '../components/BarMesh';
+import InfoPanelMesh from '../components/InfoPanelMesh';
 
 
 export const addLightToScene = (scene: Scene, ambientLightIntensity = 0.7) => {
@@ -105,21 +106,22 @@ export const addProvincesToScene = (scene: Scene, list: IList) => {
     });
 };
 
-export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities: Array<ICity>): () => void => {
+export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities: Array<ICity>,
+                                 camera: ICamera): () => void => {
     const maxWeight = Math.max(...list.map(line => line.weight));
     const mergedCities = [...cities, ...extraCities] as Array<ICity>;
 
-    const updateRouteMeshList = [];
+    const updateRouteAndInfoPanelList = [];
     list.forEach(({from, to, weight}) => {
         const fromCity = mergedCities.find(item => item.name === from);
         const toCity = mergedCities.find(item => item.name === to);
         if (fromCity && toCity) {
-            const updateRouteMesh = _addRouteMeshToScene(scene, fromCity, toCity, weight, maxWeight);
-            updateRouteMeshList.push(updateRouteMesh);
+            const updateRouteAndInfoPanel = _addRouteAndInfoPanelToScene(scene, fromCity, toCity, weight, maxWeight, camera);
+            updateRouteAndInfoPanelList.push(updateRouteAndInfoPanel);
         }
     });
 
-    return () => updateRouteMeshList.forEach(cb => cb());
+    return () => updateRouteAndInfoPanelList.forEach(cb => cb());
 };
 
 export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void => {
@@ -147,12 +149,22 @@ export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void =
     }
 };
 
-const _addRouteMeshToScene = (scene: Scene, fromCity: ICity, toCity: ICity,
-                              weight: number, maxWeight: number): () => void => {
+const _addRouteAndInfoPanelToScene = (scene: Scene, fromCity: ICity, toCity: ICity,
+                              weight: number, maxWeight: number, camera: ICamera): () => void => {
     const curve = _getRouteCurve(scene, fromCity, toCity);
     const [routeMesh, updateRouteMesh] = _getRouteMeshOfTube(curve, weight, maxWeight);
     scene.add(routeMesh);
-    return updateRouteMesh;
+
+    const midPointOnCurve = curve.getPointAt(0.5);
+    const infoPanel = new InfoPanelMesh(earthRadius * 0.05, fromCity.name + ' - ' + toCity.name, weight);
+    const infoPanelOffset = midPointOnCurve.clone().normalize().multiplyScalar(earthRadius * 0.05);
+    infoPanel.position.copy(midPointOnCurve.add(infoPanelOffset));
+    scene.add(infoPanel);
+
+    return () => {
+        updateRouteMesh();
+        infoPanel.lookAt(getLookAtPosition(camera, 0, false));
+    };
 };
 
 const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
