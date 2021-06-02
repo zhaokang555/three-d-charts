@@ -225,7 +225,7 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
 
-    const map = createTextCanvasTexture(key, value, color);
+    const [map] = createTextCanvasTexture(key, value, color);
     map.rotation = Math.PI / 2;
     const textMaterial = new MeshLambertMaterial({map, side: DoubleSide});
     const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});

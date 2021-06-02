@@ -17,6 +17,7 @@ import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
+import IInfoPanel from './type/IInfoPanel';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
@@ -166,19 +167,31 @@ export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeW
     textMeshes.forEach(t => t.lookAt(lookAtPosition));
 };
 
+export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<IInfoPanel>) => {
+    const lookAtPosition = camera.position.clone().setY(0);
+    const minLength = planeWidth * 100;
+    const scale = minLength / lookAtPosition.length();
+    if (scale > 1) {
+        lookAtPosition.multiplyScalar(scale);
+    }
+    infoPanels.forEach(info => info.lookAt(lookAtPosition));
+};
+
 export const createTextCanvasTexture = (key: string, value: number, bgColor: Color, textColor?: string) => {
     const canvas = document.createElement('canvas');
     const size = 200;
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = canvas.height = size;
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#' + bgColor.getHexString();
     ctx.fillRect(0, 0, size, size);
+
+    // test font size
     const defaultFontSize = 10;
     ctx.font = `${defaultFontSize}px sans-serif`;
     const keyWidth = ctx.measureText(key).width;
     const valueWidth = ctx.measureText(value.toString()).width;
     const scale = size / Math.max(keyWidth, valueWidth);
+
     ctx.font = `${defaultFontSize * scale}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -187,12 +200,33 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     ctx.fillText(value.toString(), size / 2, size * 0.75, size);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
-    return map;
+
+    const canvasAlphaMap = document.createElement('canvas');
+    canvasAlphaMap.width = canvasAlphaMap.height = size;
+    const ctxAlphaMap = canvasAlphaMap.getContext('2d');
+    ctxAlphaMap.fillStyle = '#aaaaaa';
+    ctxAlphaMap.fillRect(0, 0, size, size);
+    ctxAlphaMap.font = `${defaultFontSize * scale}px sans-serif`;
+    ctxAlphaMap.textAlign = 'center';
+    ctxAlphaMap.textBaseline = 'middle';
+    ctxAlphaMap.fillStyle = '#ffffff';
+    ctxAlphaMap.fillText(key, size / 2, size * 0.25, size);
+    ctxAlphaMap.fillText(value.toString(), size / 2, size * 0.75, size);
+    const alphaMap = new CanvasTexture(canvasAlphaMap);
+    alphaMap.center.set(0.5, 0.5);
+
+    return [map, alphaMap];
 };
 
 export const createInfoPanelMesh = (size: number, key: string, value: number) => {
-    const map = createTextCanvasTexture(key, value, new Color('black'), infoPanelTextColor);
-    const material = new MeshLambertMaterial({map, side: DoubleSide});
+    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'), infoPanelTextColor);
+    const material = new MeshLambertMaterial({
+        map,
+        alphaMap,
+        side: DoubleSide,
+        transparent: true,
+        // opacity: .8,
+    });
     const geometry = new PlaneGeometry(size, size);
     const infoPanelMesh = new Mesh(geometry, material);
     return infoPanelMesh;

@@ -1,31 +1,35 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightCube, makeTextMeshesLookAtCamera } from '../CommonUtils';
+import {
+    addControlsToCamera,
+    getRenderer,
+    initHighlightCube,
+    makeInfoPanelLookAtCamera,
+} from '../CommonUtils';
 import {
     addAxesToScene,
     addCubesToScene, addInfoPanelToScene,
-    addKeysOnTopToScene,
     addLightToScene,
     addPlaneToScene,
-    addValuesToScene,
     getOrthographicCamera,
 } from './Utils';
-import { getCubeWidthByLists, getKeyAndValueMaxLength, getMaxAndMinValueByLists } from './Algorithms';
+import { getCubeWidthByLists, getMaxAndMinValueByLists } from './Algorithms';
 import IList from '../type/IList';
 
 export const init = (lists: Array<IList>, container: HTMLElement): () => void => {
     const scene = new Scene();
     const cubeWidth = getCubeWidthByLists(lists);
-    // const [keyMaxLength, valueMaxLength] = getKeyAndValueMaxLength(lists);
     const [maxValue, minValue] = getMaxAndMinValueByLists(lists);
 
+    const infoPanels = [];
     lists.forEach((list, i) => {
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
         const cubes = addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
-        // addValuesToScene(scene, values, valueMaxLength, cubes);
-        // addKeysOnTopToScene(scene, keys, keyMaxLength, cubes);
-        cubes.forEach((cube, i) => addInfoPanelToScene(scene, keys[i], values[i], cube));
+        cubes.forEach((cube, i) => {
+            const infoPanel = addInfoPanelToScene(scene, keys[i], values[i], cube);
+            infoPanels.push(infoPanel);
+        });
     });
 
     addAxesToScene(scene);
@@ -47,7 +51,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         controls.update();
 
         updateHighlight();
-        makeTextMeshesLookAtCamera(scene, camera, planeWidth);
+        makeInfoPanelLookAtCamera(scene, camera, planeWidth, infoPanels);
 
         renderer.render(scene, camera);
     };
