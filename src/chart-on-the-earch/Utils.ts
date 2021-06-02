@@ -22,7 +22,7 @@ import {
     Line,
     LineBasicMaterial,
     Mesh,
-    MeshBasicMaterial,
+    MeshBasicMaterial, MeshLambertMaterial,
     MeshPhongMaterial,
     PerspectiveCamera,
     RepeatWrapping,
@@ -254,13 +254,15 @@ const _createTextMaterial = (key: string, value: number, bgColor: Color) => {
     const valueWidth = ctx.measureText(value.toString()).width;
     const scale = size / Math.max(keyWidth, valueWidth);
     ctx.font = `${defaultFontSize * scale}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     ctx.fillStyle = getTextColorByBackgroundColor(bgColor);
-    ctx.fillText(key, 0, size / 2, size);
-    ctx.fillText(value.toString(), 0, size, size);
+    ctx.fillText(key, size / 2, size * 0.25, size);
+    ctx.fillText(value.toString(), size / 2, size * 0.75, size);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
     map.rotation = Math.PI / 2;
-    return new MeshPhongMaterial({map, side: DoubleSide});
+    return new MeshLambertMaterial({map, side: DoubleSide});
 };
 
 const _addLineToScene = (ring: IRing, scene: Scene) => {
