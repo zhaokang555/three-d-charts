@@ -5,7 +5,7 @@ import {
     MeshPhongMaterial,
     Object3D,
     OrthographicCamera,
-    PerspectiveCamera,
+    PerspectiveCamera, PlaneGeometry,
     Raycaster,
     Scene,
     TextGeometry,
@@ -15,7 +15,7 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICube from './type/ICube';
 import ICamera from './type/ICamera';
-import { defaultCubeColorRed, defaultCubeHighlightColorWhite } from './Constant';
+import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
@@ -50,14 +50,14 @@ export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRend
     return [renderer, () => window.removeEventListener('resize', onWindowResize)];
 };
 
-type IOptions = {
+type IControlOptions = {
     minDistance?: number;
     maxDistance?: number;
     rotate?: boolean;
     minZoom?: number;
     maxZoom?: number;
 }
-export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, options: IOptions = {}): [OrbitControls, () => void] => {
+export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, options: IControlOptions = {}): [OrbitControls, () => void] => {
     const controls = new OrbitControls(camera, renderer.domElement);
 
     controls.enableDamping = true; // 是否有惯性
@@ -166,7 +166,7 @@ export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeW
     textMeshes.forEach(t => t.lookAt(lookAtPosition));
 };
 
-export const createTextMaterial = (key: string, value: number, bgColor: Color, textColor?: string) => {
+export const createTextCanvasTexture = (key: string, value: number, bgColor: Color, textColor?: string) => {
     const canvas = document.createElement('canvas');
     const size = 200;
     canvas.width = size;
@@ -187,8 +187,15 @@ export const createTextMaterial = (key: string, value: number, bgColor: Color, t
     ctx.fillText(value.toString(), size / 2, size * 0.75, size);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
-    map.rotation = Math.PI / 2;
-    return new MeshLambertMaterial({map, side: DoubleSide});
+    return map;
+};
+
+export const createInfoPanelMesh = (size: number, key: string, value: number) => {
+    const map = createTextCanvasTexture(key, value, new Color('black'), infoPanelTextColor);
+    const material = new MeshLambertMaterial({map, side: DoubleSide});
+    const geometry = new PlaneGeometry(size, size);
+    const infoPanelMesh = new Mesh(geometry, material);
+    return infoPanelMesh;
 };
 
 const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {

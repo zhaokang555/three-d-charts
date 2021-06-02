@@ -37,7 +37,7 @@ import ICamera from '../type/ICamera';
 import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
-import { createTextMaterial } from '../CommonUtils';
+import { createTextCanvasTexture } from '../CommonUtils';
 
 
 export const addLightToScene = (scene: Scene, ambientLightIntensity = 0.7) => {
@@ -225,7 +225,9 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const cubeWidth = earthRadius * 0.025; // set bottom side length
 
-    const textMaterial = createTextMaterial(key, value, color);
+    const map = createTextCanvasTexture(key, value, color);
+    map.rotation = Math.PI / 2;
+    const textMaterial = new MeshLambertMaterial({map, side: DoubleSide});
     const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
     const materials = (new Array(6)).fill(colorMaterial);
     materials[2] = textMaterial; // [right, left, top, bottom, front, back]

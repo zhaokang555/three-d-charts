@@ -19,7 +19,7 @@ import {
     Vector3
 } from 'three';
 import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
-import { getCubes } from '../CommonUtils';
+import { createInfoPanelMesh, getCubes } from '../CommonUtils';
 import {
     getCubeWidthByValues,
     getPositionOfKeyOnTopByCube,
@@ -172,6 +172,14 @@ export const getValueByCube = (cube: ICube): number => {
     return boundingBox.max.y - boundingBox.min.y; // value = cube height
 };
 
+export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: ICube) => {
+    const cubeWidth = getCubeWidthByCube(cube);
+    const {x, z} = cube.position;
+    const infoPanelMesh = createInfoPanelMesh(cubeWidth, key, value);
+    infoPanelMesh.position.set(x, value + cubeWidth, z);
+    scene.add(infoPanelMesh);
+};
+
 const _createTextGeometry = (text: string, font: Font, size: number, fontDepth: number): TextGeometry => {
     const geometry = new TextGeometry(text, {
         font,
@@ -193,4 +201,3 @@ const _createTextMaterial = () => {
         emissiveIntensity: 0.8,
     });
 };
-
