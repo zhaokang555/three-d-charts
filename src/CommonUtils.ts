@@ -128,23 +128,23 @@ export const initHighlightCube = (scene: Scene, camera: ICamera): () => void => 
         );
 
     });
-    const cubes = getCubes(scene);
+    const bars = getCubes(scene);
 
     return () => {
         raycaster.setFromCamera(pointer, camera);
 
-        if (cubes.length > 0) {
-            cubes.forEach(cube => {
-                _changeCubeColor(cube, cube.defaultColor || defaultCubeColorRed);
-                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+        if (bars.length > 0) {
+            bars.forEach(bar => {
+                _changeCubeColor(bar, bar.defaultColor || defaultCubeColorRed);
+                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.keyMeshId));
+                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             });
-            const intersects = raycaster.intersectObjects(cubes, true);
+            const intersects = raycaster.intersectObjects(bars, true);
             if (intersects.length > 0) {
-                const cube = intersects[0].object as BarMesh;
-                _changeCubeColor(cube, defaultCubeHighlightColorWhite);
-                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.keyMeshId));
-                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(cube.valueMeshId));
+                const bar = intersects[0].object as BarMesh;
+                _changeCubeColor(bar, defaultCubeHighlightColorWhite);
+                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.keyMeshId));
+                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             }
         }
     };
@@ -253,8 +253,8 @@ const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     }
 };
 
-const _changeCubeColor = (cube: BarMesh, color: Color | string | number) => {
-    if (cube.material instanceof Material) {
-        cube.material.color.set(color);
+const _changeCubeColor = (bar: BarMesh, color: Color | string | number) => {
+    if (bar.material instanceof Material) {
+        bar.material.color.set(color);
     }
 };

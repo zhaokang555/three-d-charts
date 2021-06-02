@@ -19,9 +19,9 @@ export const init = (list: IList, container: HTMLElement): () => void => {
 
     const scene = new Scene();
     addAxesToScene(scene);
-    const cubes = addCubesToScene(scene, values);
-    addKeysOnTopToScene(scene, keys, keyMaxLength, cubes);
-    addValuesToScene(scene, values, valueMaxLength, cubes);
+    const bars = addCubesToScene(scene, values);
+    addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
+    addValuesToScene(scene, values, valueMaxLength, bars);
     const planeWidth = addPlaneToScene(scene);
     addLightToScene(scene, planeWidth);
 

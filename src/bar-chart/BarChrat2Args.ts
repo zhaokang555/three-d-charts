@@ -25,9 +25,9 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
-        const cubes = addCubesToScene(scene, values, i, barWidth, maxValue, minValue);
-        cubes.forEach((cube, i) => {
-            const infoPanel = addInfoPanelToScene(scene, keys[i], values[i], cube);
+        const bars = addCubesToScene(scene, values, i, barWidth, maxValue, minValue);
+        bars.forEach((bar, i) => {
+            const infoPanel = addInfoPanelToScene(scene, keys[i], values[i], bar);
             infoPanels.push(infoPanel);
         });
     });

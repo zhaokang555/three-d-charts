@@ -37,18 +37,18 @@ export const addLightToScene = (scene: Scene, planeWidth: number) => {
 
 export const addPlaneToScene = (scene: Scene): number => {
     let planeWidth = 100;
-    const cubes = getCubes(scene);
-    const cubePositions = cubes.map(cube => cube.position);
-    if (cubePositions.length === 0) return;
+    const bars = getCubes(scene);
+    const barPositions = bars.map(bar => bar.position);
+    if (barPositions.length === 0) return;
 
-    // 根据最右边cube的x坐标 和 最高cube的高度 来确定planeWidth
-    const maxX = Math.max(...cubePositions.map(p => Math.abs(p.x)));
-    const maxZ = Math.max(...cubePositions.map(p => Math.abs(p.z)));
+    // 根据最右边bar的x坐标 和 最高bar的高度 来确定planeWidth
+    const maxX = Math.max(...barPositions.map(p => Math.abs(p.x)));
+    const maxZ = Math.max(...barPositions.map(p => Math.abs(p.z)));
     const maxXZ = Math.max(maxX, maxZ);
-    const maxY = Math.max(...cubePositions.map(p => Math.abs(p.y * 2)));
-    const planeWidthByMaxXZ = maxXZ * 2 + cubes[0].width;
+    const maxY = Math.max(...barPositions.map(p => Math.abs(p.y * 2)));
+    const planeWidthByMaxXZ = maxXZ * 2 + bars[0].width;
     if (planeWidthByMaxXZ > maxY) {
-        planeWidth = maxXZ * 2 + cubes[0].width;
+        planeWidth = maxXZ * 2 + bars[0].width;
     } else {
         planeWidth = maxY;
     }
@@ -76,20 +76,20 @@ export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineInd
     minValue = minValue || Math.min(...values);
 
     const colors = colormap(100);
-    const cubes = [];
+    const bars = [];
     for (let i = 0; i < values.length; ++i) {
         const value = values[i];
         const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
         const color = colors[colorIndex];
 
-        const cube = new BarMesh(barWidth, value, color);
-        cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
-        cube.position.set(...getPositionOfNthBar(i, value, barWidth, baseLineIndex));
-        scene.add(cube);
-        cubes.push(cube);
+        const bar = new BarMesh(barWidth, value, color);
+        bar.baseLineIndex = baseLineIndex; // store baseLineIndex in bar mesh object
+        bar.position.set(...getPositionOfNthBar(i, value, barWidth, baseLineIndex));
+        scene.add(bar);
+        bars.push(bar);
     }
 
-    return cubes;
+    return bars;
 };
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, planeWidth: number) => {
@@ -111,54 +111,54 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, cubes: Array<BarMesh>) => {
+export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, bars: Array<BarMesh>) => {
     const loader = new FontLoader();
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
-        const charWidth = cubes[0].width / keyMaxLength;
+        const charWidth = bars[0].width / keyMaxLength;
         const fontDepth = charWidth / 8;
 
         for (let i = 0; i < keys.length; ++i) {
             const key = keys[i];
-            const cube = cubes[i];
+            const bar = bars[i];
             const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
             const material = _createTextMaterial();
             const text = new Mesh(geometry, material);
 
-            const valueMesh = scene.getObjectById(cube.valueMeshId) as Mesh<TextGeometry, MeshPhongMaterial>;
+            const valueMesh = scene.getObjectById(bar.valueMeshId) as Mesh<TextGeometry, MeshPhongMaterial>;
             const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-            text.position.set(...getPositionOfKeyOnTopByCube(cube, valueMeshHeight * 2));
+            text.position.set(...getPositionOfKeyOnTopByCube(bar, valueMeshHeight * 2));
             scene.add(text);
-            cube.keyMeshId = text.id;
+            bar.keyMeshId = text.id;
         }
     });
 };
 
-export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, cubes: Array<BarMesh>) => {
+export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, bars: Array<BarMesh>) => {
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
-    const charWidth = cubes[0].width / valueMaxLength;
+    const charWidth = bars[0].width / valueMaxLength;
     const fontDepth = charWidth / 8;
 
     for (let i = 0; i < values.length; ++i) {
         const valueText = values[i].toString();
-        const cube = cubes[i];
+        const bar = bars[i];
 
         const geometry = _createTextGeometry(valueText, font, charWidth, fontDepth);
         const material = _createTextMaterial();
         const textMesh = new Mesh(geometry, material);
 
-        textMesh.position.set(...getPositionOfValueByCube(cube));
+        textMesh.position.set(...getPositionOfValueByCube(bar));
         scene.add(textMesh);
-        cube.valueMeshId = textMesh.id;
+        bar.valueMeshId = textMesh.id;
     }
 };
 
-export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cube: BarMesh) => {
-    const {x, z} = cube.position;
-    const infoPanelSize = cube.width * 0.7;
+export const addInfoPanelToScene = (scene: Scene, key: string, value: number, bar: BarMesh) => {
+    const {x, z} = bar.position;
+    const infoPanelSize = bar.width * 0.7;
     const infoPanelMesh = new InfoPanelMesh(infoPanelSize, key, value);
     infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
@@ -172,7 +172,7 @@ const _createTextGeometry = (text: string, font: Font, size: number, fontDepth: 
         height: fontDepth,
     });
     geometry.center(); // has called geometry.computeBoundingBox() in center()
-    geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在cube里/plane里
+    geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在bar里/plane里
     // after translate, geometry.boundingBox.min.y = 0 and geometry.boundingBox.max.y = height
     // NOTE: do not call center() again after translate, it will make geometry.boundingBox.min.y = -height/2 and geometry.boundingBox.max.y = height/2
     return geometry;

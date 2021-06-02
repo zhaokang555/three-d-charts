@@ -8,7 +8,7 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLam
             const material = new MeshPhongMaterial({color, side: DoubleSide});
 
             super(geometry, material);
-            this.name = 'cubeMesh-' + value;
+            this.name = 'barMesh-' + value;
             this.height = value;
         } else {
             const geometry = new BoxGeometry(width, height, width);
@@ -20,12 +20,12 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLam
             materials[2] = new MeshLambertMaterial({map, side: DoubleSide}); // [right, left, top, bottom, front, back]
 
             super(geometry, materials);
-            this.name = 'cubeMesh-' + key;
+            this.name = 'barMesh-' + key;
             this.height = height;
         }
 
-        this.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
-        this.defaultColor = color; // store default color in cube mesh object
+        this.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新bar.geometry.boundingBox; 边界矩形不会默认计算，默认为null
+        this.defaultColor = color; // store default color in bar mesh object
         this.width = width;
         this.value = value;
     }

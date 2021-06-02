@@ -223,12 +223,12 @@ const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, 
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
     const barWidth = earthRadius * 0.025; // set bottom side length
 
-    const cube = new BarMesh(barWidth, value, color, key, barHeight);
-    cube.position.copy(centerPosition);
-    const up = cube.up.clone().normalize();
-    cube.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
-    cube.translateY(barHeight / 2);
-    scene.add(cube);
+    const bar = new BarMesh(barWidth, value, color, key, barHeight);
+    bar.position.copy(centerPosition);
+    const up = bar.up.clone().normalize();
+    bar.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
+    bar.translateY(barHeight / 2);
+    scene.add(bar);
 };
 
 const _addLineToScene = (ring: IRing, scene: Scene) => {
