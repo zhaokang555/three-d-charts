@@ -12,12 +12,12 @@ import {
     addPlaneToScene,
     getOrthographicCamera,
 } from './Utils';
-import { getCubeWidthByLists, getMaxAndMinValueByLists } from './Algorithms';
+import { getBarWidthByLists, getMaxAndMinValueByLists } from './Algorithms';
 import IList from '../type/IList';
 
 export const init = (lists: Array<IList>, container: HTMLElement): () => void => {
     const scene = new Scene();
-    const cubeWidth = getCubeWidthByLists(lists);
+    const barWidth = getBarWidthByLists(lists);
     const [maxValue, minValue] = getMaxAndMinValueByLists(lists);
 
     const infoPanels = [];
@@ -25,7 +25,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         const keys = list.map(kv => kv.key);
         const values = list.map(kv => kv.value);
 
-        const cubes = addCubesToScene(scene, values, i, cubeWidth, maxValue, minValue);
+        const cubes = addCubesToScene(scene, values, i, barWidth, maxValue, minValue);
         cubes.forEach((cube, i) => {
             const infoPanel = addInfoPanelToScene(scene, keys[i], values[i], cube);
             infoPanels.push(infoPanel);

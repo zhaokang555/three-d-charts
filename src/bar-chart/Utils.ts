@@ -19,7 +19,7 @@ import {
 import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
 import { getCubes } from '../CommonUtils';
 import {
-    getCubeWidthByValues,
+    getBarWidthByValues,
     getPositionOfKeyOnTopByCube,
     getPositionOfNthBar,
     getPositionOfValueByCube
@@ -68,10 +68,10 @@ export const addPlaneToScene = (scene: Scene): number => {
     return planeWidth;
 };
 
-export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, cubeWidth: number = null,
+export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, barWidth: number = null,
                                 maxValue: number = null, minValue: number = null): Array<BarMesh> => {
     // set default value
-    cubeWidth = cubeWidth || getCubeWidthByValues(values);
+    barWidth = barWidth || getBarWidthByValues(values);
     maxValue = maxValue || Math.max(...values);
     minValue = minValue || Math.min(...values);
 
@@ -82,9 +82,9 @@ export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineInd
         const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
         const color = colors[colorIndex];
 
-        const cube = new BarMesh(cubeWidth, value, color);
+        const cube = new BarMesh(barWidth, value, color);
         cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
-        cube.position.set(...getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
+        cube.position.set(...getPositionOfNthBar(i, value, barWidth, baseLineIndex));
         scene.add(cube);
         cubes.push(cube);
     }

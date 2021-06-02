@@ -221,9 +221,9 @@ const _addProvinceToScene = (key: string, value: number, barHeight: number, colo
 const _addCubeToScene = (center: ICoordinates, barHeight: number, color: Color, scene: Scene,
                          key: string, value: number) => {
     const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
-    const cubeWidth = earthRadius * 0.025; // set bottom side length
+    const barWidth = earthRadius * 0.025; // set bottom side length
 
-    const cube = new BarMesh(cubeWidth, value, color, key, barHeight);
+    const cube = new BarMesh(barWidth, value, color, key, barHeight);
     cube.position.copy(centerPosition);
     const up = cube.up.clone().normalize();
     cube.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());

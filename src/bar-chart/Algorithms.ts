@@ -2,9 +2,9 @@ import IList from '../type/IList';
 import IPosition from '../type/IPosition';
 import { BarMesh } from '../components/BarMesh';
 
-export const getCubeWidthByValues = (values: Array<number>): number => values.reduce((sum, val) => sum + val, 0) / values.length;
+export const getBarWidthByValues = (values: Array<number>): number => values.reduce((sum, val) => sum + val, 0) / values.length;
 
-export const getCubeWidthByLists = (lists: Array<IList>): number => {
+export const getBarWidthByLists = (lists: Array<IList>): number => {
     let sum = 0;
     let count = 0;
     lists.forEach(list => {
@@ -43,16 +43,16 @@ export const getMaxAndMinValueByLists = (lists: Array<IList>): [number, number] 
 /**
  * @param n
  * @param value
- * @param cubeWidth
+ * @param barWidth
  * @param baseLineIndex 第几排柱子
  */
-export const getPositionOfNthBar = (n: number, value: number, cubeWidth: number, baseLineIndex: number = 0): IPosition => {
-    const cubeGap = cubeWidth * 0.4; // 柱子之间的间隔距离
+export const getPositionOfNthBar = (n: number, value: number, barWidth: number, baseLineIndex: number = 0): IPosition => {
+    const cubeGap = barWidth * 0.4; // 柱子之间的间隔距离
 
     return [
-        n * cubeGap + cubeWidth * (2 * n + 1) / 2,
+        n * cubeGap + barWidth * (2 * n + 1) / 2,
         value / 2, // 柱子y坐标 = 柱子高度/2
-        -(cubeWidth + cubeGap) * baseLineIndex - (cubeWidth / 2), // 这排柱子的z坐标 = 0 - 排距*第几排 - 柱宽/2
+        -(barWidth + cubeGap) * baseLineIndex - (barWidth / 2), // 这排柱子的z坐标 = 0 - 排距*第几排 - 柱宽/2
     ]
 };
 
