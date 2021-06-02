@@ -170,6 +170,7 @@ export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWi
 type ITextCanvasTextureOptions = {
     textColor?: string;
     padding?: number; // 0~1
+    borderRadius?: number; // 0~1
 };
 export const createTextCanvasTexture = (key: string, value: number, bgColor: Color,
                                         options: ITextCanvasTextureOptions = {}) => {
@@ -202,17 +203,32 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
 
+    const roundedCornerRect = new Path2D();
+    const r = size * (options.borderRadius || 0.1);
+    roundedCornerRect.moveTo( 0, r);
+    roundedCornerRect.lineTo(0, size - r);
+    roundedCornerRect.arcTo(0, size, r, size, r);
+    roundedCornerRect.lineTo(size - r, size);
+    roundedCornerRect.arcTo(size, size, size, size - r, r);
+    roundedCornerRect.lineTo(size, r);
+    roundedCornerRect.arcTo(size, 0, size - r, 0, r);
+    roundedCornerRect.lineTo(r, 0);
+    roundedCornerRect.arcTo(0, 0, 0, r, r);
+
     const canvasAlphaMap = document.createElement('canvas');
     canvasAlphaMap.width = canvasAlphaMap.height = size;
     const ctxAlphaMap = canvasAlphaMap.getContext('2d');
-    ctxAlphaMap.fillStyle = 'rgb(0, 190, 0)';
+    ctxAlphaMap.fillStyle = '#000000';
     ctxAlphaMap.fillRect(0, 0, size, size);
+    ctxAlphaMap.fillStyle = 'rgb(0, 190, 0)';
+    ctxAlphaMap.fill(roundedCornerRect);
     ctxAlphaMap.font = font;
     ctxAlphaMap.textAlign = 'center';
     ctxAlphaMap.textBaseline = 'middle';
     ctxAlphaMap.fillStyle = '#00ff00';
     ctxAlphaMap.fillText(key, ...line1Position, size);
     ctxAlphaMap.fillText(value.toString(), ...line2Position, size);
+
     const alphaMap = new CanvasTexture(canvasAlphaMap);
     alphaMap.center.set(0.5, 0.5);
 
@@ -220,7 +236,7 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
 };
 
 export const createInfoPanelMesh = (size: number, key: string, value: number) => {
-    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('white'));
+    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'));
     const material = new MeshLambertMaterial({
         map,
         alphaMap,
