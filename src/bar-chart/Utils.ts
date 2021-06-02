@@ -19,13 +19,14 @@ import {
     Vector3
 } from 'three';
 import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
-import { createInfoPanelMesh, getCubes } from '../CommonUtils';
+import { getCubes } from '../CommonUtils';
 import {
     getCubeWidthByValues,
     getPositionOfKeyOnTopByCube,
     getPositionOfNthBar,
     getPositionOfValueByCube
 } from './Algorithms';
+import InfoPanelMesh from '../components/InfoPanelMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
     const light = new PointLight();
@@ -176,7 +177,7 @@ export const addInfoPanelToScene = (scene: Scene, key: string, value: number, cu
     const cubeWidth = getCubeWidthByCube(cube);
     const {x, z} = cube.position;
     const infoPanelSize = cubeWidth * 0.7;
-    const infoPanelMesh = createInfoPanelMesh(infoPanelSize, key, value);
+    const infoPanelMesh = new InfoPanelMesh(infoPanelSize, key, value);
     infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
     return infoPanelMesh;

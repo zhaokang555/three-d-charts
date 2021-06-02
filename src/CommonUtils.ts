@@ -1,11 +1,11 @@
 import {
     BoxGeometry, CanvasTexture, Color, DoubleSide, Material,
     Matrix3,
-    Mesh, MeshLambertMaterial,
+    Mesh,
     MeshPhongMaterial,
     Object3D,
     OrthographicCamera,
-    PerspectiveCamera, PlaneGeometry,
+    PerspectiveCamera,
     Raycaster,
     Scene,
     TextGeometry,
@@ -17,7 +17,7 @@ import ICube from './type/ICube';
 import ICamera from './type/ICamera';
 import { defaultCubeColorRed, defaultCubeHighlightColorWhite, infoPanelTextColor } from './Constant';
 import { getLookAtPosition, getTextColorByBackgroundColor } from './CommonAlgorithms';
-import IInfoPanel from './type/IInfoPanel';
+import InfoPanelMesh from './components/InfoPanelMesh';
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
@@ -162,7 +162,7 @@ export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeW
     textMeshes.forEach(t => t.lookAt(lookAtPosition));
 };
 
-export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<IInfoPanel>) => {
+export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<InfoPanelMesh>) => {
     const lookAtPosition = getLookAtPosition(camera, planeWidth * 100);
     infoPanels.forEach(info => info.lookAt(lookAtPosition));
 };
@@ -233,19 +233,6 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     alphaMap.center.set(0.5, 0.5);
 
     return [map, alphaMap];
-};
-
-export const createInfoPanelMesh = (size: number, key: string, value: number) => {
-    const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'));
-    const material = new MeshLambertMaterial({
-        map,
-        alphaMap,
-        side: DoubleSide,
-        transparent: true,
-    });
-    const geometry = new PlaneGeometry(size, size);
-    const infoPanelMesh = new Mesh(geometry, material);
-    return infoPanelMesh;
 };
 
 const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {
