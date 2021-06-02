@@ -27,6 +27,7 @@ import {
     getPositionOfValueByCube
 } from './Algorithms';
 import InfoPanelMesh from '../components/InfoPanelMesh';
+import {BarMesh} from '../components/BarMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
     const light = new PointLight();
@@ -83,13 +84,7 @@ export const addCubesToScene = (scene: Scene, values: Array<number>, baseLineInd
         const colorIndex = Math.round((value - minValue) / (maxValue - minValue) * 99); // colorIndex = 0, 1, 2, ..., 99
         const color = colors[colorIndex];
 
-        const cube = new Mesh(
-            new BoxGeometry(cubeWidth, value, cubeWidth),
-            new MeshPhongMaterial({color, side: DoubleSide}),
-        ) as ICube;
-        cube.name = 'cubeMesh-' + value;
-        cube.geometry.computeBoundingBox(); // 计算当前几何体的的边界矩形，更新cube.geometry.boundingBox; 边界矩形不会默认计算，默认为null
-        cube.defaultColor = color; // store default color in cube mesh object
+        const cube = new BarMesh(cubeWidth, value, color);
         cube.baseLineIndex = baseLineIndex; // store baseLineIndex in cube mesh object
         cube.position.set(...getPositionOfNthBar(i, value, cubeWidth, baseLineIndex));
         scene.add(cube);
