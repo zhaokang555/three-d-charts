@@ -90,7 +90,7 @@ export const addEarthMeshToScene = (scene: Scene) => {
     scene.add(earthMesh);
 };
 
-export const addBarsToScene = (scene: Scene, list: IList) => {
+export const addProvincesToScene = (scene: Scene, list: IList) => {
     const values = list.map(kv => kv.value);
     const maxValue = Math.max(...values);
     const maxBarHeight = 0.5 * earthRadius;
