@@ -22,7 +22,6 @@ import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } f
 import { getCubes } from '../CommonUtils';
 import {
     getCubeWidthByValues,
-    getPositionOfKeyByCube,
     getPositionOfKeyOnTopByCube,
     getPositionOfNthBar,
     getPositionOfValueByCube
