@@ -1,21 +1,13 @@
-import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
-import { colormap } from '../CommonAlgorithms';
 import earth_clouds from './2k_earth_clouds.jpeg';
 import ICity from '../type/ICity';
 import IRoute from '../type/IRoute';
-import IRing from '../type/IRing';
-import ICoordinates from '../type/ICoordinates';
 import {
     AmbientLight,
     AxesHelper,
-    BufferGeometry,
     CanvasTexture,
-    Color,
     CubicBezierCurve3,
     DirectionalLight,
-    Line,
-    LineBasicMaterial,
     Mesh,
     MeshBasicMaterial,
     PerspectiveCamera,
@@ -26,12 +18,10 @@ import {
     TubeGeometry
 } from 'three';
 import { getControlPointPosition, getPositionByLonLat } from './Algorithms';
-import { barAltitude, cloudAltitude, defaultBarColorRed, defaultLightColorWhite, earthRadius } from '../Constant';
+import { cloudAltitude, defaultLightColorWhite, earthRadius } from '../Constant';
 import ICamera from '../type/ICamera';
-import IList from '../type/IList';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
-import {BarMesh} from '../components/BarMesh';
 import InfoPanelMesh from '../components/InfoPanelMesh';
 
 
@@ -57,21 +47,6 @@ export const addAxesToScene = (scene: Scene) => {
     axesHelper.visible = false;
     axesHelper.name = 'axesHelper';
     scene.add(axesHelper);
-};
-
-export const addProvincesToScene = (scene: Scene, list: IList) => {
-    const values = list.map(kv => kv.value);
-    const maxValue = Math.max(...values);
-    const maxBarHeight = 0.5 * earthRadius;
-
-    const colors = colormap(100);
-
-    list.forEach(kv => {
-        const barHeight = kv.value / maxValue * maxBarHeight;
-        const colorIndex = Math.round(kv.value / maxValue * 99); // colorIndex = 0, 1, 2, ..., 99
-        const color = colors[colorIndex];
-        _addProvinceToScene(kv.key, kv.value, barHeight, color, scene);
-    });
 };
 
 export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities: Array<ICity>,
@@ -183,46 +158,4 @@ const _createRouteTexture = () => {
     const texture = new CanvasTexture(canvas, null, RepeatWrapping, RepeatWrapping);
 
     return texture;
-};
-
-const _addProvinceToScene = (key: string, value: number, barHeight: number, color: Color, scene: Scene) => {
-    const province = china_geo_json.features.find(f => f.properties.name === key);
-    const center = province.properties.center;
-
-    _addBarToScene(center, barHeight, color, scene, key, value);
-
-    /**
-     *  个人理解:
-     *  province.geometry.coordinates: Array<MultiPolygon> 如: 台湾省
-     *  MultiPolygon: Array<Polygon> 如: 台湾岛, 钓鱼岛, ...
-     *  Polygon: Array<Ring> 如: 台湾岛外边界, 日月潭外边界, ...
-     *  Ring: Array<[lan, lat]>
-     */
-    province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-        polygon.forEach(ring => _addLineToScene(ring, scene));
-    });
-};
-
-const _addBarToScene = (center: ICoordinates, barHeight: number, color: Color, scene: Scene,
-                         key: string, value: number) => {
-    const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
-    const barWidth = earthRadius * 0.025; // set bottom side length
-
-    const bar = new BarMesh(barWidth, value, color, key, barHeight);
-    bar.position.copy(centerPosition);
-    const up = bar.up.clone().normalize();
-    bar.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
-    bar.translateY(barHeight / 2);
-    scene.add(bar);
-};
-
-const _addLineToScene = (ring: IRing, scene: Scene) => {
-    const points = [];
-    ring.forEach(lonLat => {
-        points.push(getPositionByLonLat(...lonLat, earthRadius + barAltitude));
-    });
-    const geometry = new BufferGeometry().setFromPoints(points);
-    const material = new LineBasicMaterial({color: defaultBarColorRed});
-    const line = new Line(geometry, material);
-    scene.add(line);
 };

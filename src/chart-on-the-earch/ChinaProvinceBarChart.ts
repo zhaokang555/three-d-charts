@@ -2,7 +2,6 @@ import { Scene } from 'three';
 import { addControlsToCamera, getRenderer } from '../CommonUtils';
 import {
     addAxesToScene,
-    addProvincesToScene,
     addLightToScene,
     getPerspectiveCamera
 } from './Utils';
@@ -15,8 +14,9 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     addAxesToScene(scene);
     const camera = getPerspectiveCamera(container);
 
-    scene.add(new EarthMesh());
-    addProvincesToScene(scene, list);
+    const earthMesh = new EarthMesh();
+    earthMesh.addProvinces(list);
+    scene.add(earthMesh);
     addLightToScene(scene);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
