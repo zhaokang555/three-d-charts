@@ -17,7 +17,10 @@
         <h2>Demo 4: City route chart</h2>
         <set-city-route-chart></set-city-route-chart>
 
-        <h2>Demo 5: Tile map tool</h2>
+        <h2>Demo 5: Scatter chart</h2>
+        <router-link to="/scatter-chart-display">scatter-chart-display</router-link>
+
+        <h2>Demo 6: Tile map tool</h2>
         <set-tile-map-tool></set-tile-map-tool>
     </div>
 </template>
