@@ -15,7 +15,7 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
 import { defaultBarColorRed, defaultBarHighlightColorWhite, infoPanelTextColor } from './Constant';
-import { getLookAtPosition, getTextColorByBackgroundColor } from './CommonAlgorithms';
+import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import InfoPanelMesh from './components/InfoPanelMesh';
 import { BarMesh } from './components/BarMesh';
 
@@ -157,14 +157,17 @@ export const getBars = (scene: Scene): Array<BarMesh> => {
 };
 
 export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number) => {
-    const lookAtPosition = getLookAtPosition(camera, planeWidth * 100);
-    const textMeshes = _getTextMeshes(scene);
-    textMeshes.forEach(t => t.lookAt(lookAtPosition));
+    _getTextMeshes(scene).forEach(textMesh => {
+        const lookAtPosition = camera.position.clone().setY(textMesh.position.y);
+        textMesh.lookAt(lookAtPosition);
+    });
 };
 
 export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<InfoPanelMesh>) => {
-    const lookAtPosition = getLookAtPosition(camera, planeWidth * 100);
-    infoPanels.forEach(info => info.lookAt(lookAtPosition));
+    infoPanels.forEach(info => {
+        const lookAtPosition = camera.position.clone().setY(info.position.y);
+        info.lookAt(lookAtPosition);
+    });
 };
 
 type ITextCanvasTextureOptions = {

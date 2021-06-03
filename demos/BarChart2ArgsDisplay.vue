@@ -6,7 +6,7 @@
     import {initBarChart2Args} from '../src';
 
     export default {
-        name: "BarChart2Args",
+        name: "BarChart2ArgsDisplay",
         data() {
             return {
                 clean: () => null,
