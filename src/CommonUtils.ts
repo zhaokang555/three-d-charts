@@ -1,5 +1,9 @@
 import {
-    BoxGeometry, CanvasTexture, Color, DoubleSide, Material,
+    AxesHelper,
+    BoxGeometry,
+    CanvasTexture,
+    Color,
+    Material,
     Matrix3,
     Mesh,
     MeshPhongMaterial,
@@ -14,10 +18,17 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
-import { defaultBarColorRed, defaultBarHighlightColorWhite, infoPanelTextColor } from './Constant';
+import { defaultBarColorRed, defaultBarHighlightColorWhite } from './Constant';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import InfoPanelMesh from './components/InfoPanelMesh';
 import { BarMesh } from './components/BarMesh';
+
+export const addAxesToScene = (scene: Scene, size: number) => {
+    const axesHelper = new AxesHelper(size);
+    axesHelper.visible = false;
+    axesHelper.name = 'axesHelper';
+    scene.add(axesHelper);
+};
 
 export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();

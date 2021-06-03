@@ -1,7 +1,6 @@
 import earth_clouds from './2k_earth_clouds.jpeg';
 import {
     AmbientLight,
-    AxesHelper,
     DirectionalLight,
     Mesh,
     MeshBasicMaterial,
@@ -30,13 +29,6 @@ export const getPerspectiveCamera = (container: HTMLElement): ICamera => {
     camera.position.copy(getPositionByLonLat(120, 0, rCamera)); // 相机位置东经120北纬0
     camera.name = 'camera';
     return camera;
-};
-
-export const addAxesToScene = (scene: Scene) => {
-    const axesHelper = new AxesHelper(earthRadius * 4);
-    axesHelper.visible = false;
-    axesHelper.name = 'axesHelper';
-    scene.add(axesHelper);
 };
 
 export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void => {

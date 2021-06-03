@@ -1,12 +1,12 @@
 import { Scene } from 'three';
 import {
+    addAxesToScene,
     addControlsToCamera,
     getRenderer,
     initHighlightBar,
     makeInfoPanelLookAtCamera,
 } from '../CommonUtils';
 import {
-    addAxesToScene,
     addBarsToScene, addInfoPanelToScene,
     addLightToScene,
     addPlaneToScene,
@@ -32,7 +32,7 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
         });
     });
 
-    addAxesToScene(scene);
+    addAxesToScene(scene, 1000000);
     const planeWidth = addPlaneToScene(scene);
     addLightToScene(scene, planeWidth);
     const camera = getOrthographicCamera(scene, container, planeWidth);

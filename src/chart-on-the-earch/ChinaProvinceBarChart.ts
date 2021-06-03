@@ -1,6 +1,6 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer } from '../CommonUtils';
-import { addAxesToScene, addLightToScene, getPerspectiveCamera } from './Utils';
+import { addAxesToScene, addControlsToCamera, getRenderer } from '../CommonUtils';
+import { addLightToScene, getPerspectiveCamera } from './Utils';
 import { earthRadius } from '../Constant';
 import IList from '../type/IList';
 import { EarthMeshForProvince } from '../components/EarthMeshForProvince';
@@ -8,7 +8,7 @@ import { EarthMeshForProvince } from '../components/EarthMeshForProvince';
 export const init = (list: IList, container: HTMLElement): () => void => {
     const scene = new Scene();
     addLightToScene(scene);
-    addAxesToScene(scene);
+    addAxesToScene(scene, earthRadius * 4);
 
     const camera = getPerspectiveCamera(container);
 

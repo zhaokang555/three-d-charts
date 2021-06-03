@@ -2,7 +2,6 @@ import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import { colormap } from "../CommonAlgorithms";
 import {
     AmbientLight,
-    AxesHelper,
     DoubleSide,
     Font,
     FontLoader,
@@ -25,7 +24,7 @@ import {
     getPositionOfValueByBar
 } from './Algorithms';
 import InfoPanelMesh from '../components/InfoPanelMesh';
-import {BarMesh} from '../components/BarMesh';
+import { BarMesh } from '../components/BarMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
     const light = new PointLight();
@@ -102,13 +101,6 @@ export const getOrthographicCamera = (scene: Scene, container: HTMLElement, plan
     camera.position.set(-x / 2, x / 2, x); // see from left-front-top position
     // camera.lookAt(0, 0, 0);
     return camera;
-};
-
-export const addAxesToScene = (scene: Scene) => {
-    const axesHelper = new AxesHelper(1000000);
-    axesHelper.visible = false;
-    axesHelper.name = 'axesHelper';
-    scene.add(axesHelper);
 };
 
 export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, bars: Array<BarMesh>) => {

@@ -1,7 +1,12 @@
 import { Scene } from 'three';
-import { addControlsToCamera, getRenderer, initHighlightBar, makeTextMeshesLookAtCamera } from '../CommonUtils';
 import {
     addAxesToScene,
+    addControlsToCamera,
+    getRenderer,
+    initHighlightBar,
+    makeTextMeshesLookAtCamera
+} from '../CommonUtils';
+import {
     addBarsToScene,
     addKeysOnTopToScene,
     addLightToScene,
@@ -18,7 +23,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const valueMaxLength = Math.max(...values.map(v => v.toString().length));
 
     const scene = new Scene();
-    addAxesToScene(scene);
+    addAxesToScene(scene, 1000000);
     const bars = addBarsToScene(scene, values);
     addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
     addValuesToScene(scene, values, valueMaxLength, bars);
