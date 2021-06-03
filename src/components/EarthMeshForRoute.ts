@@ -36,10 +36,11 @@ export class EarthMeshForRoute extends EarthMesh {
     private _addRouteAndInfoPanel(fromCity: ICity, toCity: ICity, weight: number, maxWeight: number, camera: ICamera) {
         const curve = this._getRouteCurve(fromCity, toCity);
         const [routeMesh, updateRouteMesh] = this._getRouteMeshOfTube(curve, weight, maxWeight);
+        routeMesh.name = `routeMesh${fromCity.name}-${toCity.name}`;
         this.add(routeMesh);
 
         const midPointOnCurve = curve.getPointAt(0.5);
-        const infoPanel = new InfoPanelMesh(earthRadius * 0.05, fromCity.name + ' - ' + toCity.name, weight);
+        const infoPanel = new InfoPanelMesh(earthRadius * 0.05, `${fromCity.name}-${toCity.name}`, weight);
         const infoPanelOffset = midPointOnCurve.clone().normalize().multiplyScalar(earthRadius * 0.05);
         infoPanel.position.copy(midPointOnCurve.add(infoPanelOffset));
         this.add(infoPanel);

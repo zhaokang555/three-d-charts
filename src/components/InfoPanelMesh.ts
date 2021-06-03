@@ -12,5 +12,6 @@ export default class InfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMateri
         });
         const geometry = new PlaneGeometry(size, size);
         super(geometry, material);
+        this.name = `InfoPanelMesh${key}`
     }
 }
