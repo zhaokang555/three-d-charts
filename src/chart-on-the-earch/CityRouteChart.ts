@@ -9,12 +9,13 @@ import { EarthMeshForRoute } from '../components/EarthMeshForRoute';
 export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []): () => void => {
     const scene = new Scene();
     addAxesToScene(scene);
+    addLightToScene(scene, 1);
+
     const camera = getPerspectiveCamera(container);
 
     const earthMesh = new EarthMeshForRoute();
     const updateRoutesAndInfoPanels = earthMesh.addRoutes(list, extraCities, camera);
     scene.add(earthMesh);
-    addLightToScene(scene, 1);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {

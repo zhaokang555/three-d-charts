@@ -7,13 +7,14 @@ import { EarthMeshForProvince } from '../components/EarthMeshForProvince';
 
 export const init = (list: IList, container: HTMLElement): () => void => {
     const scene = new Scene();
+    addLightToScene(scene);
     addAxesToScene(scene);
+
     const camera = getPerspectiveCamera(container);
 
     const earthMesh = new EarthMeshForProvince();
     earthMesh.addProvinces(list);
     scene.add(earthMesh);
-    addLightToScene(scene);
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
@@ -26,7 +27,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         animationFrameId = requestAnimationFrame(render);
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
-        renderer.render( scene, camera );
+        renderer.render(scene, camera);
     };
     animationFrameId = requestAnimationFrame(render);
 

@@ -47,12 +47,9 @@ export const init = (lists: Array<IList>, container: HTMLElement): () => void =>
     const render = () => {
         cancelId = requestAnimationFrame(render);
 
-        // required if controls.enableDamping or controls.autoRotate are set to true
-        controls.update();
-
+        controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
         updateHighlight();
         makeInfoPanelLookAtCamera(scene, camera, planeWidth, infoPanels);
-
         renderer.render(scene, camera);
     };
     cancelId = requestAnimationFrame(render);

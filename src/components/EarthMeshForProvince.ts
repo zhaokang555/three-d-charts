@@ -27,7 +27,6 @@ export class EarthMeshForProvince extends EarthMesh {
             const color = colors[colorIndex];
             this._addProvince(kv.key, kv.value, barHeight, color);
         });
-        return this;
     }
 
     private _addProvince(key: string, value: number, barHeight: number, color: Color) {
