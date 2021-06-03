@@ -8,7 +8,6 @@ import {
     Mesh,
     MeshLambertMaterial,
     MeshPhongMaterial,
-    OrthographicCamera,
     PlaneGeometry,
     PointLight,
     Scene,
@@ -89,18 +88,6 @@ export const addBarsToScene = (scene: Scene, values: Array<number>, baseLineInde
     }
 
     return bars;
-};
-
-export const getOrthographicCamera = (scene: Scene, container: HTMLElement, planeWidth: number) => {
-    const aspectRatio = container.offsetWidth / container.offsetHeight;
-
-    const x = planeWidth / 2 * 1.415;
-    const y = x / aspectRatio;
-    const camera = new OrthographicCamera(-x, x, y, -y, -planeWidth * 4, planeWidth * 4);
-
-    camera.position.set(-x / 2, x / 2, x); // see from left-front-top position
-    // camera.lookAt(0, 0, 0);
-    return camera;
 };
 
 export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, bars: Array<BarMesh>) => {

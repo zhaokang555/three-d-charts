@@ -2,16 +2,12 @@ import { Scene } from 'three';
 import {
     addAxesToScene,
     addControlsToCamera,
+    getOrthographicCamera,
     getRenderer,
     initHighlightBar,
     makeInfoPanelLookAtCamera,
 } from '../CommonUtils';
-import {
-    addBarsToScene, addInfoPanelToScene,
-    addLightToScene,
-    addPlaneToScene,
-    getOrthographicCamera,
-} from './Utils';
+import { addBarsToScene, addInfoPanelToScene, addLightToScene, addPlaneToScene, } from './Utils';
 import { getBarWidthByLists, getMaxAndMinValueByLists } from './Algorithms';
 import IList from '../type/IList';
 
