@@ -1,9 +1,7 @@
 import china_geo_json from "./china.geo.json";
 import cities from './cities.json';
 import { colormap } from '../CommonAlgorithms';
-import earth_specular_map from './8k_earth_specular_map.png';
 import earth_clouds from './2k_earth_clouds.jpeg';
-import earth_nightmap from './BlackMarble_2016_3km_13500x6750.jpeg';
 import ICity from '../type/ICity';
 import IRoute from '../type/IRoute';
 import IRing from '../type/IRing';
@@ -16,12 +14,10 @@ import {
     Color,
     CubicBezierCurve3,
     DirectionalLight,
-    DoubleSide,
     Line,
     LineBasicMaterial,
     Mesh,
     MeshBasicMaterial,
-    MeshPhongMaterial,
     PerspectiveCamera,
     RepeatWrapping,
     Scene,
@@ -48,7 +44,7 @@ export const addLightToScene = (scene: Scene, ambientLightIntensity = 0.7) => {
 };
 
 export const getPerspectiveCamera = (container: HTMLElement): ICamera => {
-    const camera = new PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.001 * earthRadius, 20 * earthRadius);
+    const camera = new PerspectiveCamera(55, container.offsetWidth / container.offsetHeight, 0.001 * earthRadius, 20 * earthRadius);
     const rCamera = 2 * earthRadius; // 相机到地心距离
 
     camera.position.copy(getPositionByLonLat(120, 0, rCamera)); // 相机位置东经120北纬0
@@ -61,34 +57,6 @@ export const addAxesToScene = (scene: Scene) => {
     axesHelper.visible = false;
     axesHelper.name = 'axesHelper';
     scene.add(axesHelper);
-};
-
-export const addEarthMeshToScene = (scene: Scene) => {
-    const map = new TextureLoader().load(earth_nightmap);
-    map.wrapS = RepeatWrapping;// 纹理将简单地重复到无穷大
-    map.wrapT = RepeatWrapping;
-
-    // 默认情况下: 贴图从x轴负方向开始, 沿着逆时针方向到x轴负方向结束. 伦敦位于x轴正方向上
-    // 将贴图顺时针旋转90度后: 贴图从z轴负方向开始, 沿着逆时针方向到z轴负方向结束. 伦敦位于z轴正方向上
-    map.offset.x = 0.25; // why not -0.25 ?
-
-    const specularMap = new TextureLoader().load(earth_specular_map);
-    specularMap.wrapS = RepeatWrapping;
-    specularMap.wrapT = RepeatWrapping;
-    specularMap.offset.x = 0.25; // why not -0.25 ?
-
-    const material = new MeshPhongMaterial({
-        map,
-        specularMap, // 镜面反射贴图
-        specular: '#808080',
-        shininess: 22,
-        side: DoubleSide,
-    });
-
-    const geometry = new SphereGeometry(earthRadius, 64, 64);
-    const earthMesh = new Mesh(geometry, material);
-    earthMesh.name = 'earthMesh';
-    scene.add(earthMesh);
 };
 
 export const addProvincesToScene = (scene: Scene, list: IList) => {

@@ -2,7 +2,6 @@ import { Scene } from 'three';
 import { addControlsToCamera, getRenderer } from '../CommonUtils';
 import {
     addAxesToScene,
-    addEarthMeshToScene,
     addLightToScene,
     addRoutesToScene,
     getPerspectiveCamera
@@ -10,13 +9,14 @@ import {
 import { earthRadius } from '../Constant';
 import IRoute from '../type/IRoute';
 import ICity from '../type/ICity';
+import { EarthMesh } from '../components/EarthMesh';
 
 export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []): () => void => {
     const scene = new Scene();
     addAxesToScene(scene);
     const camera = getPerspectiveCamera(container);
 
-    addEarthMeshToScene(scene);
+    scene.add(new EarthMesh());
     const updateRoutesAndInfoPanels = addRoutesToScene(scene, list, extraCities, camera);
     addLightToScene(scene, 1);
 
