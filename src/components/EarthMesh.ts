@@ -12,7 +12,7 @@ import {
 } from 'three';
 import earth_nightmap from '../chart-on-the-earch/BlackMarble_2016_3km_13500x6750.jpeg';
 import earth_specular_map from '../chart-on-the-earch/8k_earth_specular_map.png';
-import { barAltitude, defaultBarColorRed, earthRadius } from '../Constant';
+import { barAltitude, earthRadius } from '../Constant';
 import IList from '../type/IList';
 import ICoordinates from '../type/ICoordinates';
 import IRing from '../type/IRing';
@@ -79,7 +79,7 @@ export class EarthMesh extends Mesh<SphereGeometry, MeshPhongMaterial> {
          *  Ring: Array<[lan, lat]>
          */
         province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-            polygon.forEach(ring => this._addProvincialBoundary(ring));
+            polygon.forEach(ring => this._addProvincialBoundary(ring, key, color));
         });
     }
 
@@ -95,14 +95,15 @@ export class EarthMesh extends Mesh<SphereGeometry, MeshPhongMaterial> {
         this.add(bar);
     }
 
-    private _addProvincialBoundary(ring: IRing) {
+    private _addProvincialBoundary(ring: IRing, key: string, color: Color) {
         const points = [];
         ring.forEach(lonLat => {
             points.push(getPositionByLonLat(...lonLat, earthRadius + barAltitude));
         });
         const geometry = new BufferGeometry().setFromPoints(points);
-        const material = new LineBasicMaterial({color: defaultBarColorRed});
+        const material = new LineBasicMaterial({color: color});
         const line = new Line(geometry, material);
+        line.name = 'Line-' + key;
         this.add(line);
     }
 }
