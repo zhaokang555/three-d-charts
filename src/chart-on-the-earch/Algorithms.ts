@@ -1,6 +1,7 @@
 import { Raycaster, Scene, Vector3 } from 'three';
 import { earthRadius } from "../Constant";
 import ICoordinates from '../type/ICoordinates';
+import { EarthMesh } from '../components/EarthMesh';
 
 const {sin, cos, PI, asin, acos} = Math;
 
@@ -48,7 +49,7 @@ export const getLonLatByPosition = (position: Vector3): ICoordinates => {
     return [lon, lat];
 };
 
-export const getControlPointPosition = (scene: Scene, fromCoordinates: ICoordinates, toCoordinates: ICoordinates): [Vector3, Vector3] => {
+export const getControlPointPosition = (earthMesh: EarthMesh, fromCoordinates: ICoordinates, toCoordinates: ICoordinates): [Vector3, Vector3] => {
     const fromPosition = getPositionByLonLat(...fromCoordinates);
     const toPosition = getPositionByLonLat(...toCoordinates);
 
@@ -57,19 +58,16 @@ export const getControlPointPosition = (scene: Scene, fromCoordinates: ICoordina
         fromPosition.clone().lerp(toPosition, 0.52)
     ] as [Vector3, Vector3];
 
-    const earthMesh = scene.getObjectByName('earthMesh');
-    if (earthMesh) {
-        midpointPositionList.forEach(midpointPosition => {
-            const raycaster = new Raycaster(new Vector3(), midpointPosition.clone().normalize()); // 从地心向中点的方向发射射线
-            const intersects = raycaster.intersectObject(earthMesh);
-            if (intersects.length > 0) {
-                const midpointPositionOnTheEarth = intersects[0].point; // 在经过起始点的大圆上取两个控制点
-                const distance = greatCircleDistance(fromPosition, toPosition);
-                const maxDistance = earthRadius * 2;
-                midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 0.6 * distance / maxDistance));
-            }
-        });
-    }
+    midpointPositionList.forEach(midpointPosition => {
+        const raycaster = new Raycaster(new Vector3(), midpointPosition.clone().normalize()); // 从地心向中点的方向发射射线
+        const intersects = raycaster.intersectObject(earthMesh);
+        if (intersects.length > 0) {
+            const midpointPositionOnTheEarth = intersects[0].point; // 在经过起始点的大圆上取两个控制点
+            const distance = greatCircleDistance(fromPosition, toPosition);
+            const maxDistance = earthRadius * 2;
+            midpointPosition.copy(midpointPositionOnTheEarth.multiplyScalar(1.1 + 0.6 * distance / maxDistance));
+        }
+    });
 
     return midpointPositionList;
 };

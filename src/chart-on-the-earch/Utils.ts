@@ -1,28 +1,18 @@
-import cities from './cities.json';
 import earth_clouds from './2k_earth_clouds.jpeg';
-import ICity from '../type/ICity';
-import IRoute from '../type/IRoute';
 import {
     AmbientLight,
     AxesHelper,
-    CanvasTexture,
-    CubicBezierCurve3,
     DirectionalLight,
     Mesh,
     MeshBasicMaterial,
     PerspectiveCamera,
-    RepeatWrapping,
     Scene,
     SphereGeometry,
-    TextureLoader,
-    TubeGeometry
+    TextureLoader
 } from 'three';
-import { getControlPointPosition, getPositionByLonLat } from './Algorithms';
+import { getPositionByLonLat } from './Algorithms';
 import { cloudAltitude, defaultLightColorWhite, earthRadius } from '../Constant';
 import ICamera from '../type/ICamera';
-import { Curve } from 'three/src/extras/core/Curve';
-import { Vector3 } from 'three/src/math/Vector3';
-import InfoPanelMesh from '../components/InfoPanelMesh';
 
 
 export const addLightToScene = (scene: Scene, ambientLightIntensity = 0.7) => {
@@ -49,24 +39,6 @@ export const addAxesToScene = (scene: Scene) => {
     scene.add(axesHelper);
 };
 
-export const addRoutesToScene = (scene: Scene, list: Array<IRoute>, extraCities: Array<ICity>,
-                                 camera: ICamera): () => void => {
-    const maxWeight = Math.max(...list.map(line => line.weight));
-    const mergedCities = [...cities, ...extraCities] as Array<ICity>;
-
-    const updateRouteAndInfoPanelList = [];
-    list.forEach(({from, to, weight}) => {
-        const fromCity = mergedCities.find(item => item.name === from);
-        const toCity = mergedCities.find(item => item.name === to);
-        if (fromCity && toCity) {
-            const updateRouteAndInfoPanel = _addRouteAndInfoPanelToScene(scene, fromCity, toCity, weight, maxWeight, camera);
-            updateRouteAndInfoPanelList.push(updateRouteAndInfoPanel);
-        }
-    });
-
-    return () => updateRouteAndInfoPanelList.forEach(cb => cb());
-};
-
 export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void => {
     const loader = new TextureLoader();
     const geometry = new SphereGeometry(earthRadius + cloudAltitude, 64, 64);
@@ -90,72 +62,4 @@ export const addCloudMeshToScene = (scene: Scene, camera: ICamera): () => void =
         cloudMesh.rotateX(-0.0002);
         cloudMesh.rotateY(0.0004);
     }
-};
-
-const _addRouteAndInfoPanelToScene = (scene: Scene, fromCity: ICity, toCity: ICity,
-                              weight: number, maxWeight: number, camera: ICamera): () => void => {
-    const curve = _getRouteCurve(scene, fromCity, toCity);
-    const [routeMesh, updateRouteMesh] = _getRouteMeshOfTube(curve, weight, maxWeight);
-    scene.add(routeMesh);
-
-    const midPointOnCurve = curve.getPointAt(0.5);
-    const infoPanel = new InfoPanelMesh(earthRadius * 0.05, fromCity.name + ' - ' + toCity.name, weight);
-    const infoPanelOffset = midPointOnCurve.clone().normalize().multiplyScalar(earthRadius * 0.05);
-    infoPanel.position.copy(midPointOnCurve.add(infoPanelOffset));
-    scene.add(infoPanel);
-
-    return () => {
-        updateRouteMesh();
-        infoPanel.lookAt(camera.position);
-    };
-};
-
-const _getRouteCurve = (scene: Scene, fromCity: ICity, toCity: ICity) => {
-    const fromVec = getPositionByLonLat(...fromCity.coordinates);
-    const toVec = getPositionByLonLat(...toCity.coordinates);
-
-    const controlPointVec = getControlPointPosition(scene, fromCity.coordinates, toCity.coordinates);
-
-    return new CubicBezierCurve3( // 三维三次贝塞尔曲线
-        fromVec,
-        ...controlPointVec,
-        toVec
-    );
-};
-
-const _getRouteMeshOfTube = (curve: Curve<Vector3>, weight: number, maxWeight: number): [Mesh, () => void] => {
-    const geometry = new TubeGeometry(curve, 64, 0.004 * earthRadius, 8, false);
-    const texture = _createRouteTexture();
-    const material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-    });
-
-    const speed = weight / maxWeight * (1 / 60); // max speed = 1 / 60
-    return [new Mesh(geometry, material), () => texture.offset.x -= speed];
-};
-
-const _createRouteTexture = () => {
-    // 1. use picture as texture
-    // const loader = new TextureLoader();
-    // const texture = loader.load(routeTexture);
-    // texture.wrapS = RepeatWrapping; // 纹理将简单地重复到无穷大
-    // texture.wrapT = RepeatWrapping;
-    // // texture.repeat.x = 2; // 纹理重复几次, 默认1次
-
-    // 2. OR use canvas as texture
-    const canvas = document.createElement('canvas');
-    canvas.width = 100;
-    canvas.height = 1;
-    const ctx = canvas.getContext('2d');
-    const grad = ctx.createLinearGradient(0, 0, 100, 0);
-    grad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-    grad.addColorStop(0.8, 'rgba(255, 255, 255, 0.2)');
-    grad.addColorStop(0.98, 'rgba(255, 255, 255, 1)');
-    grad.addColorStop(1, 'rgba(255, 255, 255, 1)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 100, 1);
-    const texture = new CanvasTexture(canvas, null, RepeatWrapping, RepeatWrapping);
-
-    return texture;
 };
