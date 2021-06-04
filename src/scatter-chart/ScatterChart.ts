@@ -1,6 +1,6 @@
-import IPosition from '../type/IPosition';
 import { AmbientLight, BufferAttribute, BufferGeometry, Points, PointsMaterial, Scene } from 'three';
 import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer } from '../CommonUtils';
+import IPosition from '../type/IPosition';
 
 export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const scene = new Scene();
@@ -10,17 +10,7 @@ export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer);
 
-    const geometry = new BufferGeometry();
-    const vertices = new Float32Array([
-        -1.0, -1.0, 1.0,
-        1.0, -1.0, 1.0,
-        1.0, 1.0, 1.0,
-        -1.0, 1.0, 1.0,
-    ]);
-    geometry.setAttribute('position', new BufferAttribute(vertices, 3));
-
-    const pointCloud = new Points(geometry, new PointsMaterial({size: 4}));
-    scene.add(pointCloud);
+    addPointCloudToScene(scene, list);
 
     let cancelId = null;
     const render = () => {
@@ -35,4 +25,16 @@ export const init = (list: Array<IPosition>, container: HTMLElement) => {
         cleanRenderer();
         cleanControls();
     };
+};
+
+const addPointCloudToScene = (scene: Scene, list: Array<IPosition>) => {
+    const geometry = new BufferGeometry();
+    const vertices = Float32Array.from(list.reduce((total, current) => {
+        total.push(...current);
+        return total;
+    }, []));
+    geometry.setAttribute('position', new BufferAttribute(vertices, 3));
+
+    const pointCloud = new Points(geometry, new PointsMaterial({size: 3}));
+    scene.add(pointCloud);
 };
