@@ -80,6 +80,7 @@ const addHelperPlanes = (pointCloud: Points) => {
 
     addHelperPlaneFar(pointCloud, max, min, center);
     addHelperPlaneBottom(pointCloud, max, min, center);
+    addHelperPlaneLeft(pointCloud, max, min, center);
 };
 
 const addHelperPlaneFar = (pointCloud, max, min, center) => {
@@ -87,7 +88,6 @@ const addHelperPlaneFar = (pointCloud, max, min, center) => {
         new PlaneGeometry(max.x - min.x, max.y - min.y),
         createHelperPlaneMaterial()
     );
-
     planeMesh.position.set(center.x, center.y, min.z);
 
     pointCloud.add(planeMesh);
@@ -100,6 +100,17 @@ const addHelperPlaneBottom = (pointCloud, max, min, center) => {
     );
     planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
     planeMesh.position.set(center.x, min.y, center.z);
+
+    pointCloud.add(planeMesh);
+};
+
+const addHelperPlaneLeft = (pointCloud, max, min, center) => {
+    const planeMesh = new Mesh(
+        new PlaneGeometry(max.z - min.z, max.y - min.y),
+        createHelperPlaneMaterial()
+    );
+    planeMesh.rotateOnWorldAxis(new Vector3(0, 1, 0), Math.PI / 2);
+    planeMesh.position.set(min.x, center.y, center.z);
 
     pointCloud.add(planeMesh);
 };
