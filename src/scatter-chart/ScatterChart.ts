@@ -1,8 +1,8 @@
 import {
-    AmbientLight,
+    AmbientLight, AxesHelper,
     BufferAttribute,
     BufferGeometry,
-    DoubleSide,
+    DoubleSide, LineBasicMaterial,
     Mesh,
     MeshLambertMaterial,
     PlaneGeometry,
@@ -15,6 +15,7 @@ import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer
 import IPosition from '../type/IPosition';
 import { colormap } from '../CommonAlgorithms';
 import { defaultPlaneColorGray } from '../Constant';
+import { LineSegments } from 'three/src/objects/LineSegments';
 
 export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const scene = new Scene();
@@ -78,9 +79,17 @@ const addHelperPlanes = (pointCloud: Points) => {
     min.addScaledVector(diagonal.clone().normalize(), diagonal.length() * -0.05);
     const center = max.clone().lerp(min, 0.5);
 
-    addHelperPlaneFar(pointCloud, max, min, center);
-    addHelperPlaneBottom(pointCloud, max, min, center);
-    addHelperPlaneLeft(pointCloud, max, min, center);
+    const planes = [
+        addHelperPlaneFar(pointCloud, max, min, center),
+        addHelperPlaneBottom(pointCloud, max, min, center),
+        addHelperPlaneLeft(pointCloud, max, min, center),
+    ];
+
+    const axesHelper = new AxesHelper(diagonal.length()) as LineSegments<BufferGeometry, LineBasicMaterial>;
+    axesHelper.position.copy(min);
+    axesHelper.material.vertexColors = false;
+    axesHelper.material.color.set('#ffffff');
+    pointCloud.add(axesHelper)
 };
 
 const addHelperPlaneFar = (pointCloud, max, min, center) => {
@@ -91,6 +100,7 @@ const addHelperPlaneFar = (pointCloud, max, min, center) => {
     planeMesh.position.set(center.x, center.y, min.z);
 
     pointCloud.add(planeMesh);
+    return planeMesh;
 };
 
 const addHelperPlaneBottom = (pointCloud, max, min, center) => {
@@ -102,6 +112,7 @@ const addHelperPlaneBottom = (pointCloud, max, min, center) => {
     planeMesh.position.set(center.x, min.y, center.z);
 
     pointCloud.add(planeMesh);
+    return planeMesh;
 };
 
 const addHelperPlaneLeft = (pointCloud, max, min, center) => {
@@ -113,6 +124,7 @@ const addHelperPlaneLeft = (pointCloud, max, min, center) => {
     planeMesh.position.set(min.x, center.y, center.z);
 
     pointCloud.add(planeMesh);
+    return planeMesh;
 };
 
 const createHelperPlaneMaterial = () => {
