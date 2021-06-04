@@ -1,7 +1,20 @@
-import { AmbientLight, BufferAttribute, BufferGeometry, Points, PointsMaterial, Scene } from 'three';
+import {
+    AmbientLight,
+    BufferAttribute,
+    BufferGeometry,
+    DoubleSide,
+    Mesh,
+    MeshLambertMaterial,
+    PlaneGeometry,
+    Points,
+    PointsMaterial,
+    Scene,
+    Vector3
+} from 'three';
 import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer } from '../CommonUtils';
 import IPosition from '../type/IPosition';
 import { colormap } from '../CommonAlgorithms';
+import { defaultPlaneColorGray } from '../Constant';
 
 export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const scene = new Scene();
@@ -31,9 +44,12 @@ export const init = (list: Array<IPosition>, container: HTMLElement) => {
 const addPointCloudToScene = (scene: Scene, list: Array<IPosition>) => {
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new BufferAttribute(getVertices(list), 3));
+    geometry.computeBoundingBox();
     geometry.setAttribute('color', new BufferAttribute(getVertexColors(geometry, list), 3));
-
     const pointCloud = new Points(geometry, new PointsMaterial({size: 4, vertexColors: true}));
+
+    addHelperPlanes(pointCloud);
+
     scene.add(pointCloud);
 };
 
@@ -42,7 +58,6 @@ const getVertices = (list: Array<Array<number>>) => {
 };
 
 const getVertexColors = (geometry: BufferGeometry, list: Array<IPosition>) => {
-    geometry.computeBoundingBox();
     const max = geometry.boundingBox.max;
     const min = geometry.boundingBox.min;
     const yRange = max.y - min.y;
@@ -53,4 +68,29 @@ const getVertexColors = (geometry: BufferGeometry, list: Array<IPosition>) => {
         vertexColors.push(...colors[colorIndex].toArray());
     });
     return Float32Array.from(vertexColors);
+};
+
+const addHelperPlanes = (pointCloud: Points) => {
+    const max = pointCloud.geometry.boundingBox.max;
+    const min = pointCloud.geometry.boundingBox.min;
+    const xRange = max.x - min.x;
+    const yRange = max.y - min.y;
+    const zRange = max.z - min.z;
+    const center = max.clone().lerp(min, 0.5);
+
+    addHelperPlaneBottom(pointCloud, xRange, zRange, center);
+};
+
+const addHelperPlaneBottom = (pointCloud, width, height, center) => {
+    const planeMesh = new Mesh(
+        new PlaneGeometry(width, height),
+        new MeshLambertMaterial({
+            color: defaultPlaneColorGray,
+            side: DoubleSide,
+        })
+    );
+    planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
+    planeMesh.position.set(center.x, 0, center.z);
+
+    pointCloud.add(planeMesh);
 };
