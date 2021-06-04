@@ -73,24 +73,41 @@ const getVertexColors = (geometry: BufferGeometry, list: Array<IPosition>) => {
 const addHelperPlanes = (pointCloud: Points) => {
     const max = pointCloud.geometry.boundingBox.max;
     const min = pointCloud.geometry.boundingBox.min;
-    const xRange = max.x - min.x;
-    const yRange = max.y - min.y;
-    const zRange = max.z - min.z;
+    const diagonal = max.clone().sub(min);
+    max.addScaledVector(diagonal.clone().normalize(), diagonal.length() * 0.05);
+    min.addScaledVector(diagonal.clone().normalize(), diagonal.length() * -0.05);
     const center = max.clone().lerp(min, 0.5);
 
-    addHelperPlaneBottom(pointCloud, xRange, zRange, center);
+    addHelperPlaneFar(pointCloud, max, min, center);
+    addHelperPlaneBottom(pointCloud, max, min, center);
 };
 
-const addHelperPlaneBottom = (pointCloud, width, height, center) => {
+const addHelperPlaneFar = (pointCloud, max, min, center) => {
     const planeMesh = new Mesh(
-        new PlaneGeometry(width, height),
-        new MeshLambertMaterial({
-            color: defaultPlaneColorGray,
-            side: DoubleSide,
-        })
+        new PlaneGeometry(max.x - min.x, max.y - min.y),
+        createHelperPlaneMaterial()
     );
-    planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
-    planeMesh.position.set(center.x, 0, center.z);
+
+    planeMesh.position.set(center.x, center.y, min.z);
 
     pointCloud.add(planeMesh);
+};
+
+const addHelperPlaneBottom = (pointCloud, max, min, center) => {
+    const planeMesh = new Mesh(
+        new PlaneGeometry(max.x - min.x, max.z - min.z),
+        createHelperPlaneMaterial()
+    );
+    planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
+    planeMesh.position.set(center.x, min.y, center.z);
+
+    pointCloud.add(planeMesh);
+};
+
+const createHelperPlaneMaterial = () => {
+    return new MeshLambertMaterial({
+        side: DoubleSide,
+        transparent: true,
+        opacity: 0.6,
+    });
 };
