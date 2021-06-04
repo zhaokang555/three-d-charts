@@ -1,8 +1,8 @@
 import {
-    AmbientLight, AxesHelper,
+    AmbientLight,
     BufferAttribute,
     BufferGeometry,
-    DoubleSide, LineBasicMaterial,
+    DoubleSide,
     Mesh,
     MeshLambertMaterial,
     PlaneGeometry,
@@ -14,8 +14,7 @@ import {
 import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer } from '../CommonUtils';
 import IPosition from '../type/IPosition';
 import { colormap } from '../CommonAlgorithms';
-import { defaultPlaneColorGray } from '../Constant';
-import { LineSegments } from 'three/src/objects/LineSegments';
+import { PlaneSplitLines } from './PlaneSplitLines';
 
 export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const scene = new Scene();
@@ -85,11 +84,9 @@ const addHelperPlanes = (pointCloud: Points) => {
         addHelperPlaneLeft(pointCloud, max, min, center),
     ];
 
-    const axesHelper = new AxesHelper(diagonal.length()) as LineSegments<BufferGeometry, LineBasicMaterial>;
-    axesHelper.position.copy(min);
-    axesHelper.material.vertexColors = false;
-    axesHelper.material.color.set('#ffffff');
-    pointCloud.add(axesHelper)
+    const planeSplitLines = new PlaneSplitLines(max.x - min.x, max.y - min.y, max.z - min.z);
+    planeSplitLines.position.copy(min);
+    pointCloud.add(planeSplitLines)
 };
 
 const addHelperPlaneFar = (pointCloud, max, min, center) => {
