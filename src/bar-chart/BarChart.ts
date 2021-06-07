@@ -30,7 +30,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         rotate: true,
         maxZoom: planeWidth * 2, // FIX ME
     });
-    const updateHighlight = initHighlightBar(scene, camera);
+    const updateHighlight = initHighlightBar(scene, camera, container);
 
     let cancelId = null;
     const render = () => {

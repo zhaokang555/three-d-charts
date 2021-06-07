@@ -128,24 +128,24 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
     return [controls, () => window.removeEventListener('keydown', onKeydown)];
 };
 
-export const initHighlightBar = (scene: Scene, camera: ICamera): () => void => {
+export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLElement): () => void => {
     const raycaster = new Raycaster();
     const pointer = new Vector2(-1, -1);
-    document.addEventListener('pointermove', event => {
+    container.addEventListener('pointermove', event => {
         // 1.
-        // pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        // pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        // pointer.x = ( event.offsetX / container.offsetWidth ) * 2 - 1;
+        // pointer.y = -(event.offsetY / container.offsetHeight) * 2 + 1;
 
         // 2. or use matrix
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        const w = container.offsetWidth;
+        const h = container.offsetHeight;
         const translateMatrix = new Matrix3().set(1, 0, -w / 2,
             0, 1, -h / 2,
             0, 0, 1);
         const scaleMatrix = new Matrix3().set(2 / w, 0, 0,
             0, -2 / h, 0,
             0, 0, 1);
-        pointer.copy(new Vector2(event.clientX, event.clientY)
+        pointer.copy(new Vector2(event.offsetX, event.offsetY)
             .applyMatrix3(translateMatrix)
             .applyMatrix3(scaleMatrix)
         );
