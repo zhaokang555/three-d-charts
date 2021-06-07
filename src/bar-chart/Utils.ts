@@ -59,7 +59,7 @@ export const addPlaneToScene = (scene: Scene): number => {
     );
     // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
     planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
-    planeMesh.position.y = -planeWidth / 10000;
+    planeMesh.position.y = -planeWidth / 10000; // z-fighting
     planeMesh.name = 'planeMesh'; // for find plane mesh in scene;
     scene.add(planeMesh);
 

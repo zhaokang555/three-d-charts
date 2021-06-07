@@ -54,16 +54,16 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
 
     private addHelperPlaneBottom (max, min, center, container, camera) {
         const planeMesh = new ScatterPlaneHelper(max.x - min.x, max.z - min.z, container, camera);
-        planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
         planeMesh.position.set(center.x, min.y, center.z);
+        planeMesh.lookAt(center);
         this.add(planeMesh);
         return planeMesh;
     };
 
     private addHelperPlaneLeft (max, min, center, container, camera) {
         const planeMesh = new ScatterPlaneHelper(max.z - min.z, max.y - min.y, container, camera);
-        planeMesh.rotateOnWorldAxis(new Vector3(0, 1, 0), Math.PI / 2);
         planeMesh.position.set(min.x, center.y, center.z);
+        planeMesh.lookAt(center);
         this.add(planeMesh);
         return planeMesh;
     };

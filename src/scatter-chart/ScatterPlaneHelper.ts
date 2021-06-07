@@ -30,9 +30,9 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
         const raycaster = new Raycaster();
         const mousePosition = getRealtimeMousePositionRef(container);
         const geometry = new BufferGeometry();
-        geometry.setAttribute('position', new Float32BufferAttribute([], 3));
         const auxiliaryLines = new LineSegments(geometry, new LineBasicMaterial({color: 'red'}));
         this.add(auxiliaryLines);
+        const z = Math.min(this.width, this.height) / 1000; // z-fighting
 
         return () => {
             raycaster.setFromCamera(mousePosition, camera);
@@ -42,11 +42,11 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
                 const x = (uv.x - 0.5) * this.width;
                 const y = (uv.y - 0.5) * this.height;
                 geometry.setAttribute('position', new Float32BufferAttribute([
-                    -this.width / 2, y, 0,      this.width / 2, y, 0,
-                    x, -this.height / 2, 0,     x, this.height / 2, 0,
+                    -this.width / 2, y, z,      this.width / 2, y, z,
+                    x, -this.height / 2, z,     x, this.height / 2, z,
                 ], 3));
             } else {
-                geometry.setAttribute('position', new Float32BufferAttribute([], 3));
+                geometry.deleteAttribute('position');
             }
         };
     };

@@ -38,7 +38,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
         updateHighlight();
-        makeTextMeshesLookAtCamera(scene, camera, planeWidth);
+        makeTextMeshesLookAtCamera(scene, camera);
         renderer.render(scene, camera);
     };
     cancelId = requestAnimationFrame(render);

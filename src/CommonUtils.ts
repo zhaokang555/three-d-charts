@@ -160,14 +160,14 @@ export const getBars = (scene: Scene): Array<BarMesh> => {
     ) as any as Array<BarMesh>;
 };
 
-export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number) => {
+export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
     _getTextMeshes(scene).forEach(textMesh => {
         const lookAtPosition = camera.position.clone().setY(textMesh.position.y);
         textMesh.lookAt(lookAtPosition);
     });
 };
 
-export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, planeWidth: number, infoPanels: Array<InfoPanelMesh>) => {
+export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<InfoPanelMesh>) => {
     infoPanels.forEach(info => {
         const lookAtPosition = camera.position.clone().setY(info.position.y);
         info.lookAt(lookAtPosition);
