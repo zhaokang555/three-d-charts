@@ -71,7 +71,7 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
 }
 
 
-const getVertices = (list: Array<Array<number>>) => {
+export const getVertices = (list: Array<Array<number>>) => {
     return Float32Array.from(list.reduce((total, current) => [...total, ...current], []))
 };
 
