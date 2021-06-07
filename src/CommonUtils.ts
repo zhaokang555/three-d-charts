@@ -131,7 +131,7 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
 
 export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLElement): () => void => {
     const raycaster = new Raycaster();
-    const mousePosition = _getRealtimeMousePositionRef(container);
+    const mousePosition = getRealtimeMousePositionRef(container);
     const bars = getBars(scene);
 
     return () => {
@@ -143,7 +143,7 @@ export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLE
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.keyMeshId));
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             });
-            const intersects = raycaster.intersectObjects(bars, true);
+            const intersects = raycaster.intersectObjects(bars);
             if (intersects.length > 0) {
                 const bar = intersects[0].object as BarMesh;
                 _changeBarColor(bar, defaultBarHighlightColorWhite);
@@ -242,6 +242,30 @@ export const createTextCanvasTexture = (key: string, value: number, bgColor: Col
     return [map, alphaMap];
 };
 
+export const getRealtimeMousePositionRef = (container: HTMLElement): Vector2 => {
+    const pointer = new Vector2(-1, -1);
+    container.addEventListener('pointermove', event => {
+        // 1.
+        // pointer.x = ( event.offsetX / container.offsetWidth ) * 2 - 1;
+        // pointer.y = -(event.offsetY / container.offsetHeight) * 2 + 1;
+
+        // 2. or use matrix
+        const w = container.offsetWidth;
+        const h = container.offsetHeight;
+        const translateMatrix = new Matrix3().set(1, 0, -w / 2,
+            0, 1, -h / 2,
+            0, 0, 1);
+        const scaleMatrix = new Matrix3().set(2 / w, 0, 0,
+            0, -2 / h, 0,
+            0, 0, 1);
+        pointer.copy(new Vector2(event.offsetX, event.offsetY)
+            .applyMatrix3(translateMatrix)
+            .applyMatrix3(scaleMatrix)
+        );
+    });
+    return pointer;
+};
+
 const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {
     return scene.children.filter(
         child => child instanceof Mesh && child.geometry instanceof TextGeometry
@@ -264,28 +288,4 @@ const _changeBarColor = (bar: BarMesh, color: Color | string | number) => {
     if (bar.material instanceof Material) {
         bar.material.color.set(color);
     }
-};
-
-const _getRealtimeMousePositionRef = (container: HTMLElement): Vector2 => {
-    const pointer = new Vector2(-1, -1);
-    container.addEventListener('pointermove', event => {
-        // 1.
-        // pointer.x = ( event.offsetX / container.offsetWidth ) * 2 - 1;
-        // pointer.y = -(event.offsetY / container.offsetHeight) * 2 + 1;
-
-        // 2. or use matrix
-        const w = container.offsetWidth;
-        const h = container.offsetHeight;
-        const translateMatrix = new Matrix3().set(1, 0, -w / 2,
-            0, 1, -h / 2,
-            0, 0, 1);
-        const scaleMatrix = new Matrix3().set(2 / w, 0, 0,
-            0, -2 / h, 0,
-            0, 0, 1);
-        pointer.copy(new Vector2(event.offsetX, event.offsetY)
-            .applyMatrix3(translateMatrix)
-            .applyMatrix3(scaleMatrix)
-        );
-    });
-    return pointer;
 };
