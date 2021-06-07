@@ -1,6 +1,7 @@
 import {
     BufferGeometry,
-    DoubleSide, Float32BufferAttribute,
+    DoubleSide,
+    Float32BufferAttribute,
     LineBasicMaterial,
     LineSegments,
     Mesh,
@@ -10,6 +11,7 @@ import {
 } from 'three';
 import { getRealtimeMousePositionRef } from '../CommonUtils';
 import ICamera from '../type/ICamera';
+import { Intersection } from 'three/src/core/Raycaster';
 
 export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial> {
     update: () => void = null;
@@ -29,25 +31,41 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
     initRealtimeAuxiliaryLines(container: HTMLElement, camera: ICamera) {
         const raycaster = new Raycaster();
         const mousePosition = getRealtimeMousePositionRef(container);
-        const geometry = new BufferGeometry();
-        const auxiliaryLines = new LineSegments(geometry, new LineBasicMaterial({color: 'red'}));
+        const auxiliaryLines = new AuxiliaryLines(this.width, this.height);
         this.add(auxiliaryLines);
-        const z = Math.min(this.width, this.height) / 1000; // z-fighting
 
         return () => {
             raycaster.setFromCamera(mousePosition, camera);
             const intersects = raycaster.intersectObject(this);
-            if (intersects.length > 0) {
-                const uv = intersects[0].uv;
-                const x = (uv.x - 0.5) * this.width;
-                const y = (uv.y - 0.5) * this.height;
-                geometry.setAttribute('position', new Float32BufferAttribute([
-                    -this.width / 2, y, z,      this.width / 2, y, z,
-                    x, -this.height / 2, z,     x, this.height / 2, z,
-                ], 3));
-            } else {
-                geometry.deleteAttribute('position');
-            }
+            auxiliaryLines.update(intersects);
         };
     };
+}
+
+class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
+    width: number;
+    height: number;
+    z: number;
+
+    constructor(width, height) {
+        super(new BufferGeometry(), new LineBasicMaterial({color: 'red'}));
+        this.width = width;
+        this.height = height;
+        this.z = Math.min(width, height) / 1000; // z-fighting
+    }
+
+    update(intersects: Intersection[]) {
+        if (intersects.length > 0) {
+            const {width, height, z} = this;
+            const uv = intersects[0].uv;
+            const x = (uv.x - 0.5) * width;
+            const y = (uv.y - 0.5) * height;
+            this.geometry.setAttribute('position', new Float32BufferAttribute([
+                -width / 2, y, z,      width / 2, y, z,
+                x, -height / 2, z,     x, height / 2, z,
+            ], 3));
+        } else {
+            this.geometry.deleteAttribute('position');
+        }
+    }
 }
