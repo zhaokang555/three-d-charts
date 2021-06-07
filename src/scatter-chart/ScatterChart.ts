@@ -18,6 +18,7 @@ export const init = (list: Array<IPosition>, container: HTMLElement) => {
     const render = () => {
         cancelId = requestAnimationFrame(render);
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
+        scatterPoints.update();
         renderer.render(scene, camera);
     };
     cancelId = requestAnimationFrame(render);

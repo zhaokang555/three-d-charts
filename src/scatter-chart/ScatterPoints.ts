@@ -17,7 +17,13 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
         this.planes = this.addHelperPlanes(container, camera);
     }
 
-    addHelperPlanes(container, camera) {
+    update() {
+        if (Array.isArray(this.planes)) {
+            this.planes.forEach(p => p.update());
+        }
+    }
+
+    private addHelperPlanes(container, camera) {
         const max = this.geometry.boundingBox.max;
         const min = this.geometry.boundingBox.min;
         const diagonal = max.clone().sub(min);
@@ -39,14 +45,14 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
     }
 
 
-    addHelperPlaneFar (max, min, center, container, camera) {
+    private addHelperPlaneFar (max, min, center, container, camera) {
         const planeMesh = new ScatterPlaneHelper(max.x - min.x, max.y - min.y, container, camera);
         planeMesh.position.set(center.x, center.y, min.z);
         this.add(planeMesh);
         return planeMesh;
     };
 
-    addHelperPlaneBottom (max, min, center, container, camera) {
+    private addHelperPlaneBottom (max, min, center, container, camera) {
         const planeMesh = new ScatterPlaneHelper(max.x - min.x, max.z - min.z, container, camera);
         planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), Math.PI / 2);
         planeMesh.position.set(center.x, min.y, center.z);
@@ -54,7 +60,7 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
         return planeMesh;
     };
 
-    addHelperPlaneLeft (max, min, center, container, camera) {
+    private addHelperPlaneLeft (max, min, center, container, camera) {
         const planeMesh = new ScatterPlaneHelper(max.z - min.z, max.y - min.y, container, camera);
         planeMesh.rotateOnWorldAxis(new Vector3(0, 1, 0), Math.PI / 2);
         planeMesh.position.set(min.x, center.y, center.z);
