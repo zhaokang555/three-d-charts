@@ -102,6 +102,7 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
         controls.autoRotateSpeed = 0.5;
     }
 
+    // TODO: support multiple charts in one page
     controls.listenToKeyEvents(window as any as HTMLElement);
 
     const onKeydown = (evt) => {
@@ -130,31 +131,11 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
 
 export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLElement): () => void => {
     const raycaster = new Raycaster();
-    const pointer = new Vector2(-1, -1);
-    container.addEventListener('pointermove', event => {
-        // 1.
-        // pointer.x = ( event.offsetX / container.offsetWidth ) * 2 - 1;
-        // pointer.y = -(event.offsetY / container.offsetHeight) * 2 + 1;
-
-        // 2. or use matrix
-        const w = container.offsetWidth;
-        const h = container.offsetHeight;
-        const translateMatrix = new Matrix3().set(1, 0, -w / 2,
-            0, 1, -h / 2,
-            0, 0, 1);
-        const scaleMatrix = new Matrix3().set(2 / w, 0, 0,
-            0, -2 / h, 0,
-            0, 0, 1);
-        pointer.copy(new Vector2(event.offsetX, event.offsetY)
-            .applyMatrix3(translateMatrix)
-            .applyMatrix3(scaleMatrix)
-        );
-
-    });
+    const mousePosition = _getRealtimeMousePositionRef(container);
     const bars = getBars(scene);
 
     return () => {
-        raycaster.setFromCamera(pointer, camera);
+        raycaster.setFromCamera(mousePosition, camera);
 
         if (bars.length > 0) {
             bars.forEach(bar => {
@@ -283,4 +264,28 @@ const _changeBarColor = (bar: BarMesh, color: Color | string | number) => {
     if (bar.material instanceof Material) {
         bar.material.color.set(color);
     }
+};
+
+const _getRealtimeMousePositionRef = (container: HTMLElement): Vector2 => {
+    const pointer = new Vector2(-1, -1);
+    container.addEventListener('pointermove', event => {
+        // 1.
+        // pointer.x = ( event.offsetX / container.offsetWidth ) * 2 - 1;
+        // pointer.y = -(event.offsetY / container.offsetHeight) * 2 + 1;
+
+        // 2. or use matrix
+        const w = container.offsetWidth;
+        const h = container.offsetHeight;
+        const translateMatrix = new Matrix3().set(1, 0, -w / 2,
+            0, 1, -h / 2,
+            0, 0, 1);
+        const scaleMatrix = new Matrix3().set(2 / w, 0, 0,
+            0, -2 / h, 0,
+            0, 0, 1);
+        pointer.copy(new Vector2(event.offsetX, event.offsetY)
+            .applyMatrix3(translateMatrix)
+            .applyMatrix3(scaleMatrix)
+        );
+    });
+    return pointer;
 };
