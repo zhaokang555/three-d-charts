@@ -4,10 +4,9 @@ import { barAltitude, earthRadius } from '../Constant';
 import { colormap } from '../CommonAlgorithms';
 import { BufferGeometry, Color, Line, LineBasicMaterial } from 'three';
 import china_geo_json from '../chart-on-the-earch/china.geo.json';
-import ICoordinates from '../type/ICoordinates';
 import { getPositionByLonLat } from '../chart-on-the-earch/Algorithms';
-import { BarMesh } from './BarMesh';
 import IRing from '../type/IRing';
+import { BarMeshWithTextOnTop } from '../chart-on-the-earch/BarMeshWithTextOnTop';
 
 export class EarthMeshForProvince extends EarthMesh {
     constructor() {
@@ -33,7 +32,7 @@ export class EarthMeshForProvince extends EarthMesh {
         const province = china_geo_json.features.find(f => f.properties.name === key);
         const center = province.properties.center;
 
-        this._addBar(center, barHeight, color, key, value);
+        this.add(new BarMeshWithTextOnTop(value, color, key, barHeight, center));
 
         /**
          *  个人理解:
@@ -45,18 +44,6 @@ export class EarthMeshForProvince extends EarthMesh {
         province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
             polygon.forEach(ring => this._addProvincialBoundary(ring, key, color));
         });
-    }
-
-    private _addBar(center: ICoordinates, barHeight: number, color: Color, key: string, value: number) {
-        const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
-        const barWidth = earthRadius * 0.025; // set bottom side length
-
-        const bar = new BarMesh(barWidth, value, color, key, barHeight);
-        bar.position.copy(centerPosition);
-        const up = bar.up.clone().normalize();
-        bar.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
-        bar.translateY(barHeight / 2);
-        this.add(bar);
     }
 
     private _addProvincialBoundary(ring: IRing, key: string, color: Color) {
