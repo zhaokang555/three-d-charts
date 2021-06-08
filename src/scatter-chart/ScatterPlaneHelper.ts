@@ -12,6 +12,7 @@ import {
 import { getRealtimeMousePositionRef } from '../CommonUtils';
 import ICamera from '../type/ICamera';
 import { Intersection } from 'three/src/core/Raycaster';
+import { TextInfoPanelMesh } from '../components/TextInfoPanelMesh';
 
 export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial> {
     update: () => void = null;
@@ -31,8 +32,12 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
     initRealtimeAuxiliaryLines(container: HTMLElement, camera: ICamera) {
         const raycaster = new Raycaster();
         const mousePosition = getRealtimeMousePositionRef(container);
+
         const auxiliaryLines = new AuxiliaryLines(this.width, this.height);
         this.add(auxiliaryLines);
+
+        const textInfoPanelMesh = new TextInfoPanelMesh(this.width / 2, this.width / 15, '00.0, 00.0, 00.0');
+        this.add(textInfoPanelMesh);
 
         return () => {
             raycaster.setFromCamera(mousePosition, camera);
