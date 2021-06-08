@@ -26,8 +26,14 @@ export class BarMeshWithTextOnTop extends Mesh<BoxGeometry, Array<MeshLambertMat
 
         const centerPosition = getPositionByLonLat(...center, earthRadius + barAltitude);
         this.position.copy(centerPosition);
-        const up = this.up.clone().normalize();
-        this.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
+
+        // const up = this.up.clone().normalize();
+        // this.quaternion.setFromUnitVectors(up, centerPosition.clone().normalize());
+        // OR
+        const rotateAxis = this.up.clone().cross(centerPosition).normalize();
+        const angle = this.up.clone().angleTo(centerPosition);
+        this.rotateOnAxis(rotateAxis, angle);
+
         this.translateY(height / 2);
     }
 
