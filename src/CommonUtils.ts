@@ -19,6 +19,7 @@ import ICamera from './type/ICamera';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
 import { BarMesh, getBars } from './bar-chart/BarMesh';
+import { TextMesh } from './bar-chart/TextMesh';
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
@@ -257,10 +258,10 @@ export const getRealtimeMousePositionRef = (container: HTMLElement): Vector2 => 
     return pointer;
 };
 
-const _getTextMeshes = (scene: Scene): Array<Mesh<TextGeometry, MeshPhongMaterial>> => {
+const _getTextMeshes = (scene: Scene): Array<TextMesh> => {
     return scene.children.filter(
-        child => child instanceof Mesh && child.geometry instanceof TextGeometry
-    ) as any as Array<Mesh<TextGeometry, MeshPhongMaterial>>;
+        child => child instanceof TextMesh
+    ) as any as Array<TextMesh>;
 };
 
 const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
