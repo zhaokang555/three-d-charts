@@ -1,9 +1,9 @@
 import { Color, DoubleSide, Mesh, MeshLambertMaterial, PlaneGeometry } from 'three';
-import { createTextCanvasTexture } from '../CommonUtils';
+import { createKeyValueCanvasTexture } from '../CommonUtils';
 
-export default class InfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial> {
+export default class KeyValueInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial> {
     constructor(size: number, key: string, value: number) {
-        const [map, alphaMap] = createTextCanvasTexture(key, value, new Color('black'));
+        const [map, alphaMap] = createKeyValueCanvasTexture(key, value, new Color('black'));
         const material = new MeshLambertMaterial({
             map,
             alphaMap,

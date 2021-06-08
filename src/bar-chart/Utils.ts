@@ -22,7 +22,7 @@ import {
     getPositionOfNthBar,
     getPositionOfValueByBar
 } from './Algorithms';
-import InfoPanelMesh from '../components/InfoPanelMesh';
+import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
 import { BarMesh } from '../components/BarMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
@@ -138,7 +138,7 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
 export const addInfoPanelToScene = (scene: Scene, key: string, value: number, bar: BarMesh) => {
     const {x, z} = bar.position;
     const infoPanelSize = bar.width * 0.7;
-    const infoPanelMesh = new InfoPanelMesh(infoPanelSize, key, value);
+    const infoPanelMesh = new KeyValueInfoPanelMesh(infoPanelSize, key, value);
     infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
     return infoPanelMesh;

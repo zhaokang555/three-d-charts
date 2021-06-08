@@ -8,10 +8,8 @@ export const init = (list: Array<IPosition>, container: HTMLElement) => {
     addAxesToScene(scene, 10);
     scene.add(new AmbientLight()); // 环境光
 
-    const box = new Box3();
-    box.setFromArray(getVertices(list));
-    const size = box.max.distanceTo(box.min);
-    const camera = getOrthographicCamera(scene, container, size);
+    const box = (new Box3()).setFromArray(getVertices(list));
+    const camera = getOrthographicCamera(scene, container, box.max.distanceTo(box.min));
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer);

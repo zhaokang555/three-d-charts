@@ -4,7 +4,7 @@ import ICity from '../type/ICity';
 import ICamera from '../type/ICamera';
 // @ts-ignore
 import cities from '../chart-on-the-earch/cities.json';
-import InfoPanelMesh from './InfoPanelMesh';
+import KeyValueInfoPanelMesh from './KeyValueInfoPanelMesh';
 import { earthRadius } from '../Constant';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
@@ -40,7 +40,7 @@ export class EarthMeshForRoute extends EarthMesh {
         this.add(routeMesh);
 
         const midPointOnCurve = curve.getPointAt(0.5);
-        const infoPanel = new InfoPanelMesh(earthRadius * 0.05, `${fromCity.name}-${toCity.name}`, weight);
+        const infoPanel = new KeyValueInfoPanelMesh(earthRadius * 0.05, `${fromCity.name}-${toCity.name}`, weight);
         const infoPanelOffset = midPointOnCurve.clone().normalize().multiplyScalar(earthRadius * 0.05);
         infoPanel.position.copy(midPointOnCurve.add(infoPanelOffset));
         this.add(infoPanel);

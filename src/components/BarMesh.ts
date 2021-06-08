@@ -1,5 +1,5 @@
 import { BoxGeometry, Color, DoubleSide, Mesh, MeshLambertMaterial, MeshPhongMaterial } from 'three';
-import { createTextCanvasTexture } from '../CommonUtils';
+import { createKeyValueCanvasTexture } from '../CommonUtils';
 
 export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLambertMaterial>> {
     constructor(width: number, value: number, color: Color, key?: string, height?: number) {
@@ -13,7 +13,7 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial | Array<MeshLam
         } else {
             const geometry = new BoxGeometry(width, height, width);
 
-            const [map] = createTextCanvasTexture(key, value, color, {padding: 0.05});
+            const [map] = createKeyValueCanvasTexture(key, value, color, {padding: 0.05});
             map.rotation = Math.PI / 2;
             const colorMaterial = new MeshPhongMaterial({color, side: DoubleSide});
             const materials = (new Array(6)).fill(colorMaterial);

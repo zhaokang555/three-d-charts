@@ -20,7 +20,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
 import { defaultBarColorRed, defaultBarHighlightColorWhite } from './Constant';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
-import InfoPanelMesh from './components/InfoPanelMesh';
+import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
 import { BarMesh } from './components/BarMesh';
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
@@ -167,20 +167,20 @@ export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
     });
 };
 
-export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<InfoPanelMesh>) => {
+export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<KeyValueInfoPanelMesh>) => {
     infoPanels.forEach(info => {
         const lookAtPosition = camera.position.clone().setY(info.position.y);
         info.lookAt(lookAtPosition);
     });
 };
 
-type ITextCanvasTextureOptions = {
+type IKeyValueCanvasTextureOptions = {
     textColor?: string;
     padding?: number; // 0~1
     borderRadius?: number; // 0~1
 };
-export const createTextCanvasTexture = (key: string, value: number, bgColor: Color,
-                                        options: ITextCanvasTextureOptions = {}) => {
+export const createKeyValueCanvasTexture = (key: string, value: number, bgColor: Color,
+                                            options: IKeyValueCanvasTextureOptions = {}) => {
     const canvas = document.createElement('canvas');
     const size = 200;
     const padding = size * (options.padding || 0.1);
