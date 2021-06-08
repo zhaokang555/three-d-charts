@@ -1,7 +1,9 @@
-import { CanvasTexture, Color, DoubleSide, Mesh, MeshLambertMaterial, PlaneGeometry } from 'three';
-import { getTextColorByBackgroundColor } from '../CommonAlgorithms';
+import { CanvasTexture, DoubleSide, Mesh, MeshLambertMaterial, PlaneGeometry } from 'three';
 
 export class TextInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial>  {
+    width: number;
+    height: number;
+
     constructor(width: number, height: number, text: string) {
         const [map, alphaMap] = createTexture(text, width / height);
         const material = new MeshLambertMaterial({
@@ -13,11 +15,30 @@ export class TextInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial> 
         const geometry = new PlaneGeometry(width, height);
         super(geometry, material);
         this.position.z = width / 1000; // z-fighting
-        this.name = `InfoPanelMesh${text}`
+        this.name = `InfoPanelMesh${text}`;
+        this.width = width;
+        this.height = height;
     }
 
-    update() {
+    update(text: string) {
+        const canvas = this.material.map.image as HTMLCanvasElement;
+        const W = canvas.width;
+        const H = canvas.height;
 
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(text, W / 2, H / 2, W);
+
+        const canvasAlphaMap = this.material.alphaMap.image as HTMLCanvasElement;
+        const ctxAlphaMap = canvasAlphaMap.getContext('2d');
+        ctxAlphaMap.fillStyle = 'rgb(0, 190, 0)';
+        ctxAlphaMap.fill(createRoundedCornerRect(W, H));
+        ctxAlphaMap.fillText(text, W / 2, H / 2, W);
+
+        this.material.map.needsUpdate = true;
+        this.material.alphaMap.needsUpdate = true;
     }
 }
 
@@ -25,7 +46,6 @@ const createTexture = (text: string, aspectRatio: number): [CanvasTexture, Canva
     const SIZE = 400;
     const PADDING = SIZE * 0.1;
     const CONTENT_SIZE = SIZE - PADDING * 2;
-    const BG_COLOR = new Color('#000000');
     const DEFAULT_FONT_SIZE = 10;
     const W = SIZE;
     const H = SIZE / aspectRatio;
@@ -41,27 +61,15 @@ const createTexture = (text: string, aspectRatio: number): [CanvasTexture, Canva
     const scale = CONTENT_SIZE / textWidth;
     const font = `${DEFAULT_FONT_SIZE * scale}px sans-serif`;
 
-    ctx.fillStyle = '#' + BG_COLOR.getHexString();
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, W, H);
     ctx.font = font;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = getTextColorByBackgroundColor(BG_COLOR);
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(text, W / 2, H / 2, W);
     const map = new CanvasTexture(canvas);
     map.center.set(0.5, 0.5);
-
-    const roundedCornerRect = new Path2D();
-    const r = H * 0.2;
-    roundedCornerRect.moveTo( 0, r);
-    roundedCornerRect.lineTo(0, H - r);
-    roundedCornerRect.arcTo(0, H, r, H, r);
-    roundedCornerRect.lineTo(W - r, H);
-    roundedCornerRect.arcTo(W, H, W, H - r, r);
-    roundedCornerRect.lineTo(W, r);
-    roundedCornerRect.arcTo(W, 0, W - r, 0, r);
-    roundedCornerRect.lineTo(r, 0);
-    roundedCornerRect.arcTo(0, 0, 0, r, r);
 
     const canvasAlphaMap = document.createElement('canvas');
     canvasAlphaMap.width = W;
@@ -70,7 +78,7 @@ const createTexture = (text: string, aspectRatio: number): [CanvasTexture, Canva
     ctxAlphaMap.fillStyle = '#000000';
     ctxAlphaMap.fillRect(0, 0, W, H);
     ctxAlphaMap.fillStyle = 'rgb(0, 190, 0)';
-    ctxAlphaMap.fill(roundedCornerRect);
+    ctxAlphaMap.fill(createRoundedCornerRect(W, H));
     ctxAlphaMap.font = font;
     ctxAlphaMap.textAlign = 'center';
     ctxAlphaMap.textBaseline = 'middle';
@@ -81,4 +89,19 @@ const createTexture = (text: string, aspectRatio: number): [CanvasTexture, Canva
     alphaMap.center.set(0.5, 0.5);
 
     return [map, alphaMap];
+};
+
+const createRoundedCornerRect = (w, h) => {
+    const roundedCornerRect = new Path2D();
+    const r = h * 0.2;
+    roundedCornerRect.moveTo( 0, r);
+    roundedCornerRect.lineTo(0, h - r);
+    roundedCornerRect.arcTo(0, h, r, h, r);
+    roundedCornerRect.lineTo(w - r, h);
+    roundedCornerRect.arcTo(w, h, w, h - r, r);
+    roundedCornerRect.lineTo(w, r);
+    roundedCornerRect.arcTo(w, 0, w - r, 0, r);
+    roundedCornerRect.lineTo(r, 0);
+    roundedCornerRect.arcTo(0, 0, 0, r, r);
+    return roundedCornerRect;
 };

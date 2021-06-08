@@ -36,13 +36,15 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
         const auxiliaryLines = new AuxiliaryLines(this.width, this.height);
         this.add(auxiliaryLines);
 
-        const textInfoPanelMesh = new TextInfoPanelMesh(this.width / 2, this.width / 15, '00.0, 00.0, 00.0');
-        this.add(textInfoPanelMesh);
+        const positionInfoPanelMesh = new PositionInfoPanelMesh(this.width / 2, this.width / 15, '00.0, 00.0, 00.0');
+        this.add(positionInfoPanelMesh);
 
         return () => {
             raycaster.setFromCamera(mousePosition, camera);
             const intersects = raycaster.intersectObject(this);
+
             auxiliaryLines.update(intersects);
+            positionInfoPanelMesh.update(intersects);
         };
     };
 }
@@ -71,6 +73,24 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
             ], 3));
         } else {
             this.geometry.deleteAttribute('position');
+        }
+    }
+}
+
+class PositionInfoPanelMesh extends TextInfoPanelMesh {
+    constructor(width: number, height: number, text: string) {
+        super(width, height, text);
+        this.visible = false;
+    }
+
+    // @ts-ignore
+    update(intersects: Intersection[]) {
+        if (intersects.length > 0) {
+            this.visible = true;
+            const point = intersects[0].point;
+            super.update(point.toArray().map(n => n.toString()).map(s => s.substr(0, 4)).join(', '));
+        } else {
+            this.visible = false;
         }
     }
 }
