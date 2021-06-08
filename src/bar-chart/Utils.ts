@@ -100,12 +100,12 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
 
             const textMesh = new TextMesh(key, font, charWidth);
 
-            const valueMesh = scene.getObjectById(bar.valueMeshId) as TextMesh;
-            const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
+            const valueMeshHeight = bar.valueMesh.geometry.boundingBox.max.y - bar.valueMesh.geometry.boundingBox.min.y;
 
             textMesh.position.set(...getPositionOfKeyOnTopByBar(bar, valueMeshHeight * 2));
             scene.add(textMesh);
-            bar.keyMeshId = textMesh.id;
+
+            bar.keyMesh = textMesh;
         }
     });
 };
@@ -123,7 +123,7 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
         textMesh.position.set(...getPositionOfValueByBar(bar));
         scene.add(textMesh);
 
-        bar.valueMeshId = textMesh.id;
+        bar.valueMesh = textMesh;
     }
 };
 

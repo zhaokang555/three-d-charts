@@ -3,14 +3,10 @@ import {
     CanvasTexture,
     Color,
     Matrix3,
-    Mesh,
-    MeshPhongMaterial,
-    Object3D,
     OrthographicCamera,
     PerspectiveCamera,
     Raycaster,
     Scene,
-    TextGeometry,
     Vector2,
     WebGLRenderer
 } from "three";
@@ -136,17 +132,12 @@ export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLE
         raycaster.setFromCamera(mousePosition, camera);
 
         if (bars.length > 0) {
-            bars.forEach(bar => {
-                bar.unhighlight();
-                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.keyMeshId));
-                _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.valueMeshId));
-            });
+            bars.forEach(bar => bar.unhighlight());
+
             const intersects = raycaster.intersectObjects(bars);
             if (intersects.length > 0) {
                 const bar = intersects[0].object as BarMesh;
                 bar.highlight();
-                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.keyMeshId));
-                _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             }
         }
     };
@@ -262,16 +253,4 @@ const _getTextMeshes = (scene: Scene): Array<TextMesh> => {
     return scene.children.filter(
         child => child instanceof TextMesh
     ) as any as Array<TextMesh>;
-};
-
-const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
-    if (mesh) {
-        mesh.scale.set(2, 2, 2);
-    }
-};
-
-const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
-    if (mesh) {
-        mesh.scale.set(1, 1, 1);
-    }
 };

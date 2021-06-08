@@ -1,9 +1,10 @@
 import { BoxGeometry, Color, DoubleSide, Mesh, MeshPhongMaterial, Scene } from 'three';
 import { defaultBarHighlightColorWhite } from '../Constant';
+import { TextMesh } from './TextMesh';
 
 export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial> {
-    keyMeshId: number;
-    valueMeshId: number;
+    keyMesh: TextMesh;
+    valueMesh: TextMesh;
     baseLineIndex: number;
     width: number;
     value: number;
@@ -26,10 +27,22 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial> {
 
     highlight() {
         this.material.color.set(defaultBarHighlightColorWhite);
+        if (this.keyMesh) {
+            this.keyMesh.scale.set(2, 2, 2);
+        }
+        if (this.valueMesh) {
+            this.valueMesh.scale.set(2, 2, 2);
+        }
     };
 
     unhighlight() {
         this.material.color.set(this.defaultColor);
+        if (this.keyMesh) {
+            this.keyMesh.scale.set(1, 1, 1);
+        }
+        if (this.valueMesh) {
+            this.valueMesh.scale.set(1, 1, 1);
+        }
     }
 }
 
