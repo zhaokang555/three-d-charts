@@ -7,7 +7,7 @@ import {
     Mesh,
     MeshLambertMaterial,
     PlaneGeometry,
-    Raycaster
+    Raycaster, Vector2
 } from 'three';
 import { getRealtimeMousePositionRef } from '../CommonUtils';
 import ICamera from '../type/ICamera';
@@ -95,10 +95,20 @@ class PositionInfoPanelMesh extends TextInfoPanelMesh {
             const {point, uv} = intersects[0];
 
             super.update(point.toArray().map(n => n.toString()).map(s => s.substr(0, 4)).join(', '));
-            this.position.setX((uv.x - 0.5) * this.parentW);
-            this.position.setY((uv.y - 0.5) * this.parentH);
+            this._setPositionByUv(uv);
         } else {
             this.visible = false;
         }
+    }
+
+    private _setPositionByUv(uv: Vector2) {
+        const x = uv.x - 0.5;
+        const y = uv.y - 0.5;
+
+        const offsetX = x > 0 ? -this.width / 2 : this.width / 2;
+        const offsetY = y > 0 ? -this.height / 2 : this.height / 2;
+
+        this.position.setX(x * this.parentW + offsetX);
+        this.position.setY(y * this.parentH + offsetY);
     }
 }
