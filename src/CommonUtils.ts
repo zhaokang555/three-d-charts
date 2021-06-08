@@ -1,9 +1,7 @@
 import {
     AxesHelper,
-    BoxGeometry,
     CanvasTexture,
     Color,
-    Material,
     Matrix3,
     Mesh,
     MeshPhongMaterial,
@@ -18,10 +16,9 @@ import {
 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
-import { defaultBarColorRed, defaultBarHighlightColorWhite } from './Constant';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
-import { BarMesh } from './components/BarMesh';
+import { BarMesh, getBars } from './bar-chart/BarMesh';
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
@@ -139,25 +136,19 @@ export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLE
 
         if (bars.length > 0) {
             bars.forEach(bar => {
-                _changeBarColor(bar, bar.defaultColor || defaultBarColorRed);
+                bar.unhighlight();
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.keyMeshId));
                 _setTextMeshScaleTo1ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             });
             const intersects = raycaster.intersectObjects(bars);
             if (intersects.length > 0) {
                 const bar = intersects[0].object as BarMesh;
-                _changeBarColor(bar, defaultBarHighlightColorWhite);
+                bar.highlight();
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.keyMeshId));
                 _setTextMeshScaleTo2ByBottomCenter(scene.getObjectById(bar.valueMeshId));
             }
         }
     };
-};
-
-export const getBars = (scene: Scene): Array<BarMesh> => {
-    return scene.children.filter(
-        child => child instanceof Mesh && child.geometry instanceof BoxGeometry
-    ) as any as Array<BarMesh>;
 };
 
 export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
@@ -281,11 +272,5 @@ const _setTextMeshScaleTo2ByBottomCenter = (mesh: Object3D | undefined) => {
 const _setTextMeshScaleTo1ByBottomCenter = (mesh: Object3D | undefined) => {
     if (mesh) {
         mesh.scale.set(1, 1, 1);
-    }
-};
-
-const _changeBarColor = (bar: BarMesh, color: Color | string | number) => {
-    if (bar.material instanceof Material) {
-        bar.material.color.set(color);
     }
 };

@@ -1,6 +1,6 @@
 import IList from '../type/IList';
 import IPosition from '../type/IPosition';
-import { BarMesh } from '../components/BarMesh';
+import { BarMesh } from './BarMesh';
 
 export const getBarWidthByValues = (values: Array<number>): number => {
     let barWidth = values.reduce((sum, val) => sum + val, 0) / values.length;

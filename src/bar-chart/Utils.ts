@@ -15,7 +15,6 @@ import {
     Vector3
 } from 'three';
 import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
-import { getBars } from '../CommonUtils';
 import {
     getBarWidthByValues,
     getPositionOfKeyOnTopByBar,
@@ -23,7 +22,7 @@ import {
     getPositionOfValueByBar
 } from './Algorithms';
 import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
-import { BarMesh } from '../components/BarMesh';
+import { BarMesh, getBars } from './BarMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
     const light = new PointLight();
