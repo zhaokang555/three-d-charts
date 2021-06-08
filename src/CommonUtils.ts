@@ -26,7 +26,7 @@ import { BarMesh } from './components/BarMesh';
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
 
-    const x = size / 2 * 1.415;
+    const x = size;
     const y = x / aspectRatio;
     const camera = new OrthographicCamera(-x, x, y, -y, -size * 4, size * 4);
 
