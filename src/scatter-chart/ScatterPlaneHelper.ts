@@ -36,7 +36,7 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
         const auxiliaryLines = new AuxiliaryLines(this.width, this.height);
         this.add(auxiliaryLines);
 
-        const positionInfoPanelMesh = new PositionInfoPanelMesh(this.width / 2, this.width / 15, '00.0, 00.0, 00.0');
+        const positionInfoPanelMesh = new PositionInfoPanelMesh(this.width, this.height);
         this.add(positionInfoPanelMesh);
 
         return () => {
@@ -78,17 +78,25 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
 }
 
 class PositionInfoPanelMesh extends TextInfoPanelMesh {
-    constructor(width: number, height: number, text: string) {
-        super(width, height, text);
+    /**
+     * @param parentW ScatterPlaneHelperWidth
+     * @param parentH ScatterPlaneHelperHeight
+     */
+    constructor(public parentW: number, public parentH: number) {
+        super(parentW / 2, parentW / 15, '00.0, 00.0, 00.0');
         this.visible = false;
+        this.position.z = parentW / 1000; // z-fighting
     }
 
     // @ts-ignore
     update(intersects: Intersection[]) {
         if (intersects.length > 0) {
             this.visible = true;
-            const point = intersects[0].point;
+            const {point, uv} = intersects[0];
+
             super.update(point.toArray().map(n => n.toString()).map(s => s.substr(0, 4)).join(', '));
+            this.position.setX((uv.x - 0.5) * this.parentW);
+            this.position.setY((uv.y - 0.5) * this.parentH);
         } else {
             this.visible = false;
         }

@@ -14,7 +14,6 @@ export class TextInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial> 
         });
         const geometry = new PlaneGeometry(width, height);
         super(geometry, material);
-        this.position.z = width / 1000; // z-fighting
         this.name = `InfoPanelMesh${text}`;
         this.width = width;
         this.height = height;
