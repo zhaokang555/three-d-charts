@@ -5,10 +5,10 @@ import {
     getOrthographicCamera,
     getRenderer,
     initHighlightBar,
-    makeTextMeshesLookAtCamera
 } from '../CommonUtils';
 import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addPlaneToScene, addValuesToScene, } from './Utils';
 import IList from '../type/IList';
+import { makeTextMeshesLookAtCamera } from './TextMesh';
 
 export const init = (list: IList, container: HTMLElement): () => void => {
     const keys = list.map(kv => kv.key);

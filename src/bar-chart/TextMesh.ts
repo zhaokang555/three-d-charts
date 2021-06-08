@@ -1,5 +1,6 @@
-import { Font, Mesh, MeshPhongMaterial, TextGeometry } from 'three';
+import { Font, Mesh, MeshPhongMaterial, Scene, TextGeometry } from 'three';
 import { defaultTextColorBlue } from '../Constant';
+import ICamera from '../type/ICamera';
 
 export class TextMesh extends Mesh<TextGeometry, MeshPhongMaterial> {
     constructor(text: string, font: Font, size: number) {
@@ -24,3 +25,16 @@ export class TextMesh extends Mesh<TextGeometry, MeshPhongMaterial> {
         super(geometry, material);
     }
 }
+
+export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
+    getTextMeshes(scene).forEach(textMesh => {
+        const lookAtPosition = camera.position.clone().setY(textMesh.position.y);
+        textMesh.lookAt(lookAtPosition);
+    });
+};
+
+const getTextMeshes = (scene: Scene): Array<TextMesh> => {
+    return scene.children.filter(
+        child => child instanceof TextMesh
+    ) as any as Array<TextMesh>;
+};

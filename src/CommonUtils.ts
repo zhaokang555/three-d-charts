@@ -15,7 +15,6 @@ import ICamera from './type/ICamera';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
 import { BarMesh, getBars } from './bar-chart/BarMesh';
-import { TextMesh } from './bar-chart/TextMesh';
 
 export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
@@ -143,13 +142,6 @@ export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLE
     };
 };
 
-export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
-    _getTextMeshes(scene).forEach(textMesh => {
-        const lookAtPosition = camera.position.clone().setY(textMesh.position.y);
-        textMesh.lookAt(lookAtPosition);
-    });
-};
-
 export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<KeyValueInfoPanelMesh>) => {
     infoPanels.forEach(info => {
         const lookAtPosition = camera.position.clone().setY(info.position.y);
@@ -247,10 +239,4 @@ export const getRealtimeMousePositionRef = (container: HTMLElement): Vector2 => 
         );
     });
     return pointer;
-};
-
-const _getTextMeshes = (scene: Scene): Array<TextMesh> => {
-    return scene.children.filter(
-        child => child instanceof TextMesh
-    ) as any as Array<TextMesh>;
 };
