@@ -1,6 +1,7 @@
 import IList from '../type/IList';
 import IPosition from '../type/IPosition';
 import { BarMesh } from './BarMesh';
+import { TextMesh } from './TextMesh';
 
 export const getBarWidthByValues = (values: Array<number>): number => {
     let barWidth = values.reduce((sum, val) => sum + val, 0) / values.length;
@@ -63,18 +64,19 @@ export const getPositionOfNthBar = (n: number, value: number, barWidth: number, 
     ]
 };
 
-export const getPositionOfKeyOnTopByBar = (bar: BarMesh, offsetY: number): IPosition => {
+export const getPositionOfKeyOnTopByBar = (bar: BarMesh, valueMesh: TextMesh, keyMesh: TextMesh): IPosition => {
+
     return [
         bar.position.x,
-        bar.height + offsetY,
+        bar.height + valueMesh.height + keyMesh.height * 1.5,
         bar.position.z
     ];
 };
 
-export const getPositionOfValueByBar = (bar: BarMesh): IPosition => {
+export const getPositionOfValueByBar = (bar: BarMesh, valueMesh: TextMesh): IPosition => {
     return [
         bar.position.x,
-        bar.height,
+        bar.height + valueMesh.height,
         bar.position.z
     ];
 };
