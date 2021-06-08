@@ -3,18 +3,15 @@ import { colormap } from "../CommonAlgorithms";
 import {
     AmbientLight,
     DoubleSide,
-    Font,
     FontLoader,
     Mesh,
     MeshLambertMaterial,
-    MeshPhongMaterial,
     PlaneGeometry,
     PointLight,
     Scene,
-    TextGeometry,
     Vector3
 } from 'three';
-import { defaultLightColorWhite, defaultPlaneColorGray, defaultTextColorBlue } from '../Constant';
+import { defaultLightColorWhite, defaultPlaneColorGray } from '../Constant';
 import {
     getBarWidthByValues,
     getPositionOfKeyOnTopByBar,
@@ -23,6 +20,7 @@ import {
 } from './Algorithms';
 import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
 import { BarMesh, getBars } from './BarMesh';
+import { TextMesh } from './TextMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
     const light = new PointLight();
@@ -95,21 +93,19 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
         const charWidth = bars[0].width / keyMaxLength;
-        const fontDepth = charWidth / 8;
 
         for (let i = 0; i < keys.length; ++i) {
             const key = keys[i];
             const bar = bars[i];
-            const geometry = _createTextGeometry(key, font, charWidth, fontDepth);
-            const material = _createTextMaterial();
-            const text = new Mesh(geometry, material);
 
-            const valueMesh = scene.getObjectById(bar.valueMeshId) as Mesh<TextGeometry, MeshPhongMaterial>;
+            const textMesh = new TextMesh(key, font, charWidth);
+
+            const valueMesh = scene.getObjectById(bar.valueMeshId) as TextMesh;
             const valueMeshHeight = valueMesh.geometry.boundingBox.max.y - valueMesh.geometry.boundingBox.min.y;
 
-            text.position.set(...getPositionOfKeyOnTopByBar(bar, valueMeshHeight * 2));
-            scene.add(text);
-            bar.keyMeshId = text.id;
+            textMesh.position.set(...getPositionOfKeyOnTopByBar(bar, valueMeshHeight * 2));
+            scene.add(textMesh);
+            bar.keyMeshId = textMesh.id;
         }
     });
 };
@@ -118,18 +114,15 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
     const charWidth = bars[0].width / valueMaxLength;
-    const fontDepth = charWidth / 8;
 
     for (let i = 0; i < values.length; ++i) {
         const valueText = values[i].toString();
         const bar = bars[i];
 
-        const geometry = _createTextGeometry(valueText, font, charWidth, fontDepth);
-        const material = _createTextMaterial();
-        const textMesh = new Mesh(geometry, material);
-
+        const textMesh = new TextMesh(valueText, font, charWidth);
         textMesh.position.set(...getPositionOfValueByBar(bar));
         scene.add(textMesh);
+
         bar.valueMeshId = textMesh.id;
     }
 };
@@ -141,26 +134,4 @@ export const addInfoPanelToScene = (scene: Scene, key: string, value: number, ba
     infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
     scene.add(infoPanelMesh);
     return infoPanelMesh;
-};
-
-const _createTextGeometry = (text: string, font: Font, size: number, fontDepth: number): TextGeometry => {
-    const geometry = new TextGeometry(text, {
-        font,
-        size,
-        height: fontDepth,
-    });
-    geometry.center(); // has called geometry.computeBoundingBox() in center()
-    geometry.translate(0, geometry.boundingBox.max.y, 0); // 向上移动半个自身高度，防止字体埋在bar里/plane里
-    // after translate, geometry.boundingBox.min.y = 0 and geometry.boundingBox.max.y = height
-    // NOTE: do not call center() again after translate, it will make geometry.boundingBox.min.y = -height/2 and geometry.boundingBox.max.y = height/2
-    return geometry;
-};
-
-const _createTextMaterial = () => {
-    return new MeshPhongMaterial({
-        color: defaultTextColorBlue,
-        // specular: defaultTextColorBlue, // 高光颜色
-        emissive: defaultTextColorBlue, // 自发光
-        emissiveIntensity: 0.8,
-    });
 };

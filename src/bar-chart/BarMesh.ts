@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DoubleSide, Material, Mesh, MeshPhongMaterial, Scene } from 'three';
+import { BoxGeometry, Color, DoubleSide, Mesh, MeshPhongMaterial, Scene } from 'three';
 import { defaultBarHighlightColorWhite } from '../Constant';
 
 export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial> {
