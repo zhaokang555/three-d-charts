@@ -1,15 +1,16 @@
-import { AmbientLight, Box3, Scene } from 'three';
+import { AmbientLight, Box3, Scene, Vector3 } from 'three';
 import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer } from '../CommonUtils';
 import IPosition from '../type/IPosition';
 import { getVertices, ScatterPoints } from './ScatterPoints';
 
 export const init = (list: Array<IPosition>, container: HTMLElement) => {
+    const boxSize = (new Box3()).setFromArray(getVertices(list)).getSize(new Vector3());
+
     const scene = new Scene();
-    addAxesToScene(scene, 10);
+    addAxesToScene(scene, Math.min(boxSize.x, boxSize.y, boxSize.z));
     scene.add(new AmbientLight()); // 环境光
 
-    const box = (new Box3()).setFromArray(getVertices(list));
-    const camera = getOrthographicCamera(scene, container, box.max.distanceTo(box.min));
+    const camera = getOrthographicCamera(scene, container, boxSize.length());
 
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer);
