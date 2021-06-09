@@ -6,9 +6,10 @@ import {
     getRenderer,
     initHighlightBar,
 } from '../CommonUtils';
-import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addPlaneToScene, addValuesToScene, } from './Utils';
+import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addValuesToScene, } from './Utils';
 import IList from '../type/IList';
 import { makeTextMeshesLookAtCamera } from './TextMesh';
+import { PlaneMesh } from './PlaneMesh';
 
 export const init = (list: IList, container: HTMLElement): () => void => {
     const keys = list.map(kv => kv.key);
@@ -21,14 +22,15 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const bars = addBarsToScene(scene, values);
     addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
     addValuesToScene(scene, values, valueMaxLength, bars);
-    const planeWidth = addPlaneToScene(scene);
-    addLightToScene(scene, planeWidth);
+    const planeMesh = new PlaneMesh(bars);
+    scene.add(planeMesh);
+    addLightToScene(scene, planeMesh.width);
 
-    const camera = getOrthographicCamera(scene, container, planeWidth);
+    const camera = getOrthographicCamera(scene, container, planeMesh.width);
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
         rotate: true,
-        maxZoom: planeWidth * 2, // FIX ME
+        maxZoom: planeMesh.width * 2, // FIX ME
     });
     const updateHighlight = initHighlightBar(scene, camera, container);
 

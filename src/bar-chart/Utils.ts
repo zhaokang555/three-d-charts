@@ -1,17 +1,7 @@
 import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import { colormap } from "../CommonAlgorithms";
-import {
-    AmbientLight,
-    DoubleSide,
-    FontLoader,
-    Mesh,
-    MeshLambertMaterial,
-    PlaneGeometry,
-    PointLight,
-    Scene,
-    Vector3
-} from 'three';
-import { defaultLightColorWhite, defaultPlaneColorGray } from '../Constant';
+import { AmbientLight, FontLoader, PointLight, Scene } from 'three';
+import { defaultLightColorWhite } from '../Constant';
 import {
     getBarWidthByValues,
     getPositionOfKeyOnTopByBar,
@@ -19,7 +9,7 @@ import {
     getPositionOfValueByBar
 } from './Algorithms';
 import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
-import { BarMesh, getBars } from './BarMesh';
+import { BarMesh } from './BarMesh';
 import { TextMesh } from './TextMesh';
 
 export const addLightToScene = (scene: Scene, planeWidth: number) => {
@@ -28,39 +18,6 @@ export const addLightToScene = (scene: Scene, planeWidth: number) => {
     scene.add(light);
 
     scene.add(new AmbientLight(defaultLightColorWhite, 0.5)); // 环境光
-};
-
-export const addPlaneToScene = (scene: Scene): number => {
-    let planeWidth = 100;
-    const bars = getBars(scene);
-    const barPositions = bars.map(bar => bar.position);
-    if (barPositions.length === 0) return;
-
-    // 根据最右边bar的x坐标 和 最高bar的高度 来确定planeWidth
-    const maxX = Math.max(...barPositions.map(p => Math.abs(p.x)));
-    const maxZ = Math.max(...barPositions.map(p => Math.abs(p.z)));
-    const maxXZ = Math.max(maxX, maxZ);
-    const maxY = Math.max(...barPositions.map(p => Math.abs(p.y * 2)));
-    const planeWidthByMaxXZ = maxXZ * 2 + bars[0].width;
-    if (planeWidthByMaxXZ > maxY) {
-        planeWidth = maxXZ * 2 + bars[0].width;
-    } else {
-        planeWidth = maxY;
-    }
-    const planeMesh = new Mesh(
-        new PlaneGeometry(planeWidth, planeWidth),
-        new MeshLambertMaterial({
-            color: defaultPlaneColorGray,
-            side: DoubleSide,
-        })
-    );
-    // 因为plane默认在xy平面上, 需要把它旋转到xz平面上
-    planeMesh.rotateOnWorldAxis(new Vector3(1, 0, 0), -Math.PI / 2); // 在世界空间中将plane绕x轴顺时针旋转90度
-    planeMesh.position.y = -planeWidth / 10000; // z-fighting
-    planeMesh.name = 'planeMesh'; // for find plane mesh in scene;
-    scene.add(planeMesh);
-
-    return planeWidth;
 };
 
 export const addBarsToScene = (scene: Scene, values: Array<number>, baseLineIndex: number = 0, barWidth: number = null,
