@@ -16,7 +16,7 @@ import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
 import { BarMesh, getBars } from './bar-chart/BarMesh';
 
-export const getOrthographicCamera = (scene: Scene, container: HTMLElement, size: number) => {
+export const getOrthographicCamera = (container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
 
     const x = size;

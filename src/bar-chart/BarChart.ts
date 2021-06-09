@@ -26,7 +26,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     scene.add(planeMesh);
     addLightToScene(scene, planeMesh.width);
 
-    const camera = getOrthographicCamera(scene, container, planeMesh.width);
+    const camera = getOrthographicCamera(container, planeMesh.width);
     const [renderer, cleanRenderer] = getRenderer(container, camera);
     const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
         rotate: true,
