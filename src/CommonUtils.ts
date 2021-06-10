@@ -5,7 +5,6 @@ import {
     Matrix3,
     OrthographicCamera,
     PerspectiveCamera,
-    Raycaster,
     Scene,
     Vector2,
     WebGLRenderer
@@ -14,7 +13,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
 import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
-import { BarMesh, getBars } from './bar-chart/BarMesh';
 
 export const getOrthographicCamera = (container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;

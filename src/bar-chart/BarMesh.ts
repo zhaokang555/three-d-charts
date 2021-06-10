@@ -45,9 +45,3 @@ export class BarMesh extends Mesh<BoxGeometry, MeshPhongMaterial> {
         }
     }
 }
-
-export const getBars = (scene: Scene): Array<BarMesh> => {
-    return scene.children.filter(
-        child => child instanceof BarMesh
-    ) as any as Array<BarMesh>;
-};
