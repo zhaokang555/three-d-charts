@@ -1,5 +1,5 @@
 import { AmbientLight, Box3, Scene, Vector3 } from 'three';
-import { addAxesToScene, addControlsToCamera, getOrthographicCamera, getRenderer } from '../CommonUtils';
+import { addAxesToScene, useControls, getOrthographicCamera, useRenderer } from '../CommonUtils';
 import IPosition from '../type/IPosition';
 import { getVertices, ScatterPoints } from './ScatterPoints';
 import { Chart } from '../components/Chart';
@@ -14,8 +14,8 @@ export class ScatterChart extends Chart {
 
         const camera = getOrthographicCamera(container, boxSize.length());
 
-        const [renderer, cleanRenderer] = getRenderer(container, camera);
-        const [controls, cleanControls] = addControlsToCamera(camera, renderer);
+        const [renderer, cleanRenderer] = useRenderer(container, camera);
+        const [controls, cleanControls] = useControls(camera, renderer);
 
         const scatterPoints = new ScatterPoints(list, container, camera);
         scene.add(scatterPoints);

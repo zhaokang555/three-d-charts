@@ -1,5 +1,5 @@
 import { Scene } from 'three';
-import { addAxesToScene, addControlsToCamera, getRenderer } from '../CommonUtils';
+import { addAxesToScene, useControls, useRenderer } from '../CommonUtils';
 import { addLightToScene, getPerspectiveCamera } from './Utils';
 import { earthRadius } from '../Constant';
 import IList from '../type/IList';
@@ -18,8 +18,8 @@ export class ChinaProvinceBarChart extends Chart {
         earthMesh.addProvinces(list);
         scene.add(earthMesh);
 
-        const [renderer, cleanRenderer] = getRenderer(container, camera);
-        const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
+        const [renderer, cleanRenderer] = useRenderer(container, camera);
+        const [controls, cleanControls] = useControls(camera, renderer, {
             minDistance: 1.05 * earthRadius,
             maxDistance: 10 * earthRadius
         });

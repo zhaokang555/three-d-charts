@@ -35,7 +35,7 @@ export const addAxesToScene = (scene: Scene, size: number) => {
     scene.add(axesHelper);
 };
 
-export const getRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
+export const useRenderer = (container: HTMLElement, camera: ICamera): [WebGLRenderer, () => void] => {
     const renderer = new WebGLRenderer();
     renderer.setSize(container.offsetWidth, container.offsetHeight); // 将输出canvas的大小调整为container的大小
     container.appendChild(renderer.domElement); // 将生成的canvas挂在container上
@@ -74,7 +74,7 @@ type IControlOptions = {
     minZoom?: number;
     maxZoom?: number;
 }
-export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, options: IControlOptions = {}): [OrbitControls, () => void] => {
+export const useControls = (camera: ICamera, renderer: WebGLRenderer, options: IControlOptions = {}): [OrbitControls, () => void] => {
     const controls = new OrbitControls(camera, renderer.domElement);
 
     controls.enableDamping = true; // 是否有惯性

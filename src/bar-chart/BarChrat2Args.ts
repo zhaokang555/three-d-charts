@@ -1,9 +1,9 @@
 import { Scene } from 'three';
 import {
     addAxesToScene,
-    addControlsToCamera,
+    useControls,
     getOrthographicCamera,
-    getRenderer,
+    useRenderer,
     makeInfoPanelLookAtCamera,
 } from '../CommonUtils';
 import { addBarsToScene, addInfoPanelToScene, addLightToScene, } from './Utils';
@@ -38,8 +38,8 @@ export class BarChart2Args extends Chart {
         scene.add(planeMesh);
         addLightToScene(scene, planeMesh.width);
         const camera = getOrthographicCamera(container, planeMesh.width);
-        const [renderer, cleanRenderer] = getRenderer(container, camera);
-        const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
+        const [renderer, cleanRenderer] = useRenderer(container, camera);
+        const [controls, cleanControls] = useControls(camera, renderer, {
             rotate: true,
             maxZoom: planeMesh.width * 2, // FIX ME
         });
