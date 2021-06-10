@@ -3,21 +3,22 @@
 </template>
 
 <script>
-    import {initBarChart2Args} from '../src';
+    import {BarChart2Args} from '../src';
 
     export default {
         name: "BarChart2ArgsDisplay",
         data() {
             return {
-                clean: () => null,
+                chart: null,
             }
         },
         mounted() {
             const lists = JSON.parse(localStorage.getItem('lists')) || [];
-            this.clean = initBarChart2Args(lists, this.$refs.container);
+            this.chart = new BarChart2Args(lists, this.$refs.container);
+            this.chart.render();
         },
         beforeDestroy() {
-            this.clean();
+            this.chart.clean();
         },
     }
 </script>
