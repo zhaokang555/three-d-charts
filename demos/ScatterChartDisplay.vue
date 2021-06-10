@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {initScatterChart} from '../src';
+    import {ScatterChart} from '../src';
 
     const randomRange = 0.4;
     const {pow, cos, PI, random, sin} = Math;
@@ -12,15 +12,16 @@
         name: "ScatterChartDisplay",
         data() {
             return {
-                clean: () => null,
+                chart: null,
             }
         },
         mounted() {
             const list = this.mockData();
-            this.clean = initScatterChart(list, this.$refs.container);
+            this.chart = new ScatterChart(list, this.$refs.container);
+            this.chart.render();
         },
         beforeDestroy() {
-            this.clean();
+            this.chart.clean();
         },
         methods: {
             mockData() {
