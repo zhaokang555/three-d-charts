@@ -3,21 +3,22 @@
 </template>
 
 <script>
-    import {initCityRouteChart} from '../src';
+    import {CityRouteChart} from '../src';
 
     export default {
         name: "CityRouteChartDisplay",
         data() {
             return {
-                clean: () => null,
+                chart: () => null,
             }
         },
         mounted() {
             const list = JSON.parse(localStorage.getItem('list')) || [];
-            this.clean = initCityRouteChart(list, this.$refs.container);
+            this.chart = new CityRouteChart(list, this.$refs.container);
+            this.chart.render();
         },
         beforeDestroy() {
-            this.clean();
+            this.chart.clean();
         },
     }
 </script>

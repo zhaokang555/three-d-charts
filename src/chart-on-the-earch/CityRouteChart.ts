@@ -5,37 +5,37 @@ import { earthRadius } from '../Constant';
 import IRoute from '../type/IRoute';
 import ICity from '../type/ICity';
 import { EarthMeshForRoute } from '../components/EarthMeshForRoute';
+import { Chart } from '../components/Chart';
 
-export const init = (list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []): () => void => {
-    const scene = new Scene();
-    addAxesToScene(scene, earthRadius * 4);
-    addLightToScene(scene, 1);
+export class CityRouteChart extends Chart {
+    constructor(list: Array<IRoute>, container: HTMLElement, extraCities: Array<ICity> = []) {
+        const scene = new Scene();
+        addAxesToScene(scene, earthRadius * 4);
+        addLightToScene(scene, 1);
 
-    const camera = getPerspectiveCamera(container);
+        const camera = getPerspectiveCamera(container);
 
-    const earthMesh = new EarthMeshForRoute();
-    const updateRoutesAndInfoPanels = earthMesh.addRoutes(list, extraCities, camera);
-    scene.add(earthMesh);
+        const earthMesh = new EarthMeshForRoute();
+        const updateRoutesAndInfoPanels = earthMesh.addRoutes(list, extraCities, camera);
+        scene.add(earthMesh);
 
-    const [renderer, cleanRenderer] = getRenderer(container, camera);
-    const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
-        minDistance: 1.05 * earthRadius,
-        maxDistance: 10 * earthRadius
-    });
+        const [renderer, cleanRenderer] = getRenderer(container, camera);
+        const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
+            minDistance: 1.05 * earthRadius,
+            maxDistance: 10 * earthRadius
+        });
 
-    let animationFrameId = null;
-    const render = () => {
-        animationFrameId = requestAnimationFrame(render);
-
-        controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
-        updateRoutesAndInfoPanels();
-        renderer.render(scene, camera);
-    };
-    animationFrameId = requestAnimationFrame(render);
-
-    return () => {
-        cancelAnimationFrame(animationFrameId);
-        cleanRenderer();
-        cleanControls();
-    };
-};
+        super();
+        this.frameHooks = [
+            ...this.frameHooks,
+            () => controls.update(),
+            updateRoutesAndInfoPanels,
+            () => renderer.render(scene, camera),
+        ];
+        this.cleanHooks = [
+            ...this.cleanHooks,
+            cleanRenderer,
+            cleanControls,
+        ];
+    }
+}
