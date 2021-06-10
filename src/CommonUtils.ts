@@ -122,10 +122,9 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
     return [controls, () => window.removeEventListener('keydown', onKeydown)];
 };
 
-export const initHighlightBar = (scene: Scene, camera: ICamera, container: HTMLElement): () => void => {
+export const initHighlightBar = (bars: Array<BarMesh>, camera: ICamera, container: HTMLElement): () => void => {
     const raycaster = new Raycaster();
     const mousePosition = getRealtimeMousePositionRef(container);
-    const bars = getBars(scene);
 
     return () => {
         raycaster.setFromCamera(mousePosition, camera);

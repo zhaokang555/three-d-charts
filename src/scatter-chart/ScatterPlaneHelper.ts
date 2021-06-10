@@ -61,7 +61,7 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
         this.z = Math.min(width, height) / 1000; // z-fighting
     }
 
-    update(intersects: Intersection[]) {
+    update(intersects: Array<Intersection>) {
         if (intersects.length > 0) {
             const {width, height, z} = this;
             const uv = intersects[0].uv;
@@ -89,7 +89,7 @@ class PositionInfoPanelMesh extends TextInfoPanelMesh {
     }
 
     // @ts-ignore
-    update(intersects: Intersection[]) {
+    update(intersects: Array<Intersection>) {
         if (intersects.length > 0) {
             this.visible = true;
             const {point, uv} = intersects[0];
