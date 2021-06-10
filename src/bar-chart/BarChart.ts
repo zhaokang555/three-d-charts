@@ -8,7 +8,6 @@ import {
 } from '../CommonUtils';
 import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addValuesToScene, } from './Utils';
 import IList from '../type/IList';
-import { makeTextMeshesLookAtCamera } from './TextMesh';
 import { PlaneMesh } from './PlaneMesh';
 
 export const init = (list: IList, container: HTMLElement): () => void => {
@@ -20,8 +19,8 @@ export const init = (list: IList, container: HTMLElement): () => void => {
     const scene = new Scene();
     addAxesToScene(scene, 1000000);
     const bars = addBarsToScene(scene, values);
-    addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
-    addValuesToScene(scene, values, valueMaxLength, bars);
+    const keyTextMeshes = addKeysOnTopToScene(scene, keys, keyMaxLength, bars);
+    const valueTextMeshes = addValuesToScene(scene, values, valueMaxLength, bars);
     const planeMesh = new PlaneMesh(bars);
     scene.add(planeMesh);
     addLightToScene(scene, planeMesh.width);
@@ -40,7 +39,7 @@ export const init = (list: IList, container: HTMLElement): () => void => {
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
         updateHighlight();
-        makeTextMeshesLookAtCamera(scene, camera);
+        [...keyTextMeshes, ...valueTextMeshes].forEach(t => t.update(camera));
         renderer.render(scene, camera);
     };
     cancelId = requestAnimationFrame(render);

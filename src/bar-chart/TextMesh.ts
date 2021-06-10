@@ -24,17 +24,9 @@ export class TextMesh extends Mesh<TextGeometry, MeshPhongMaterial> {
         super(geometry, material);
         this.height = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
     }
+
+    update(camera: ICamera) {
+        const lookAtPosition = camera.position.clone().setY(this.position.y);
+        this.lookAt(lookAtPosition);
+    }
 }
-
-export const makeTextMeshesLookAtCamera = (scene: Scene, camera: ICamera) => {
-    getTextMeshes(scene).forEach(textMesh => {
-        const lookAtPosition = camera.position.clone().setY(textMesh.position.y);
-        textMesh.lookAt(lookAtPosition);
-    });
-};
-
-const getTextMeshes = (scene: Scene): Array<TextMesh> => {
-    return scene.children.filter(
-        child => child instanceof TextMesh
-    ) as any as Array<TextMesh>;
-};

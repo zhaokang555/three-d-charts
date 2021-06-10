@@ -46,6 +46,7 @@ export const addBarsToScene = (scene: Scene, values: Array<number>, baseLineInde
 
 export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLength: number, bars: Array<BarMesh>) => {
     const loader = new FontLoader();
+    const textMeshes: Array<TextMesh> = [];
     // ttf to json, see: https://gero3.github.io/facetype.js/
     // load font async, because Alibaba_PuHuiTi_Regular.json is too large
     loader.load('/Alibaba_PuHuiTi_Regular.json', font => {
@@ -59,16 +60,19 @@ export const addKeysOnTopToScene = (scene: Scene, keys: Array<string>, keyMaxLen
 
             textMesh.position.set(...getPositionOfKeyOnTopByBar(bar, bar.valueMesh, textMesh));
             scene.add(textMesh);
+            textMeshes.push(textMesh);
 
             bar.keyMesh = textMesh;
         }
     });
+    return textMeshes;
 };
 
 export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLength: number = 0, bars: Array<BarMesh>) => {
     const loader = new FontLoader();
     const font = loader.parse(helvetiker_regular);
     const charWidth = bars[0].width / valueMaxLength;
+    const textMeshes: Array<TextMesh> = [];
 
     for (let i = 0; i < values.length; ++i) {
         const valueText = values[i].toString();
@@ -77,9 +81,11 @@ export const addValuesToScene = (scene: Scene, values: Array<number>, valueMaxLe
         const textMesh = new TextMesh(valueText, font, charWidth);
         textMesh.position.set(...getPositionOfValueByBar(bar, textMesh));
         scene.add(textMesh);
+        textMeshes.push(textMesh);
 
         bar.valueMesh = textMesh;
     }
+    return textMeshes;
 };
 
 export const addInfoPanelToScene = (scene: Scene, key: string, value: number, bar: BarMesh) => {
