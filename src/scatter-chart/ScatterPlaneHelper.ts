@@ -7,12 +7,12 @@ import {
     Mesh,
     MeshLambertMaterial,
     PlaneGeometry,
-    Raycaster, Vector2
+    Vector2,
+    Vector3
 } from 'three';
-import { getRealtimeMousePositionRef } from '../CommonUtils';
 import ICamera from '../type/ICamera';
-import { Intersection } from 'three/src/core/Raycaster';
 import { TextInfoPanelMesh } from '../components/TextInfoPanelMesh';
+import { RaycasterFromCamera } from '../components/RaycasterFromCamera';
 
 export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial> {
     update: () => void = null;
@@ -30,8 +30,7 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
     }
 
     initRealtimeAuxiliaryLines(container: HTMLElement, camera: ICamera) {
-        const raycaster = new Raycaster();
-        const mousePosition = getRealtimeMousePositionRef(container);
+        const ray = new RaycasterFromCamera(container, camera);
 
         const auxiliaryLines = new AuxiliaryLines(this.width, this.height);
         this.add(auxiliaryLines);
@@ -40,11 +39,12 @@ export class ScatterPlaneHelper extends Mesh<PlaneGeometry, MeshLambertMaterial>
         this.add(positionInfoPanelMesh);
 
         return () => {
-            raycaster.setFromCamera(mousePosition, camera);
-            const intersects = raycaster.intersectObject(this);
-
-            auxiliaryLines.update(intersects);
-            positionInfoPanelMesh.update(intersects);
+            auxiliaryLines.hide();
+            positionInfoPanelMesh.hide();
+            ray.firstIntersectedPosition([this], (point, uv) => {
+                auxiliaryLines.showAt(uv);
+                positionInfoPanelMesh.showAt(uv, point);
+            });
         };
     };
 }
@@ -61,19 +61,18 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
         this.z = Math.min(width, height) / 1000; // z-fighting
     }
 
-    update(intersects: Array<Intersection>) {
-        if (intersects.length > 0) {
-            const {width, height, z} = this;
-            const uv = intersects[0].uv;
-            const x = (uv.x - 0.5) * width;
-            const y = (uv.y - 0.5) * height;
-            this.geometry.setAttribute('position', new Float32BufferAttribute([
-                -width / 2, y, z,      width / 2, y, z,
-                x, -height / 2, z,     x, height / 2, z,
-            ], 3));
-        } else {
-            this.geometry.deleteAttribute('position');
-        }
+    hide() {
+        this.geometry.deleteAttribute('position');
+    }
+
+    showAt(uv: Vector2) {
+        const {width, height, z} = this;
+        const x = (uv.x - 0.5) * width;
+        const y = (uv.y - 0.5) * height;
+        this.geometry.setAttribute('position', new Float32BufferAttribute([
+            -width / 2, y, z,      width / 2, y, z,
+            x, -height / 2, z,     x, height / 2, z,
+        ], 3));
     }
 }
 
@@ -88,17 +87,15 @@ class PositionInfoPanelMesh extends TextInfoPanelMesh {
         this.position.z = parentW / 1000; // z-fighting
     }
 
-    // @ts-ignore
-    update(intersects: Array<Intersection>) {
-        if (intersects.length > 0) {
-            this.visible = true;
-            const {point, uv} = intersects[0];
+    hide() {
+        this.visible = false;
+    }
 
-            super.update(point.toArray().map(n => n.toString()).map(s => s.substr(0, 4)).join(', '));
-            this._setPositionByUv(uv);
-        } else {
-            this.visible = false;
-        }
+    showAt(uv: Vector2, point: Vector3) {
+        this.visible = true;
+
+        super.update(point.toArray().map(n => n.toString()).map(s => s.substr(0, 4)).join(', '));
+        this._setPositionByUv(uv);
     }
 
     private _setPositionByUv(uv: Vector2) {
