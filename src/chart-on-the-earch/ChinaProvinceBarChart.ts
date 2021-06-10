@@ -4,36 +4,37 @@ import { addLightToScene, getPerspectiveCamera } from './Utils';
 import { earthRadius } from '../Constant';
 import IList from '../type/IList';
 import { EarthMeshForProvince } from '../components/EarthMeshForProvince';
+import { Chart } from '../components/Chart';
 
-export const init = (list: IList, container: HTMLElement): () => void => {
-    const scene = new Scene();
-    addLightToScene(scene);
-    addAxesToScene(scene, earthRadius * 4);
+export class ChinaProvinceBarChart extends Chart {
+    constructor(list: IList, container: HTMLElement) {
+        const scene = new Scene();
+        addLightToScene(scene);
+        addAxesToScene(scene, earthRadius * 4);
 
-    const camera = getPerspectiveCamera(container);
+        const camera = getPerspectiveCamera(container);
 
-    const earthMesh = new EarthMeshForProvince();
-    earthMesh.addProvinces(list);
-    scene.add(earthMesh);
+        const earthMesh = new EarthMeshForProvince();
+        earthMesh.addProvinces(list);
+        scene.add(earthMesh);
 
-    const [renderer, cleanRenderer] = getRenderer(container, camera);
-    const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
-        minDistance: 1.05 * earthRadius,
-        maxDistance: 10 * earthRadius
-    });
+        const [renderer, cleanRenderer] = getRenderer(container, camera);
+        const [controls, cleanControls] = addControlsToCamera(camera, renderer, {
+            minDistance: 1.05 * earthRadius,
+            maxDistance: 10 * earthRadius
+        });
 
-    let animationFrameId = null;
-    const render = () => {
-        animationFrameId = requestAnimationFrame(render);
+        super();
+        this.frameHooks = [
+            ...this.frameHooks,
+            () => controls.update(),
+            () => renderer.render(scene, camera),
+        ];
+        this.cleanHooks = [
+            ...this.cleanHooks,
+            cleanRenderer,
+            cleanControls,
+        ];
+    }
 
-        controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
-        renderer.render(scene, camera);
-    };
-    animationFrameId = requestAnimationFrame(render);
-
-    return () => {
-        cancelAnimationFrame(animationFrameId);
-        cleanRenderer();
-        cleanControls();
-    };
-};
+}

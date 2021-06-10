@@ -3,21 +3,22 @@
 </template>
 
 <script>
-    import {initChinaProvinceBarChart} from '../src';
+    import {ChinaProvinceBarChart} from '../src';
 
     export default {
         name: "ChinaProvinceBarChartDisplay",
         data() {
             return {
-                clean: () => null,
+                chart: null,
             }
         },
         mounted() {
             const list = JSON.parse(localStorage.getItem('list')) || [];
-            this.clean = initChinaProvinceBarChart(list, this.$refs.container);
+            this.chart = new ChinaProvinceBarChart(list, this.$refs.container);
+            this.chart.render();
         },
         beforeDestroy() {
-            this.clean();
+            this.chart.clean();
         },
     }
 </script>
