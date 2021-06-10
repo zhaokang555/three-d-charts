@@ -122,25 +122,6 @@ export const addControlsToCamera = (camera: ICamera, renderer: WebGLRenderer, op
     return [controls, () => window.removeEventListener('keydown', onKeydown)];
 };
 
-export const initHighlightBar = (bars: Array<BarMesh>, camera: ICamera, container: HTMLElement): () => void => {
-    const raycaster = new Raycaster();
-    const mousePosition = getRealtimeMousePositionRef(container);
-
-    return () => {
-        raycaster.setFromCamera(mousePosition, camera);
-
-        if (bars.length > 0) {
-            bars.forEach(bar => bar.unhighlight());
-
-            const intersects = raycaster.intersectObjects(bars);
-            if (intersects.length > 0) {
-                const bar = intersects[0].object as BarMesh;
-                bar.highlight();
-            }
-        }
-    };
-};
-
 export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<KeyValueInfoPanelMesh>) => {
     infoPanels.forEach(info => {
         const lookAtPosition = camera.position.clone().setY(info.position.y);

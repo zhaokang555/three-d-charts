@@ -4,11 +4,11 @@ import {
     addControlsToCamera,
     getOrthographicCamera,
     getRenderer,
-    initHighlightBar,
 } from '../CommonUtils';
 import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addValuesToScene, } from './Utils';
 import IList from '../type/IList';
 import { PlaneMesh } from './PlaneMesh';
+import { RaycasterFromCamera } from '../components/RaycasterFromCamera';
 
 export const init = (list: IList, container: HTMLElement): () => void => {
     const keys = list.map(kv => kv.key);
@@ -31,15 +31,18 @@ export const init = (list: IList, container: HTMLElement): () => void => {
         rotate: true,
         maxZoom: planeMesh.width * 2, // FIX ME
     });
-    const updateHighlight = initHighlightBar(bars, camera, container);
+    const ray = new RaycasterFromCamera(container, camera);
 
     let cancelId = null;
     const render = () => {
         cancelId = requestAnimationFrame(render);
 
         controls.update(); // required if controls.enableDamping or controls.autoRotate are set to true
-        updateHighlight();
-        [...keyTextMeshes, ...valueTextMeshes].forEach(t => t.update(camera));
+
+        bars.forEach(b => b.unhighlight());
+        ray.firstIntersectedObject(bars, intersectedBar => intersectedBar.highlight());
+
+        keyTextMeshes.concat(valueTextMeshes).forEach(t => t.lookAtCamera(camera));
         renderer.render(scene, camera);
     };
     cancelId = requestAnimationFrame(render);

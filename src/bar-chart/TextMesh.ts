@@ -25,7 +25,7 @@ export class TextMesh extends Mesh<TextGeometry, MeshPhongMaterial> {
         this.height = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
     }
 
-    update(camera: ICamera) {
+    lookAtCamera(camera: ICamera) {
         const lookAtPosition = camera.position.clone().setY(this.position.y);
         this.lookAt(lookAtPosition);
     }
