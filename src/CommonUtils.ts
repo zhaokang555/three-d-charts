@@ -12,7 +12,6 @@ import {
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import ICamera from './type/ICamera';
 import { getTextColorByBackgroundColor } from './CommonAlgorithms';
-import KeyValueInfoPanelMesh from './components/KeyValueInfoPanelMesh';
 
 export const getOrthographicCamera = (container: HTMLElement, size: number) => {
     const aspectRatio = container.offsetWidth / container.offsetHeight;
@@ -117,13 +116,6 @@ export const useControls = (camera: ICamera, renderer: WebGLRenderer, options: I
     window.addEventListener('keydown', onKeydown);
 
     return [controls, () => window.removeEventListener('keydown', onKeydown)];
-};
-
-export const makeInfoPanelLookAtCamera = (scene: Scene, camera: ICamera, infoPanels: Array<KeyValueInfoPanelMesh>) => {
-    infoPanels.forEach(info => {
-        const lookAtPosition = camera.position.clone().setY(info.position.y);
-        info.lookAt(lookAtPosition);
-    });
 };
 
 type IKeyValueCanvasTextureOptions = {

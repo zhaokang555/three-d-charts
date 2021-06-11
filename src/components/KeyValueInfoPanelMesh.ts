@@ -1,5 +1,6 @@
 import { Color, DoubleSide, Mesh, MeshLambertMaterial, PlaneGeometry } from 'three';
 import { createKeyValueCanvasTexture } from '../CommonUtils';
+import ICamera from '../type/ICamera';
 
 export default class KeyValueInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambertMaterial> {
     constructor(size: number, key: string, value: number) {
@@ -13,5 +14,10 @@ export default class KeyValueInfoPanelMesh extends Mesh<PlaneGeometry, MeshLambe
         const geometry = new PlaneGeometry(size, size);
         super(geometry, material);
         this.name = `InfoPanelMesh${key}`
+    }
+
+    lookAtCamera(camera: ICamera) {
+        const lookAtPosition = camera.position.clone().setY(this.position.y);
+        this.lookAt(lookAtPosition);
     }
 }

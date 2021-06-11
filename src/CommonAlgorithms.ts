@@ -1,5 +1,4 @@
 import { Color } from 'three';
-import ICamera from './type/ICamera';
 
 type IOptions = {
     begin?: Color;

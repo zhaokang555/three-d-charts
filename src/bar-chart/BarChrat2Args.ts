@@ -4,7 +4,6 @@ import {
     useControls,
     getOrthographicCamera,
     useRenderer,
-    makeInfoPanelLookAtCamera,
 } from '../CommonUtils';
 import { addBarsToScene, addInfoPanelToScene, addLightToScene, } from './Utils';
 import { getBarWidthByLists, getMaxAndMinValueByLists } from './Algorithms';
@@ -12,6 +11,8 @@ import IList from '../type/IList';
 import { PlaneMesh } from './PlaneMesh';
 import { RaycasterFromCamera } from '../components/RaycasterFromCamera';
 import { Chart } from '../components/Chart';
+import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
+import { BarMesh } from './BarMesh';
 
 export class BarChart2Args extends Chart {
     constructor(lists: Array<IList>, container: HTMLElement) {
@@ -19,8 +20,8 @@ export class BarChart2Args extends Chart {
         const barWidth = getBarWidthByLists(lists);
         const [maxValue, minValue] = getMaxAndMinValueByLists(lists);
 
-        const bars = [];
-        const infoPanels = [];
+        const bars: Array<BarMesh> = [];
+        const infoPanels: Array<KeyValueInfoPanelMesh> = [];
         lists.forEach((list, i) => {
             const keys = list.map(kv => kv.key);
             const values = list.map(kv => kv.value);
@@ -51,7 +52,7 @@ export class BarChart2Args extends Chart {
             () => controls.update(), // required if controls.enableDamping or controls.autoRotate are set to true
             () => bars.forEach(b => b.unhighlight()),
             () => ray.firstIntersectedObject(bars, intersectedBar => intersectedBar.highlight()),
-            () => makeInfoPanelLookAtCamera(scene, camera, infoPanels),
+            () => infoPanels.forEach(p => p.lookAtCamera(camera)),
             () => renderer.render(scene, camera),
         ];
         this.cleanHooks = [

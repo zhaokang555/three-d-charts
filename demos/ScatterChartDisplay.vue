@@ -26,7 +26,7 @@
         methods: {
             mockData() {
                 const vertices = [];
-                for (let x = -2; x < 7; x += 0.04) {
+                for (let x = -2; x < 7; x += 0.1) {
                     const y = 0.1 * pow(x, 3) - 0.5 * pow(x, 2) - 0.7 * x;
 
                     const maxOffset = randomRange / 2 * 1.733;
