@@ -38,7 +38,7 @@ export class ScatterPoints extends Points<BufferGeometry, PointsMaterial> {
         ];
 
         const planeSplitLines = new PlaneSplitLines(max.x - min.x, max.y - min.y, max.z - min.z);
-        planeSplitLines.position.copy(min);
+        planeSplitLines.position.copy(min.clone().addScaledVector(diagonal, 0.001));
         this.add(planeSplitLines);
 
         return planes;

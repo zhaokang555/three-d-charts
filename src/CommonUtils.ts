@@ -22,13 +22,12 @@ export const getOrthographicCamera = (container: HTMLElement, size: number) => {
     const camera = new OrthographicCamera(-x, x, y, -y, -size * 4, size * 4);
 
     camera.position.set(-x / 2, x / 2, x); // see from left-front-top position
-    // camera.lookAt(0, 0, 0);
     return camera;
 };
 
 export const addAxesToScene = (scene: Scene, size: number) => {
     const axesHelper = new AxesHelper(size);
-    axesHelper.visible = true;
+    axesHelper.visible = false;
     axesHelper.name = 'axesHelper';
     scene.add(axesHelper);
 };

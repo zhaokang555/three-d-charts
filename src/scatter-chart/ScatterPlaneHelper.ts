@@ -55,7 +55,7 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
     z: number;
 
     constructor(width, height) {
-        super(new BufferGeometry(), new LineBasicMaterial({color: 'red'}));
+        super(new BufferGeometry(), new LineBasicMaterial());
         this.width = width;
         this.height = height;
         this.z = Math.min(width, height) / 1000; // z-fighting
