@@ -62,10 +62,11 @@ class AuxiliaryLines extends LineSegments<BufferGeometry, LineBasicMaterial> {
     }
 
     hide() {
-        this.geometry.deleteAttribute('position');
+        this.visible = false;
     }
 
     showAt(uv: Vector2) {
+        this.visible = true;
         const {width, height, z} = this;
         const x = (uv.x - 0.5) * width;
         const y = (uv.y - 0.5) * height;
