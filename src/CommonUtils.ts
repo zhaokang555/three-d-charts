@@ -25,9 +25,9 @@ export const getOrthographicCamera = (container: HTMLElement, size: number) => {
     return camera;
 };
 
-export const addAxesToScene = (scene: Scene, size: number) => {
+export const addAxesToScene = (scene: Scene, size: number, visible = false) => {
     const axesHelper = new AxesHelper(size);
-    axesHelper.visible = false;
+    axesHelper.visible = visible;
     axesHelper.name = 'axesHelper';
     scene.add(axesHelper);
 };

@@ -9,7 +9,7 @@ export class ScatterChart extends Chart {
         const boxSize = (new Box3()).setFromArray(getVertices(list)).getSize(new Vector3());
 
         const scene = new Scene();
-        addAxesToScene(scene, Math.min(boxSize.x, boxSize.y, boxSize.z));
+        addAxesToScene(scene, Math.min(boxSize.x, boxSize.y, boxSize.z), true);
         scene.add(new AmbientLight()); // 环境光
 
         const camera = getOrthographicCamera(container, boxSize.length());
