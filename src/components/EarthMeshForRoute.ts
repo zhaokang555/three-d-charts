@@ -2,8 +2,7 @@ import { EarthMesh } from './EarthMesh';
 import IRoute from '../type/IRoute';
 import ICity from '../type/ICity';
 import ICamera from '../type/ICamera';
-// @ts-ignore
-import cities from '../chart-on-the-earch/cities.json';
+import * as cities from '../chart-on-the-earch/cities.json';
 import KeyValueInfoPanelMesh from './KeyValueInfoPanelMesh';
 import { earthRadius } from '../Constant';
 import { Curve } from 'three/src/extras/core/Curve';
