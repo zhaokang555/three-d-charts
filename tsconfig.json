@@ -5,6 +5,7 @@
       "dom"
     ],
     "target": "es5",
+    "allowJs": true,
     "allowSyntheticDefaultImports": true
   }
 }
