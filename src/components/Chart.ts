@@ -1,4 +1,4 @@
-export class Chart {
+export abstract class Chart {
     protected frameHooks: Array<() => void> = [];
     protected cleanHooks: Array<() => void> = [];
     private _cancelId: number;

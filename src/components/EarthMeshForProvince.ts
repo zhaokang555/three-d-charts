@@ -3,7 +3,7 @@ import IList from '../type/IList';
 import { barAltitude, earthRadius } from '../Constant';
 import { colormap } from '../CommonAlgorithms';
 import { BufferGeometry, Color, Line, LineBasicMaterial } from 'three';
-import china_geo_json from '../chart-on-the-earch/china.geo.json';
+import * as china_geo_json from '../chart-on-the-earch/china.geo.json';
 import { getPositionByLonLat } from '../chart-on-the-earch/Algorithms';
 import IRing from '../type/IRing';
 import { BarMeshWithTextOnTop } from '../chart-on-the-earch/BarMeshWithTextOnTop';
@@ -36,7 +36,7 @@ export class EarthMeshForProvince extends EarthMesh {
 
         /**
          *  个人理解:
-         *  province.geometry.coordinates: Array<MultiPolygon> 如: 台湾省
+         *  province.geometry.coordinates: MultiPolygon 如: 台湾省
          *  MultiPolygon: Array<Polygon> 如: 台湾岛, 钓鱼岛, ...
          *  Polygon: Array<Ring> 如: 台湾岛外边界, 日月潭外边界, ...
          *  Ring: Array<[lan, lat]>
