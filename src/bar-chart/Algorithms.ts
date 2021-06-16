@@ -54,7 +54,7 @@ export const getPositionOfKeyOnTopByBar = (bar: BarMesh, valueMesh: TextMesh, ke
 
     return [
         bar.position.x,
-        bar.height + valueMesh.height + keyMesh.height * 1.5,
+        bar.height + valueMesh.height * 2 + keyMesh.height,
         bar.position.z
     ];
 };
