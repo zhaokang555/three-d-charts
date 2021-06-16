@@ -6,8 +6,8 @@ import { TextMesh } from './TextMesh';
 export const getBarWidthByValues = (values: Array<number>): number => {
     let barWidth = values.reduce((sum, val) => sum + val, 0) / values.length;
     const minValue = Math.min(...values);
-    if (minValue < barWidth * 0.1) {
-        barWidth /= barWidth * 0.1 / minValue;
+    if (minValue / barWidth < 0.1) {
+        barWidth = minValue * 10;
     }
     return barWidth;
 };
@@ -24,22 +24,8 @@ export const getBarWidthByLists = (lists: Array<IList>): number => {
     return sum / count;
 };
 
-export const getKeyAndValueMaxLength = (lists: Array<IList>): [number, number] => {
-    let keyMaxlength = 0;
-    let valueMaxlength = 0;
-    lists.forEach(list => list.forEach(kv => {
-        const keyLen = kv.key.length;
-        const valueLen = kv.value.toString().length;
-
-        keyMaxlength = Math.max(keyMaxlength, keyLen);
-        valueMaxlength = Math.max(valueMaxlength, valueLen);
-    }));
-
-    return [keyMaxlength, valueMaxlength];
-};
-
 export const getMaxAndMinValueByLists = (lists: Array<IList>): [number, number] => {
-    let maxValue = 0;
+    let maxValue = -Infinity;
     let minValue = Infinity;
     lists.forEach(list => list.forEach(kv => {
         maxValue = Math.max(maxValue, kv.value);
