@@ -1,6 +1,6 @@
 import { DoubleSide, Mesh, MeshPhongMaterial, RepeatWrapping, SphereGeometry, TextureLoader } from 'three';
-import earth_nightmap from '../chart-on-the-earch/BlackMarble_2016_3km_13500x6750.jpeg';
-import earth_specular_map from '../chart-on-the-earch/8k_earth_specular_map.png';
+import earth_nightmap from '../chart-on-the-earth/BlackMarble_2016_3km_13500x6750.jpeg';
+import earth_specular_map from '../chart-on-the-earth/8k_earth_specular_map.png';
 import { earthRadius } from '../Constant';
 
 export class EarthMesh extends Mesh<SphereGeometry, MeshPhongMaterial> {

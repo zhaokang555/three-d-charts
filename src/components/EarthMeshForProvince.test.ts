@@ -1,7 +1,7 @@
 import { EarthMeshForProvince } from './EarthMeshForProvince';
-import { BarMeshWithTextOnTop } from '../chart-on-the-earch/BarMeshWithTextOnTop';
+import { BarMeshWithTextOnTop } from '../chart-on-the-earth/BarMeshWithTextOnTop';
 import { Line } from 'three';
-import * as china_geo_json from '../chart-on-the-earch/china.geo.json';
+import * as china_geo_json from '../chart-on-the-earth/china.geo.json';
 
 describe('EarthMeshForProvince.addProvinces, when add 2 provinces', () => {
     let earth;

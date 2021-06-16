@@ -3,10 +3,10 @@ import IList from '../type/IList';
 import { barAltitude, earthRadius } from '../Constant';
 import { colormap } from '../CommonAlgorithms';
 import { BufferGeometry, Color, Line, LineBasicMaterial } from 'three';
-import * as china_geo_json from '../chart-on-the-earch/china.geo.json';
-import { getPositionByLonLat } from '../chart-on-the-earch/Algorithms';
+import * as china_geo_json from '../chart-on-the-earth/china.geo.json';
+import { getPositionByLonLat } from '../chart-on-the-earth/Algorithms';
 import IRing from '../type/IRing';
-import { BarMeshWithTextOnTop } from '../chart-on-the-earch/BarMeshWithTextOnTop';
+import { BarMeshWithTextOnTop } from '../chart-on-the-earth/BarMeshWithTextOnTop';
 
 export class EarthMeshForProvince extends EarthMesh {
     constructor() {

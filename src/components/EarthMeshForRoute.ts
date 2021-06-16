@@ -6,7 +6,7 @@ import KeyValueInfoPanelMesh from './KeyValueInfoPanelMesh';
 import { cities, earthRadius } from '../Constant';
 import { Curve } from 'three/src/extras/core/Curve';
 import { Vector3 } from 'three/src/math/Vector3';
-import { getControlPointPosition, getPositionByLonLat } from '../chart-on-the-earch/Algorithms';
+import { getControlPointPosition, getPositionByLonLat } from '../chart-on-the-earth/Algorithms';
 import { CanvasTexture, CubicBezierCurve3, Mesh, MeshBasicMaterial, RepeatWrapping, TubeGeometry } from 'three';
 
 export class EarthMeshForRoute extends EarthMesh {
