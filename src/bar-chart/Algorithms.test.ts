@@ -3,10 +3,10 @@ import {
     getBarWidthByValues,
     getMaxAndMinValueByLists,
     getPositionOfKeyOnTopByBar,
-    getPositionOfNthBar, getPositionOfValueByBar
+    getPositionOfNthBar,
+    getPositionOfValueByBar
 } from './Algorithms';
 import { BarMesh } from './BarMesh';
-import { Color } from 'three';
 import { TextMesh } from './TextMesh';
 
 describe('Algorithms', () => {

@@ -1,4 +1,4 @@
-import { Font, Mesh, MeshPhongMaterial, Scene, TextGeometry } from 'three';
+import { Font, Mesh, MeshPhongMaterial, TextGeometry } from 'three';
 import { defaultTextColorBlue } from '../Constant';
 import ICamera from '../type/ICamera';
 
