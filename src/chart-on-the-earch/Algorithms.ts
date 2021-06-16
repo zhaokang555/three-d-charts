@@ -1,4 +1,4 @@
-import { Raycaster, Scene, Vector3 } from 'three';
+import { Raycaster, Vector3 } from 'three';
 import { earthRadius } from "../Constant";
 import ICoordinates from '../type/ICoordinates';
 import { EarthMesh } from '../components/EarthMesh';
