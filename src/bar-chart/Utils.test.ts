@@ -1,5 +1,5 @@
 import { AmbientLight, PointLight, Scene } from 'three';
-import { addBarsToScene, addKeysOnTopToScene, addLightToScene, addValuesToScene } from './Utils';
+import { addBarsToScene, addInfoPanelToScene, addLightToScene, addValuesToScene } from './Utils';
 import { BarMesh } from './BarMesh';
 
 describe('bar-chart/Utils', () => {
@@ -47,5 +47,17 @@ describe('bar-chart/Utils', () => {
         const valueTextMeshes = addValuesToScene(scene, [3, 4, 5], 1, mockBars);
 
         expect(valueTextMeshes.length).toBe(3);
+    });
+
+    test('addInfoPanelToScene', () => {
+        const mockBar = {
+            position: {x: 100, z: 200},
+            width: 10,
+        } as BarMesh;
+        const infoPanel = addInfoPanelToScene(scene, 'key', 300, mockBar);
+
+        expect(infoPanel.position.x).toBeCloseTo(100);
+        expect(infoPanel.position.y).toBeCloseTo(303.5);
+        expect(infoPanel.position.z).toBeCloseTo(200);
     });
 });
