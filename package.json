@@ -38,15 +38,13 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "preset": "ts-jest/presets/js-with-ts",
+    "preset": "ts-jest",
     "setupFiles": [
       "jest-canvas-mock"
     ],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png)$": "<rootDir>/mocks/fileMock.js"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!(three/))"
-    ]
+      "\\.(jpg|jpeg|png)$": "<rootDir>/mocks/fileMock.ts",
+      "controls/OrbitControls(.js)?$": "<rootDir>/mocks/OrbitControls.ts"
+    }
   }
 }
