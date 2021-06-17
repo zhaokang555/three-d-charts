@@ -1,4 +1,4 @@
-import * as helvetiker_regular from "../helvetiker_regular.typeface.json";
+import helvetiker_regular from "../helvetiker_regular.typeface.json";
 import { colormap } from "../CommonAlgorithms";
 import { AmbientLight, FontLoader, PointLight, Scene } from 'three';
 import { defaultLightColorWhite } from '../Constant';

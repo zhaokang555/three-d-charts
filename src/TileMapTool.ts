@@ -53,7 +53,7 @@ export default (tileWidth = 3600, tileHeight = 3600,
 };
 
 const toBlob = (canvas, fileExt) => {
-    return new Promise(resolve => {
+    return new Promise<Blob>(resolve => {
         canvas.toBlob((blob) => {
             resolve(blob);
         }, 'image/' + fileExt);

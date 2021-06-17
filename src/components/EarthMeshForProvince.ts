@@ -3,10 +3,11 @@ import IList from '../type/IList';
 import { barAltitude, earthRadius } from '../Constant';
 import { colormap } from '../CommonAlgorithms';
 import { BufferGeometry, Color, Line, LineBasicMaterial } from 'three';
-import * as china_geo_json from '../chart-on-the-earth/china.geo.json';
+import china_geo_json from '../chart-on-the-earth/china.geo.json';
 import { getPositionByLonLat } from '../chart-on-the-earth/Algorithms';
 import IRing from '../type/IRing';
 import { BarMeshWithTextOnTop } from '../chart-on-the-earth/BarMeshWithTextOnTop';
+import ICoordinates from '../type/ICoordinates';
 
 export class EarthMeshForProvince extends EarthMesh {
     constructor() {
@@ -30,7 +31,7 @@ export class EarthMeshForProvince extends EarthMesh {
 
     private _addProvince(key: string, value: number, barHeight: number, color: Color) {
         const province = china_geo_json.features.find(f => f.properties.name === key);
-        const center = province.properties.center;
+        const center = province.properties.center as ICoordinates;
 
         this.add(new BarMeshWithTextOnTop(value, color, key, barHeight, center));
 
@@ -42,7 +43,7 @@ export class EarthMeshForProvince extends EarthMesh {
          *  Ring: Array<[lan, lat]>
          */
         province.geometry.coordinates.forEach(polygon => { // all province.geometry.type === 'MultiPolygon'
-            polygon.forEach(ring => this._addProvincialBoundary(ring, key, color));
+            polygon.forEach(ring => this._addProvincialBoundary(ring as IRing, key, color));
         });
     }
 
