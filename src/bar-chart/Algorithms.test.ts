@@ -30,27 +30,35 @@ describe('Algorithms', () => {
 
     test('getBarWidthByValues', () => {
         let barWidth = getBarWidthByValues([3, 4, 5]);
-        expect(barWidth).toBeCloseTo(4);
+        expect(barWidth).toBeGreaterThanOrEqual(3);
+        expect(barWidth).toBeLessThanOrEqual(5);
 
-        barWidth = getBarWidthByValues([1, 10000, 20000]);
-        expect(barWidth).toBeCloseTo(10);
+        barWidth = getBarWidthByValues([3, 10000, 20000]);
+        expect(barWidth).toBeGreaterThanOrEqual(3);
+        expect(barWidth).toBeLessThanOrEqual(20000);
+
+        const maxAspectRatio = barWidth / 3;
+        expect(maxAspectRatio).toBeGreaterThanOrEqual(10);
     });
 
     test('getBarWidthByLists', () => {
         const barWidth = getBarWidthByLists([
             [
-                {key: '', value: 2},
                 {key: '', value: 3},
-                {key: '', value: 4},
+                {key: '', value: 3},
+                {key: '', value: 40000},
             ],
             [
                 {key: '', value: 4},
                 {key: '', value: 5},
-                {key: '', value: 6},
+                {key: '', value: 10000},
             ],
         ]);
 
-        expect(barWidth).toBeCloseTo(4);
+        expect(barWidth).toBeGreaterThanOrEqual(3);
+        expect(barWidth).toBeLessThanOrEqual(40000);
+        const maxAspectRatio = barWidth / 3;
+        expect(maxAspectRatio).toBeGreaterThanOrEqual(10);
     });
 
     test('getMaxAndMinValueByLists', () => {
