@@ -21,12 +21,14 @@ describe('bar-chart/Utils', () => {
     });
 
     test('addBarsToScene', () => {
-        const bars = addBarsToScene(scene, [7, 8, 9]);
+        const bars = addBarsToScene(scene, [7, 8, 8]);
 
         expect(bars.length).toBe(3);
-        expect(bars[0].value).toBe(7);
-        expect(bars[1].value).toBe(8);
-        expect(bars[2].value).toBe(9);
+        expect(bars[0].value).toBeCloseTo(7);
+        expect(bars[1].value).toBeCloseTo(8);
+        expect(bars[2].value).toBeCloseTo(8);
+        expect(bars[0].height).toBeLessThan(bars[1].height);
+        expect(bars[1].height).toBeCloseTo(bars[2].height);
     });
 
     test('addValuesToScene', () => {
