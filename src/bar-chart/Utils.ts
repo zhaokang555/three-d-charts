@@ -12,9 +12,9 @@ import KeyValueInfoPanelMesh from '../components/KeyValueInfoPanelMesh';
 import { BarMesh } from './BarMesh';
 import { TextMesh } from './TextMesh';
 
-export const addLightToScene = (scene: Scene, planeWidth: number) => {
+export const addLightToScene = (scene: Scene, pointLightHeight: number) => {
     const light = new PointLight();
-    light.position.set(0, planeWidth, 0);
+    light.position.set(0, pointLightHeight, 0);
     scene.add(light);
 
     scene.add(new AmbientLight(defaultLightColorWhite, 0.5)); // 环境光
@@ -92,7 +92,7 @@ export const addInfoPanelToScene = (scene: Scene, key: string, value: number, ba
     const {x, z} = bar.position;
     const infoPanelSize = bar.width * 0.7;
     const infoPanelMesh = new KeyValueInfoPanelMesh(infoPanelSize, key, value);
-    infoPanelMesh.position.set(x, value + infoPanelSize / 2, z);
+    infoPanelMesh.position.set(x, value + infoPanelSize * 0.501, z);
     scene.add(infoPanelMesh);
     return infoPanelMesh;
 };

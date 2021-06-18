@@ -1,4 +1,4 @@
-import { AmbientLight, PointLight, Scene } from 'three';
+import { AmbientLight, Box3, Color, PointLight, Scene } from 'three';
 import { addBarsToScene, addInfoPanelToScene, addLightToScene, addValuesToScene } from './Utils';
 import { BarMesh } from './BarMesh';
 
@@ -49,15 +49,24 @@ describe('bar-chart/Utils', () => {
         expect(valueTextMeshes.length).toBe(3);
     });
 
-    test('addInfoPanelToScene', () => {
-        const mockBar = {
-            position: {x: 100, z: 200},
-            width: 10,
-        } as BarMesh;
-        const infoPanel = addInfoPanelToScene(scene, 'key', 300, mockBar);
+    describe('addInfoPanelToScene', () => {
+        let bar, infoPanel;
 
-        expect(infoPanel.position.x).toBeCloseTo(100);
-        expect(infoPanel.position.y).toBeCloseTo(303.5);
-        expect(infoPanel.position.z).toBeCloseTo(200);
+        beforeEach(() => {
+            bar = new BarMesh(10, 300, new Color());
+            bar.position.set(100, bar.value / 2, 200);
+            infoPanel = addInfoPanelToScene(scene, 'key', bar.value, bar);
+        });
+
+        test('should info panel has same position with bar on plane xoz', () => {
+            expect(infoPanel.position.x).toBeCloseTo(bar.position.x);
+            expect(infoPanel.position.z).toBeCloseTo(bar.position.z);
+        });
+
+        test('should info panel not collide with bar', () => {
+            const infoPanelBox = (new Box3()).setFromObject(infoPanel);
+            const barBox = (new Box3()).setFromObject(bar);
+            expect(infoPanelBox.intersectsBox(barBox)).toBe(false);
+        });
     });
 });
