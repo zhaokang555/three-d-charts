@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import {chinaProvinceList as provinceList} from "../src";
+    import { chinaProvinceList as provinceList } from "../src";
 
     export default {
         name: "set-china-province-bar-chart",

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {CityRouteChart} from '../src';
+    import { CityRouteChart } from '../src';
 
     export default {
         name: "CityRouteChartDisplay",

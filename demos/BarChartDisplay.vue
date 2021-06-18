@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {BarChart} from '../src';
+    import { BarChart } from '../src';
 
     export default {
         name: "BarChartDisplay",

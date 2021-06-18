@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {tileMapTool} from '../src';
+    import { tileMapTool } from '../src';
 
     export default {
         name: "TileMapTool",
@@ -14,8 +14,6 @@
             const input = tileMapTool(tileWidth, tileHeight);
             this.$el.appendChild(input)
         },
-        methods: {
-        }
     }
 </script>
 

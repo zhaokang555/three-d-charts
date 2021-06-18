@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {ChinaProvinceBarChart} from '../src';
+    import { ChinaProvinceBarChart } from '../src';
 
     export default {
         name: "ChinaProvinceBarChartDisplay",

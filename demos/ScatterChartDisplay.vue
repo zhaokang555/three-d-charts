@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import {ScatterChart} from '../src';
+    import { ScatterChart } from '../src';
 
     const randomRange = 0.4;
     const {pow, cos, PI, random, sin} = Math;

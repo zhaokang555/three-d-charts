@@ -10,15 +10,15 @@
     export default {
         name: "SetTileMapTool",
         computed: {
-          to() {
-              return {
-                  path: '/tile-map-tool-display',
-                  query: {
-                      tileWidth: this.tileWidth,
-                      tileHeight: this.tileHeight,
-                  }
-              };
-          }
+            to() {
+                return {
+                    path: '/tile-map-tool-display',
+                    query: {
+                        tileWidth: this.tileWidth,
+                        tileHeight: this.tileHeight,
+                    }
+                };
+            }
         },
         data() {
             return {
