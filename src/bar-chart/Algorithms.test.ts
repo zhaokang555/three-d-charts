@@ -77,12 +77,32 @@ describe('Algorithms', () => {
         expect(min).toBeCloseTo(-9.4);
     });
 
-    test('getPositionOfNthBar', () => {
-        const position = getPositionOfNthBar(0, 100, 4, 0);
+    describe('getPositionOfNthBar', () => {
+        let bar0Box, bar1Box;
+        beforeAll(() => {
+            const barWidth = 4;
 
-        expect(position[0]).toBeCloseTo(2);
-        expect(position[1]).toBeCloseTo(50);
-        expect(position[2]).toBeCloseTo(-2);
+            const bar0 = new BarMesh(barWidth, 100, new Color());
+            bar0.position.set(...getPositionOfNthBar(0, bar0.value, barWidth, 0));
+            bar0Box = (new Box3()).setFromObject(bar0);
+
+            const bar1 = new BarMesh(barWidth, 200, new Color());
+            bar1.position.set(...getPositionOfNthBar(1, bar1.value, barWidth, 0));
+            bar1Box = (new Box3()).setFromObject(bar1);
+        });
+
+        test('should left near corner of first bar at origin point', () => {
+            expect(bar0Box.min.x).toBeCloseTo(0);
+            expect(bar0Box.max.z).toBeCloseTo(0);
+        });
+
+        test('should second bar not collide with first bar', () => {
+            expect(bar1Box.intersectsBox(bar0Box)).toBe(false);
+        });
+
+        test('should second bar be to the right of first bar', () => {
+            expect(bar1Box.min.x).toBeGreaterThan(bar0Box.max.x);
+        });
     });
 
     describe('getPositionOfValueByBar', () => {
